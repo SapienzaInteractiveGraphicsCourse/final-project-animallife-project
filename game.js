@@ -39,7 +39,7 @@ var MainMenu = function () {
         var anchor = new BABYLON.TransformNode("");
 
         // light
-        var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, -1, 0), main_menu);
+        var light = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 0, 0), main_menu);
         light.intensity = 1;
         light.groundColor = new BABYLON.Color3(1,1,1);
         light.specular = BABYLON.Color3.Black();
@@ -171,13 +171,56 @@ var Sea;
 
 var SEA_Scene = function(){
     var scene = new BABYLON.Scene(engine);
+    scene.collisionEnabled=true;
+
     var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2,  Math.PI / 1.2, 15, BABYLON.Vector3.Zero(), scene);
     camera.upperBetaLimit = Math.PI / 2.3;
     camera.upperRadiusLimit = 50;
+    /*
+    var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(-Math.PI / 2,  Math.PI / 1.2, 15), scene);
+
+    // The goal distance of camera from target
+    camera.radius = 20;
+
+    // The goal height of camera above local origin (centre) of target
+    camera.heightOffset = 10;
+
+    // The goal rotation of camera around local origin (centre) of target in x y plane
+    camera.rotationOffset = 0;
+
+    // Acceleration of camera in moving from current to goal position
+    camera.cameraAcceleration = 0.005;
+
+    // The speed at which acceleration is halted
+    camera.maxCameraSpeed = 10;
+    camera.checkCollision=true;
+    */
+    // This attaches the camera to the canvas
+
+    // gravity
+    scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+    // no gravity for camera
+    camera.applyGravity = true;
+
+    //camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+
+    camera.checkCollision=true;
     camera.attachControl(canvas, true);
-	
+
 	var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
-	light.diffuse = new BABYLON.Color3(1, 0, 0);
+	light.diffuse = new BABYLON.Color3(1, 1, 1);
+
+    // Keyboard events
+    var inputMap = {};
+    scene.actionManager = new BABYLON.ActionManager(scene);
+    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    }));
+    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
+        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+    }));
+
 	
 	// SKYBOX
 	var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:350.0}, scene);
@@ -187,7 +230,7 @@ var SEA_Scene = function(){
 	skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 	skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 	skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-	skybox.material = skyboxMaterial;			
+	skybox.material = skyboxMaterial;		
 	
     // // GROUND.  Params: name, width, depth, subdivs, scene
     // var ground = BABYLON.Mesh.CreateGround("ground", 35, 35, 2, scene);
@@ -212,6 +255,7 @@ var SEA_Scene = function(){
             nodeMaterial.uScale = 5;
             scene.getMeshByName("ground").material = nodeMaterial;
         });
+        newMeshes[0].checkCollision=true;
     });
 
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/shadows/", "underwaterSceneShadowCatcher.glb", scene, function (newMeshes) {
@@ -249,6 +293,7 @@ var SEA_Scene = function(){
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
+            childMeshes[i].checkCollision=true;
         }
         BABYLON.NodeMaterial.ParseFromSnippetAsync("EMIYYW", scene).then(nodeMaterial => {
             nodeMaterial.name = "rock1Material";
@@ -266,6 +311,122 @@ var SEA_Scene = function(){
             nodeMaterial.name = "shipWheelMat";
             scene.getMeshByName("shipWheel").material = nodeMaterial;
         });
+    });
+
+    var Myrock = BABYLON.MeshBuilder.CreateSphere("Myrock", 
+    {
+        segments: 30,
+        diameterX: Math.random() * 2.5,
+        diameterY: Math.random() * 1.5,
+        diameterZ: Math.random() * 1.5,
+        updatable:true 
+    }, scene);
+
+    Myrock.forceSharedVertices();
+    Myrock.position.x = 10;
+    Myrock.position.y = 1;
+    var positions = Myrock.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+    var numberOfVertices = positions.length/3;	
+    for(var i = 0; i<numberOfVertices; i++) {
+        positions[i*3] += Math.random() * 0.01;
+        positions[i*3+1] += Math.random() * 0.01;
+        positions[i*3+2] += Math.random() * 0.01;
+    }
+
+    Myrock.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
+
+    const displacementmapURL = "textures/distortion.jpeg";
+    Myrock.applyDisplacementMap(displacementmapURL, 0.1, 1);
+    var MyrockMaterial = new BABYLON.BackgroundMaterial("RockMaterial", scene);
+    MyrockMaterial.diffuseTexture = new BABYLON.Texture("textures/corallo.jpeg", scene);
+    MyrockMaterial.diffuseTexture.uScale = 5.0;//Repeat 5 times on the Vertical Axes
+    MyrockMaterial.diffuseTexture.vScale = 5.0;//Repeat 5 times on the Horizontal Axes
+    MyrockMaterial.shadowLevel = 0.4;
+    Myrock.material = MyrockMaterial;
+
+    var wallNorth=BABYLON.MeshBuilder.CreatePlane("wallNorth", {width: 16, height: 2.7, subdivsions: 1}, scene);
+    wallNorth.position.y=1.35;
+    wallNorth.position.x=0;
+    wallNorth.position.z=-8;
+    wallNorth.addRotation(0, Math.PI, 0);
+    wallNorth.checkCollisions=true;
+
+
+    //Import Shark
+    var shark = BABYLON.SceneLoader.ImportMesh("", "models/", "shark.glb", scene, function(meshes) {
+        meshes[0].position.x = -10;
+        meshes[0].position.y = 0;
+        meshes[0].position.z = -10;
+
+        // targetMesh created here.
+        camera.target = meshes[0]; // version 2.4 and earlier
+        camera.lockedTarget = meshes[0]; //version 2.5 onwards
+
+        meshes[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        meshes[0].checkCollision=true;
+
+        // WASD control of Player "character".
+    let isWPressed = false;
+    let isAPressed = false;
+    let isSPressed = false;
+    let isDPressed = false;
+
+    document.addEventListener
+    (
+        'keydown',
+        (e) =>
+        {
+        if(e.keyCode == 87){isWPressed=true;}
+        if(e.keyCode == 65){isAPressed=true;}
+        if(e.keyCode == 83){isSPressed = true;}
+        if(e.keyCode == 68){isDPressed=true;}
+        }
+    );
+
+    document.addEventListener
+    (
+        'keyup', (e) =>
+        {
+        if (e.keyCode == 87) { isWPressed = false; }
+        if (e.keyCode == 65) { isAPressed = false; }
+        if (e.keyCode == 83) { isSPressed = false; }
+        if (e.keyCode == 68) { isDPressed = false; }
+        }
+    );
+
+    scene.registerBeforeRender
+    (   function()
+        {   if(!scene.isReady()){return;}
+            if(isWPressed || isSPressed)
+            {   
+            var playerSpeed=0.1;
+            var gravity=0;
+            var x=playerSpeed*parseFloat(Math.sin(meshes[0].rotation.y));
+            var z=playerSpeed*parseFloat(Math.cos(meshes[0].rotation.y));
+                if(isWPressed==true)
+                {
+                //meshes[0].locallyTranslate(new BABYLON.Vector3(0, 0, 0.1));
+                var forwards = new BABYLON.Vector3(x, gravity, z);
+                meshes[0].moveWithCollisions(forwards);
+                }
+                if(isSPressed==true)
+                {
+                //meshes[0].locallyTranslate(new BABYLON.Vector3(0, 0, -0.1));
+                var backwards = new BABYLON.Vector3(-x, gravity, -z);
+                meshes[0].moveWithCollisions(backwards);
+                }
+            }
+            if(isAPressed==true)
+            {
+            meshes[0].addRotation(0,-0.05,0);
+            }
+            if(isDPressed==true)
+            {
+            meshes[0].addRotation(0,0.05,0);
+            }
+        }
+    );
+
     });
 
    

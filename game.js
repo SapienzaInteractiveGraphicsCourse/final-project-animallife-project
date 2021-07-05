@@ -199,6 +199,7 @@ var SEA_Scene = function(){
     camera.checkCollision=true;
     // This attaches the camera to the canvas
     */
+    /*
     var camera = new BABYLON.ArcRotateCamera("CameraBaseRotate", -Math.PI/2, Math.PI/2.2, 12, new BABYLON.Vector3(0, 5.0, 0), scene);	
 	camera.wheelPrecision = 15;	
 	camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius= 22;
@@ -210,25 +211,186 @@ var SEA_Scene = function(){
 
     camera.checkCollision=true;
     camera.attachControl(canvas, true);
-
-	var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
-	light.diffuse = new BABYLON.Color3(1, 1, 1);
-
-    /*
-    // Keyboard events
-    var inputMap = {};
-    scene.actionManager = new BABYLON.ActionManager(scene);
-    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
-        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    }));
-    scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
-        inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
-    }));
     */
 
-	
-	// SKYBOX
-	var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:350.0}, scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2,  Math.PI / 1.2, 15, BABYLON.Vector3.Zero(), scene);
+    //camera.upperBetaLimit = Math.PI / 2.3;
+    camera.lowerRadiusLimit = 8;
+    camera.upperRadiusLimit = 110;
+    camera.layerMask = 1;
+    camera.attachControl(canvas, true);
+
+    // setup the camera that will "record" the caustics pattern
+    let textureCamera = new BABYLON.ArcRotateCamera("textureCam", 0, 0, 190, new BABYLON.Vector3.Zero(), scene);
+    textureCamera.layerMask = 2;
+    textureCamera.mode = 1;
+    textureCamera.orthoLeft = -10;
+    textureCamera.orthoTop = 10;
+    textureCamera.orthoRight = 10;
+    textureCamera.orthoBottom = -10;
+
+
+	// create a spotlight that will project the cuastics pattern as light
+    var light4 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
+	light4.diffuse = new BABYLON.Color3(1, 1, 1);
+    light4.intensity=0.25;
+    
+    let light = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(0, 45, 0), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    light.intensity = 1;
+
+    let light1 = new BABYLON.SpotLight("spotLight1", new BABYLON.Vector3(-35, 45, -35), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    light1.intensity = 1;
+
+    let light2 = new BABYLON.SpotLight("spotLight2", new BABYLON.Vector3(-35, 45, 35), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    light2.intensity = 1;
+
+    // create a high resolution plane to function as the basis for the water caustics
+    let waterPlane = new BABYLON.Mesh.CreateGround("waterPlane", 35, 35, 800, scene);
+    waterPlane.layerMask = 2;
+
+    // setup a render target texture from the view of the texture camera, recording the waterplane...also set the render target UVs to a higher resolution with a mirrored wrap mode
+    let renderTarget = new BABYLON.RenderTargetTexture("RTT", 1024, scene);
+    renderTarget.activeCamera = textureCamera;
+    scene.customRenderTargets.push(renderTarget);
+    renderTarget.renderList.push(waterPlane);
+    renderTarget.wrapU = BABYLON.Constants.TEXTURE_MIRROR_ADDRESSMODE;
+    renderTarget.wrapV = BABYLON.Constants.TEXTURE_MIRROR_ADDRESSMODE;
+    renderTarget.uScale = 2;
+    renderTarget.vScale = 2;
+
+    // instruct the spotlight to project the rendered target texture as a light projection
+    light.projectionTexture = renderTarget;
+    light1.projectionTexture = renderTarget;
+    light2.projectionTexture = renderTarget;
+
+    // load the waterShader from a URL snippet and assign it to the high res water plane
+    BABYLON.NodeMaterial.ParseFromSnippetAsync("7X2PUH", scene).then(nodeMaterial => {
+        nodeMaterial.name = "causticMaterial";
+        waterPlane.material = nodeMaterial;
+    });
+
+    // particle system variables
+    var volumetricEmitter = new BABYLON.AbstractMesh("volumetricEmitter", scene);
+    volumetricEmitter.position.y = 8;
+    var numberCells;
+
+    var volumetricEmitter1 = new BABYLON.AbstractMesh("volumetricEmitter1", scene);
+    volumetricEmitter1.position.y = 8;
+    volumetricEmitter1.position.x = -35;
+    volumetricEmitter1.position.z = -35;
+
+    var volumetricEmitter2 = new BABYLON.AbstractMesh("volumetricEmitter2", scene);
+    volumetricEmitter2.position.y = 8;
+    volumetricEmitter2.position.x = -35;
+    volumetricEmitter2.position.z = 35;
+
+    // set up animation sheet
+    let setupAnimationSheet = function (system, texture, width, height, numSpritesWidth, numSpritesHeight, animationSpeed, isRandom) {
+        // assign animation parameters
+        system.isAnimationSheetEnabled = true;
+        system.particleTexture = new BABYLON.Texture(texture, scene, false, false, BABYLON.Texture.TRILINEAR_SAMPLINGMODE);
+        system.particleTexture.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
+        system.particleTexture.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;
+        system.spriteCellWidth = width / numSpritesWidth;
+        system.spriteCellHeight = height / numSpritesHeight;
+        numberCells = numSpritesWidth * numSpritesHeight;
+        system.startSpriteCellID = 0;
+        system.endSpriteCellID = numberCells - 1;
+        system.spriteCellChangeSpeed = animationSpeed;
+        system.spriteRandomStartCell = isRandom;
+        system.updateSpeed = 1 / 30;
+    };
+
+    // particle system
+    let volumetricSystem = new BABYLON.ParticleSystem("volumetricSystem", 150, scene, null, true);
+    setupAnimationSheet(volumetricSystem, "https://models.babylonjs.com/Demos/UnderWaterScene/godRays/volumetricLight.png", 2024, 2024, 4, 1, 0, true);
+    volumetricSystem.emitter = volumetricEmitter.position;
+    let boxEmitter = volumetricSystem.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
+    boxEmitter.radiusRange = 0;
+    volumetricSystem.minInitialRotation = 0;
+    volumetricSystem.maxInitialRotation = 0;
+    volumetricSystem.minScaleX = 6;
+    volumetricSystem.maxScaleX = 10;
+    volumetricSystem.minScaleY = 50;
+    volumetricSystem.maxScaleY = 80;
+    volumetricSystem.minLifeTime = 6;
+    volumetricSystem.maxLifeTime = 9;
+    volumetricSystem.emitRate = 15;
+    volumetricSystem.minEmitPower = 0.05;
+    volumetricSystem.maxEmitPower = 0.1;
+    volumetricSystem.minSize = 0.5;
+    volumetricSystem.maxSize = 5.2;
+    volumetricSystem.addColorGradient(0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem.addColorGradient(0.5, new BABYLON.Color4(0.25, 0.25, 0.3, 0.2));
+    volumetricSystem.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+    volumetricSystem.start();
+
+    // particle system
+    let volumetricSystem1 = new BABYLON.ParticleSystem("volumetricSystem1", 150, scene, null, true);
+    setupAnimationSheet(volumetricSystem1, "https://models.babylonjs.com/Demos/UnderWaterScene/godRays/volumetricLight.png", 2024, 2024, 4, 1, 0, true);
+    volumetricSystem1.emitter = volumetricEmitter1.position;
+    let boxEmitter1 = volumetricSystem1.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
+    boxEmitter1.radiusRange = 0;
+    volumetricSystem1.minInitialRotation = 0;
+    volumetricSystem1.maxInitialRotation = 0;
+    volumetricSystem1.minScaleX = 6;
+    volumetricSystem1.maxScaleX = 10;
+    volumetricSystem1.minScaleY = 50;
+    volumetricSystem1.maxScaleY = 80;
+    volumetricSystem1.minLifeTime = 6;
+    volumetricSystem1.maxLifeTime = 9;
+    volumetricSystem1.emitRate = 15;
+    volumetricSystem1.minEmitPower = 0.05;
+    volumetricSystem1.maxEmitPower = 0.1;
+    volumetricSystem1.minSize = 0.5;
+    volumetricSystem1.maxSize = 5.2;
+    volumetricSystem1.addColorGradient(0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem1.addColorGradient(0.5, new BABYLON.Color4(0.25, 0.25, 0.3, 0.2));
+    volumetricSystem1.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem1.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+    volumetricSystem1.start();
+
+    // particle system
+    let volumetricSystem2 = new BABYLON.ParticleSystem("volumetricSystem2", 150, scene, null, true);
+    setupAnimationSheet(volumetricSystem2, "https://models.babylonjs.com/Demos/UnderWaterScene/godRays/volumetricLight.png", 2024, 2024, 4, 1, 0, true);
+    volumetricSystem2.emitter = volumetricEmitter2.position;
+    let boxEmitter2 = volumetricSystem2.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
+    boxEmitter2.radiusRange = 0;
+    volumetricSystem2.minInitialRotation = 0;
+    volumetricSystem2.maxInitialRotation = 0;
+    volumetricSystem2.minScaleX = 6;
+    volumetricSystem2.maxScaleX = 10;
+    volumetricSystem2.minScaleY = 50;
+    volumetricSystem2.maxScaleY = 80;
+    volumetricSystem2.minLifeTime = 6;
+    volumetricSystem2.maxLifeTime = 9;
+    volumetricSystem2.emitRate = 15;
+    volumetricSystem2.minEmitPower = 0.05;
+    volumetricSystem2.maxEmitPower = 0.1;
+    volumetricSystem2.minSize = 0.5;
+    volumetricSystem2.maxSize = 5.2;
+    volumetricSystem2.addColorGradient(0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem2.addColorGradient(0.5, new BABYLON.Color4(0.25, 0.25, 0.3, 0.2));
+    volumetricSystem2.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem2.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+    volumetricSystem2.start();
+
+    //Water effect
+    let blurAmount = 20;
+    let standardPipeline = new BABYLON.PostProcessRenderPipeline(engine, "standardPipeline");
+    let horizontalBlur = new BABYLON.BlurPostProcess("horizontalBlur", new BABYLON.Vector2(1.0, 0), blurAmount, 1.0, null, null, engine, false);
+    let verticalBlur = new BABYLON.BlurPostProcess("verticalBlur", new BABYLON.Vector2(0, 1), blurAmount, 1.0, null, null, engine, false);
+    let blackAndWhiteThenBlur = new BABYLON.PostProcessRenderEffect(engine, "blackAndWhiteThenBlur", function () { 
+        return [horizontalBlur, verticalBlur] 
+    });
+    standardPipeline.addEffect(blackAndWhiteThenBlur);
+    scene.postProcessRenderPipelineManager.addPipeline(standardPipeline);
+    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("standardPipeline", textureCamera);
+
+    // SKYBOX
+	var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:250.0}, scene);
+    skybox.position.y = 35;
 	var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 	skyboxMaterial.backFaceCulling = false;
 	skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox/sea", scene);
@@ -236,33 +398,23 @@ var SEA_Scene = function(){
 	skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 	skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 	skybox.material = skyboxMaterial;		
-	
-    // // GROUND.  Params: name, width, depth, subdivs, scene
-    // var ground = BABYLON.Mesh.CreateGround("ground", 35, 35, 2, scene);
-    // var backgroundMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene);
-    // backgroundMaterial.diffuseTexture = new BABYLON.Texture("textures/sand.jpg", scene);
-    // backgroundMaterial.diffuseTexture.uScale = 5.0;//Repeat 5 times on the Vertical Axes
-    // backgroundMaterial.diffuseTexture.vScale = 5.0;//Repeat 5 times on the Horizontal Axes
-    // backgroundMaterial.shadowLevel = 0.4;
-    // ground.material = backgroundMaterial;
 
+    // load the assets for the scene and apply node materials from URL snippets
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/ground/", "underwaterGround.glb", scene, function (newMeshes) {
         newMeshes[0].name = "underWaterGround";
-        newMeshes[0].scaling.x = 25;
-        newMeshes[0].scaling.z = 25;
+        newMeshes[0].scaling.x = 5;
+        newMeshes[0].scaling.z = 5;
+
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
         }
         BABYLON.NodeMaterial.ParseFromSnippetAsync("XWTJA2", scene).then(nodeMaterial => {
             nodeMaterial.name = "groundMaterial";
-            nodeMaterial.vScale = 5;
-            nodeMaterial.uScale = 5;
             scene.getMeshByName("ground").material = nodeMaterial;
         });
-        newMeshes[0].checkCollision=true;
     });
-
+   
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/shadows/", "underwaterSceneShadowCatcher.glb", scene, function (newMeshes) {
         newMeshes[0].name = "underWaterShadowCatcher";
         let childMeshes = newMeshes[0].getChildMeshes(false);
@@ -276,7 +428,6 @@ var SEA_Scene = function(){
             nodeMaterial.alphaMode = BABYLON.Engine.ALPHA_MULTIPLY;
         });
     });
-
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/", "underwaterSceneRocksBarnaclesMussels.glb", scene, function (newMeshes) {
         newMeshes[0].name = "rocksBarnaclesMussels";
         let childMeshes = newMeshes[0].getChildMeshes(false);
@@ -298,7 +449,6 @@ var SEA_Scene = function(){
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
-            childMeshes[i].checkCollision=true;
         }
         BABYLON.NodeMaterial.ParseFromSnippetAsync("EMIYYW", scene).then(nodeMaterial => {
             nodeMaterial.name = "rock1Material";
@@ -318,17 +468,18 @@ var SEA_Scene = function(){
         });
     });
 
+    //MORE ROCKS
     var Myrock = BABYLON.MeshBuilder.CreateSphere("Myrock", 
     {
-        segments: 30,
-        diameterX: Math.random() * 2.5,
-        diameterY: Math.random() * 1.5,
-        diameterZ: Math.random() * 1.5,
+        segments: 60,
+        diameterX: Math.random() * 5.5,
+        diameterY: Math.random() * 4.5,
+        diameterZ: Math.random() * 3.5,
         updatable:true 
     }, scene);
-
     Myrock.forceSharedVertices();
-    Myrock.position.x = 10;
+    Myrock.position.x = 15;
+    Myrock.position.z = 20;
     Myrock.position.y = 1;
     var positions = Myrock.getVerticesData(BABYLON.VertexBuffer.PositionKind);
     var numberOfVertices = positions.length/3;	
@@ -339,22 +490,58 @@ var SEA_Scene = function(){
     }
 
     Myrock.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-
-    const displacementmapURL = "textures/distortion.jpeg";
+    const displacementmapURL = "textures/distortion.png";
+    const Myrock2 = Myrock.clone("Myrock2");
+    Myrock2.position.x = 17;
+    Myrock2.position.z = 17;
+    Myrock2.position.y = 0;
+    const Myrock3 = Myrock.clone("Myrock3");
+    Myrock3.position.x = 17;
+    Myrock3.position.z = 20;
+    const Myrock4 = Myrock.clone("Myrock4");
+    Myrock4.scaling.x = 8;
+    Myrock4.scaling.y = 8;
+    Myrock4.scaling.z = 5;
+    Myrock4.position.x = 85;
+    Myrock4.position.z = 85;
     Myrock.applyDisplacementMap(displacementmapURL, 0.1, 1);
-    var MyrockMaterial = new BABYLON.BackgroundMaterial("RockMaterial", scene);
-    MyrockMaterial.diffuseTexture = new BABYLON.Texture("textures/corallo.jpeg", scene);
-    MyrockMaterial.diffuseTexture.uScale = 5.0;//Repeat 5 times on the Vertical Axes
-    MyrockMaterial.diffuseTexture.vScale = 5.0;//Repeat 5 times on the Horizontal Axes
-    MyrockMaterial.shadowLevel = 0.4;
-    Myrock.material = MyrockMaterial;
+    
+   
+    BABYLON.NodeMaterial.ParseFromSnippetAsync("EMIYYW", scene).then(nodeMaterial => {
+        nodeMaterial.name = "rock1Material";
+        scene.getMeshByName("Myrock").material = nodeMaterial;
+        scene.getMeshByName("Myrock2").material = nodeMaterial;
+        scene.getMeshByName("Myrock3").material = nodeMaterial;
+        scene.getMeshByName("Myrock4").material = nodeMaterial;
+    });
+    
+    var MyBigRock = BABYLON.MeshBuilder.CreateSphere("big", {diameter: 4}, scene);
 
-    var wallNorth=BABYLON.MeshBuilder.CreatePlane("wallNorth", {width: 16, height: 2.7, subdivsions: 1}, scene);
-    wallNorth.position.y=1.35;
-    wallNorth.position.x=0;
-    wallNorth.position.z=-8;
-    wallNorth.addRotation(0, Math.PI, 0);
-    wallNorth.checkCollisions=true;
+
+    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+    myMaterial.bumpTexture = new BABYLON.Texture("textures/rockn.jpeg", scene);
+    myMaterial.useParallax = true;
+    myMaterial.invertNormalMapX = true;
+    //myMaterial.invertNormalMapY = true;
+    MyBigRock.material = myMaterial;
+    //const displacementmapURL2 = "textures/rockn.png";
+    //MyBigRock.applyDisplacementMap(displacementmapURL2, 0.1, 1);
+    MyBigRock.position.y = 2;
+    MyBigRock.position.z = 4;
+
+    //IMPORT FISH
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fish.glb", scene, function(meshes) {
+        meshes[0].position.x = -10;
+        meshes[0].position.y = 10;
+        meshes[0].position.z = -10;
+    });
+
+    //IMPORT FISH
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fish.glb", scene, function(meshes) {
+        meshes[0].position.x = 10;
+        meshes[0].position.y = 4;
+        meshes[0].position.z = 10;
+    });
 
 
     //Import Shark
@@ -362,36 +549,6 @@ var SEA_Scene = function(){
         shark=meshes[0];
         shark.rotation.y = Math.PI;
         camera.target=shark;
-
-        //IMPORTANT
-        //shark.parent=camera;
-        
-
-        /*
-        shark.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
-        shark.checkCollision=true;
-        shark.collisionEnabled=true;
-        */
-
-        // targetMesh created here.
-        //camera.target = meshes[0]; // version 2.4 and earlier
-        //camera.lockedTarget = meshes[0]; //version 2.5 onwards
-        
-        // WASD control of Player "character".
-        //let isWPressed = false;
-        //let isAPressed = false;
-        //let isSPressed = false;
-        //let isDPressed = false;
-
-        /*
-        window.addEventListener("mousemove", function () {
-            // We try to pick an object
-            var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-            if (pickResult.hit) {
-                shark.lookAt(pickResult.pickedPoint);
-            }
-        });
-        */
 
         document.addEventListener("keydown", function(ev){
             if(ev.which == 87){//press spacebar to move the player
@@ -415,7 +572,6 @@ var SEA_Scene = function(){
 
         scene.registerBeforeRender(function(){
             var dir = camera.getTarget().subtract(camera.position);
-			//dir.y = -shark.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 			dir.y = -dir.y;
             dir.z = -dir.z;
 			dir.x = -dir.x;
@@ -451,62 +607,3 @@ engine.runRenderLoop(function (){
 	    }
     }
 });
-
-// engine.runRenderLoop(function() {
-// 	if(changescene == 0){
-        
-		
-//         scenemenuvar.render();
-// 		fpsIndicator.style.visibility = "hidden";
-// 		loadingScreenDiv.style.visibility = "hidden";
-
-//   	}
-// 	else if (changescene == 1){
-//         if (scenevar.getWaitingItemsCount() === 0) {
-//             loadingScreenDiv.style.visibility = "hidden";
-//             engine.hideLoadingUI();
-
-//             if(comingfromScenelosing){
-//             	gameoverscenevar.dispose();
-//           		comingfromScenelosing = false;
-//             }
-//             else if(comingfromScenemenu){
-//           		scenemenuvar.dispose();
-//           		comingfromScenemenu = false;
-//             }
-//            	scenevar.render();
-
-//     		fpsIndicator.style.visibility = "visible";
-//     		fpsIndicator.innerHTML = "FPS: " + engine.getFps().toFixed();
-			
-// 			setTimeout(function(){
-//       		    boolgamestart = true;
-//             }, 5000);
-
-//         } else {
-//             loadingScreenDiv.style.visibility = "visible";
-//     	    engine.displayLoadingUI();
-// 	    }
-// 	}
-		
-//     else if(changescene == 2){
-//         scenemenuvar.dispose();
-//         scenecommandsvar.render();
-//     }
-		
-//     else if (changescene == 3){
-//         scenemenuvar.dispose();
-//         aboutscenevar.render();			
-//     }
-		
-//     else if (changescene == 4){    	
-//         scenevar.dispose();
-//         gameoverscenevar.render();
-//         fpsIndicator.style.visibility = "hidden";
-//     }
-//     else if (changescene == 5){
-//         scenevar.dispose();
-//         winningScenevar.render();
-//         fpsIndicator.style.visibility = "hidden";
-//     }
-// });

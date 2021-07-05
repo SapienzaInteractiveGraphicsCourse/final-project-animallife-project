@@ -3,6 +3,8 @@ var engine = new BABYLON.Engine(canvas,true);
 
 var changescene = 0;
 
+var shark;
+
 //SET LOADING SCENE
 BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function() {
     /*
@@ -173,14 +175,15 @@ var SEA_Scene = function(){
     var scene = new BABYLON.Scene(engine);
     scene.collisionEnabled=true;
 
-    var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2,  Math.PI / 1.2, 15, BABYLON.Vector3.Zero(), scene);
+    /*
+    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2,  Math.PI / 1.2, 15, BABYLON.Vector3.Zero(), scene);
     camera.upperBetaLimit = Math.PI / 2.3;
     camera.upperRadiusLimit = 50;
-    /*
-    var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(-Math.PI / 2,  Math.PI / 1.2, 15), scene);
+    //var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(-Math.PI / 2,  Math.PI / 1.2, 15), scene);
+    camera.inputs.clear();
 
     // The goal distance of camera from target
-    camera.radius = 20;
+    camera.radius = 30;
 
     // The goal height of camera above local origin (centre) of target
     camera.heightOffset = 10;
@@ -194,14 +197,15 @@ var SEA_Scene = function(){
     // The speed at which acceleration is halted
     camera.maxCameraSpeed = 10;
     camera.checkCollision=true;
-    */
     // This attaches the camera to the canvas
-
-    // gravity
-    scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
-
-    // no gravity for camera
-    camera.applyGravity = true;
+    */
+    var camera = new BABYLON.ArcRotateCamera("CameraBaseRotate", -Math.PI/2, Math.PI/2.2, 12, new BABYLON.Vector3(0, 5.0, 0), scene);	
+	camera.wheelPrecision = 15;	
+	camera.lowerRadiusLimit = 2;
+	camera.upperRadiusLimit = 22;
+	camera.minZ = 0;
+	camera.minX = 4096;
+	scene.activeCamera = camera;
 
     //camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
 
@@ -211,6 +215,7 @@ var SEA_Scene = function(){
 	var light = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
 	light.diffuse = new BABYLON.Color3(1, 1, 1);
 
+    /*
     // Keyboard events
     var inputMap = {};
     scene.actionManager = new BABYLON.ActionManager(scene);
@@ -220,6 +225,7 @@ var SEA_Scene = function(){
     scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
         inputMap[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
     }));
+    */
 
 	
 	// SKYBOX
@@ -353,79 +359,72 @@ var SEA_Scene = function(){
 
 
     //Import Shark
-    var shark = BABYLON.SceneLoader.ImportMesh("", "models/", "shark.glb", scene, function(meshes) {
-        meshes[0].position.x = -10;
-        meshes[0].position.y = 0;
-        meshes[0].position.z = -10;
+    BABYLON.SceneLoader.ImportMesh("", "models/", "shark.glb", scene, function(meshes) {
+        shark=meshes[0];
+        shark.rotation.y = Math.PI;
+        camera.target=shark;
+
+        //IMPORTANT
+        //shark.parent=camera;
+        
+
+        /*
+        shark.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
+        shark.checkCollision=true;
+        shark.collisionEnabled=true;
+        */
 
         // targetMesh created here.
-        camera.target = meshes[0]; // version 2.4 and earlier
-        camera.lockedTarget = meshes[0]; //version 2.5 onwards
-
-        meshes[0].ellipsoid = new BABYLON.Vector3(1, 1, 1);
-        meshes[0].checkCollision=true;
-
+        //camera.target = meshes[0]; // version 2.4 and earlier
+        //camera.lockedTarget = meshes[0]; //version 2.5 onwards
+        
         // WASD control of Player "character".
-    let isWPressed = false;
-    let isAPressed = false;
-    let isSPressed = false;
-    let isDPressed = false;
+        //let isWPressed = false;
+        //let isAPressed = false;
+        //let isSPressed = false;
+        //let isDPressed = false;
 
-    document.addEventListener
-    (
-        'keydown',
-        (e) =>
-        {
-        if(e.keyCode == 87){isWPressed=true;}
-        if(e.keyCode == 65){isAPressed=true;}
-        if(e.keyCode == 83){isSPressed = true;}
-        if(e.keyCode == 68){isDPressed=true;}
-        }
-    );
+        /*
+        window.addEventListener("mousemove", function () {
+            // We try to pick an object
+            var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+            if (pickResult.hit) {
+                shark.lookAt(pickResult.pickedPoint);
+            }
+        });
+        */
 
-    document.addEventListener
-    (
-        'keyup', (e) =>
-        {
-        if (e.keyCode == 87) { isWPressed = false; }
-        if (e.keyCode == 65) { isAPressed = false; }
-        if (e.keyCode == 83) { isSPressed = false; }
-        if (e.keyCode == 68) { isDPressed = false; }
-        }
-    );
+        document.addEventListener("keydown", function(ev){
+            if(ev.which == 87){//press spacebar to move the player
+                speed = .8;
+            }
+            if(ev.which == 83){//press spacebar to move the player
+                speed = -.8;
+            }
+        });
+    
+        document.addEventListener("keyup", function(ev){
+            if(ev.which == 87){
+                speed = 0;
+            }
+            if(ev.which == 83){
+                speed = 0;
+            }
+        });
 
-    scene.registerBeforeRender
-    (   function()
-        {   if(!scene.isReady()){return;}
-            if(isWPressed || isSPressed)
-            {   
-            var playerSpeed=0.1;
-            var gravity=0;
-            var x=playerSpeed*parseFloat(Math.sin(meshes[0].rotation.y));
-            var z=playerSpeed*parseFloat(Math.cos(meshes[0].rotation.y));
-                if(isWPressed==true)
-                {
-                //meshes[0].locallyTranslate(new BABYLON.Vector3(0, 0, 0.1));
-                var forwards = new BABYLON.Vector3(x, gravity, z);
-                meshes[0].moveWithCollisions(forwards);
-                }
-                if(isSPressed==true)
-                {
-                //meshes[0].locallyTranslate(new BABYLON.Vector3(0, 0, -0.1));
-                var backwards = new BABYLON.Vector3(-x, gravity, -z);
-                meshes[0].moveWithCollisions(backwards);
-                }
-            }
-            if(isAPressed==true)
-            {
-            meshes[0].addRotation(0,-0.05,0);
-            }
-            if(isDPressed==true)
-            {
-            meshes[0].addRotation(0,0.05,0);
-            }
-        }
-    );
+        var speed = 0;
+
+        scene.registerBeforeRender(function(){
+            var dir = camera.getTarget().subtract(camera.position);
+			dir.y = -shark.getDirection(new BABYLON.Vector3(0, 1, 0)).y;
+			dir.z = -dir.z;
+			dir.x = -dir.x;
+            shark.setDirection(dir);	
+            shark.locallyTranslate(new BABYLON.Vector3(0, 0, speed));
+            camera.target.x = parseFloat(shark.position.x);		
+            camera.target.z = parseFloat(shark.position.z);	
+        });
+
 
     });
 

@@ -201,8 +201,7 @@ var SEA_Scene = function(){
     */
     var camera = new BABYLON.ArcRotateCamera("CameraBaseRotate", -Math.PI/2, Math.PI/2.2, 12, new BABYLON.Vector3(0, 5.0, 0), scene);	
 	camera.wheelPrecision = 15;	
-	camera.lowerRadiusLimit = 2;
-	camera.upperRadiusLimit = 22;
+	camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius= 22;
 	camera.minZ = 0;
 	camera.minX = 4096;
 	scene.activeCamera = camera;
@@ -416,8 +415,9 @@ var SEA_Scene = function(){
 
         scene.registerBeforeRender(function(){
             var dir = camera.getTarget().subtract(camera.position);
-			dir.y = -shark.getDirection(new BABYLON.Vector3(0, 1, 0)).y;
-			dir.z = -dir.z;
+			//dir.y = -shark.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
+			dir.y = -dir.y;
+            dir.z = -dir.z;
 			dir.x = -dir.x;
             shark.setDirection(dir);	
             shark.locallyTranslate(new BABYLON.Vector3(0, 0, speed));

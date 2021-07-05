@@ -229,20 +229,19 @@ var SEA_Scene = function(){
     textureCamera.orthoRight = 10;
     textureCamera.orthoBottom = -10;
 
+    var lightE = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
+	lightE.diffuse = new BABYLON.Color3(1, 1, 1);
+    lightE.intensity=0.25;
 
-	// create a spotlight that will project the cuastics pattern as light
-    var light4 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(1, 1, 0), scene);
-	light4.diffuse = new BABYLON.Color3(1, 1, 1);
-    light4.intensity=0.25;
-    
-    let light = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(0, 45, 0), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
-    light.intensity = 1;
-
-    let light1 = new BABYLON.SpotLight("spotLight1", new BABYLON.Vector3(-35, 45, -35), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    // create a spotlight that will project the cuastics pattern as light
+    let light1 = new BABYLON.SpotLight("spotLight1", new BABYLON.Vector3(0, 45, 70), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
     light1.intensity = 1;
 
-    let light2 = new BABYLON.SpotLight("spotLight2", new BABYLON.Vector3(-35, 45, 35), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    let light2 = new BABYLON.SpotLight("spotLight2", new BABYLON.Vector3(-30, 45, 40), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
     light2.intensity = 1;
+
+    let light3 = new BABYLON.SpotLight("spotLight3", new BABYLON.Vector3(30, 45, 40), BABYLON.Vector3.Down(), BABYLON.Tools.ToRadians(170), 10, scene);
+    light3.intensity = 1;
 
     // create a high resolution plane to function as the basis for the water caustics
     let waterPlane = new BABYLON.Mesh.CreateGround("waterPlane", 35, 35, 800, scene);
@@ -259,9 +258,9 @@ var SEA_Scene = function(){
     renderTarget.vScale = 2;
 
     // instruct the spotlight to project the rendered target texture as a light projection
-    light.projectionTexture = renderTarget;
     light1.projectionTexture = renderTarget;
     light2.projectionTexture = renderTarget;
+    light3.projectionTexture = renderTarget;
 
     // load the waterShader from a URL snippet and assign it to the high res water plane
     BABYLON.NodeMaterial.ParseFromSnippetAsync("7X2PUH", scene).then(nodeMaterial => {
@@ -270,19 +269,23 @@ var SEA_Scene = function(){
     });
 
     // particle system variables
-    var volumetricEmitter = new BABYLON.AbstractMesh("volumetricEmitter", scene);
-    volumetricEmitter.position.y = 8;
-    var numberCells;
-
+    //CODICE NUOVO 
     var volumetricEmitter1 = new BABYLON.AbstractMesh("volumetricEmitter1", scene);
     volumetricEmitter1.position.y = 8;
-    volumetricEmitter1.position.x = -35;
-    volumetricEmitter1.position.z = -35;
+    volumetricEmitter1.position.z = 70;
 
     var volumetricEmitter2 = new BABYLON.AbstractMesh("volumetricEmitter2", scene);
     volumetricEmitter2.position.y = 8;
-    volumetricEmitter2.position.x = -35;
-    volumetricEmitter2.position.z = 35;
+    volumetricEmitter2.position.x = -25;
+    volumetricEmitter2.position.z = 40;
+
+    var volumetricEmitter3 = new BABYLON.AbstractMesh("volumetricEmitter3", scene);
+    volumetricEmitter3.position.y = 8;
+    volumetricEmitter3.position.x = 25;
+    volumetricEmitter3.position.z = 40;
+
+    var numberCells;
+    //FINE CODICE NUOVO
 
     // set up animation sheet
     let setupAnimationSheet = function (system, texture, width, height, numSpritesWidth, numSpritesHeight, animationSpeed, isRandom) {
@@ -300,31 +303,6 @@ var SEA_Scene = function(){
         system.spriteRandomStartCell = isRandom;
         system.updateSpeed = 1 / 30;
     };
-
-    // particle system
-    let volumetricSystem = new BABYLON.ParticleSystem("volumetricSystem", 150, scene, null, true);
-    setupAnimationSheet(volumetricSystem, "https://models.babylonjs.com/Demos/UnderWaterScene/godRays/volumetricLight.png", 2024, 2024, 4, 1, 0, true);
-    volumetricSystem.emitter = volumetricEmitter.position;
-    let boxEmitter = volumetricSystem.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
-    boxEmitter.radiusRange = 0;
-    volumetricSystem.minInitialRotation = 0;
-    volumetricSystem.maxInitialRotation = 0;
-    volumetricSystem.minScaleX = 6;
-    volumetricSystem.maxScaleX = 10;
-    volumetricSystem.minScaleY = 50;
-    volumetricSystem.maxScaleY = 80;
-    volumetricSystem.minLifeTime = 6;
-    volumetricSystem.maxLifeTime = 9;
-    volumetricSystem.emitRate = 15;
-    volumetricSystem.minEmitPower = 0.05;
-    volumetricSystem.maxEmitPower = 0.1;
-    volumetricSystem.minSize = 0.5;
-    volumetricSystem.maxSize = 5.2;
-    volumetricSystem.addColorGradient(0, new BABYLON.Color4(0, 0, 0, 0));
-    volumetricSystem.addColorGradient(0.5, new BABYLON.Color4(0.25, 0.25, 0.3, 0.2));
-    volumetricSystem.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
-    volumetricSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-    volumetricSystem.start();
 
     // particle system
     let volumetricSystem1 = new BABYLON.ParticleSystem("volumetricSystem1", 150, scene, null, true);
@@ -357,7 +335,7 @@ var SEA_Scene = function(){
     volumetricSystem2.emitter = volumetricEmitter2.position;
     let boxEmitter2 = volumetricSystem2.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
     boxEmitter2.radiusRange = 0;
-    volumetricSystem2.minInitialRotation = 0;
+    volumetricSystem2.minInitialRotation = - 0.2; //CODICE NUOVO
     volumetricSystem2.maxInitialRotation = 0;
     volumetricSystem2.minScaleX = 6;
     volumetricSystem2.maxScaleX = 10;
@@ -375,6 +353,31 @@ var SEA_Scene = function(){
     volumetricSystem2.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
     volumetricSystem2.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
     volumetricSystem2.start();
+
+    // particle system
+    let volumetricSystem3 = new BABYLON.ParticleSystem("volumetricSystem3", 150, scene, null, true);
+    setupAnimationSheet(volumetricSystem3, "https://models.babylonjs.com/Demos/UnderWaterScene/godRays/volumetricLight.png", 2024, 2024, 4, 1, 0, true);
+    volumetricSystem3.emitter = volumetricEmitter3.position;
+    let boxEmitter3 = volumetricSystem3.createBoxEmitter(new BABYLON.Vector3(-1, 0, 0), new BABYLON.Vector3(1, 0, 0), new BABYLON.Vector3(-5, 5, -3), new BABYLON.Vector3(5, 5, 3));
+    boxEmitter3.radiusRange = 0;
+    volumetricSystem3.minInitialRotation = 0.2; //CODICE NUOVO 
+    volumetricSystem3.maxInitialRotation = 0;
+    volumetricSystem3.minScaleX = 6;
+    volumetricSystem3.maxScaleX = 10;
+    volumetricSystem3.minScaleY = 50;
+    volumetricSystem3.maxScaleY = 80;
+    volumetricSystem3.minLifeTime = 6;
+    volumetricSystem3.maxLifeTime = 9;
+    volumetricSystem3.emitRate = 15;
+    volumetricSystem3.minEmitPower = 0.05;
+    volumetricSystem3.maxEmitPower = 0.1;
+    volumetricSystem3.minSize = 0.5;
+    volumetricSystem3.maxSize = 5.2;
+    volumetricSystem3.addColorGradient(0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem3.addColorGradient(0.5, new BABYLON.Color4(0.25, 0.25, 0.3, 0.2));
+    volumetricSystem3.addColorGradient(1.0, new BABYLON.Color4(0, 0, 0, 0));
+    volumetricSystem3.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+    volumetricSystem3.start();
 
     //Water effect
     let blurAmount = 20;
@@ -397,8 +400,8 @@ var SEA_Scene = function(){
 	skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 	skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 	skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-	skybox.material = skyboxMaterial;		
-
+	skybox.material = skyboxMaterial;			
+    
     // load the assets for the scene and apply node materials from URL snippets
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/ground/", "underwaterGround.glb", scene, function (newMeshes) {
         newMeshes[0].name = "underWaterGround";
@@ -417,6 +420,12 @@ var SEA_Scene = function(){
    
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/shadows/", "underwaterSceneShadowCatcher.glb", scene, function (newMeshes) {
         newMeshes[0].name = "underWaterShadowCatcher";
+        //INIZIO CODICE NUOVO
+        newMeshes[0].scaling.x = 3;
+        newMeshes[0].scaling.y = 3;
+        newMeshes[0].scaling.z = 3;
+        newMeshes[0].position.z = 50; 
+        //FINE CODICE NUOVO
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
@@ -430,6 +439,12 @@ var SEA_Scene = function(){
     });
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/", "underwaterSceneRocksBarnaclesMussels.glb", scene, function (newMeshes) {
         newMeshes[0].name = "rocksBarnaclesMussels";
+        //INIZIO CODICE NUOVO
+        newMeshes[0].scaling.x = 3;
+        newMeshes[0].scaling.y = 3;
+        newMeshes[0].scaling.z = 3;
+        newMeshes[0].position.z = 50; 
+        //FINE CODICE NUOVO
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
@@ -446,6 +461,12 @@ var SEA_Scene = function(){
 
     BABYLON.SceneLoader.ImportMesh("", "https://models.babylonjs.com/Demos/UnderWaterScene/", "underwaterScene.glb", scene, function (newMeshes) {
         newMeshes[0].name = "underWaterScene";
+        //INIZIO CODICE NUOVO
+        newMeshes[0].scaling.x = 3;
+        newMeshes[0].scaling.y = 3;
+        newMeshes[0].scaling.z = 3;
+        newMeshes[0].position.z = 50; 
+        //FINE CODICE NUOVO
         let childMeshes = newMeshes[0].getChildMeshes(false);
         for (let i = 0; i < childMeshes.length; i++) {
             childMeshes[i].layerMask = 1;
@@ -472,63 +493,79 @@ var SEA_Scene = function(){
     var Myrock = BABYLON.MeshBuilder.CreateSphere("Myrock", 
     {
         segments: 60,
-        diameterX: Math.random() * 5.5,
-        diameterY: Math.random() * 4.5,
-        diameterZ: Math.random() * 3.5,
+        diameterX: 5,
+        diameterY: 9,
+        diameterZ: 4,
         updatable:true 
     }, scene);
     Myrock.forceSharedVertices();
-    Myrock.position.x = 15;
-    Myrock.position.z = 20;
-    Myrock.position.y = 1;
+    Myrock.position.x = -80;
+    Myrock.position.z = 70;
+    Myrock.position.y = 0;
+    Myrock.setDirection(new BABYLON.Vector3(0, 1, 0));
     var positions = Myrock.getVerticesData(BABYLON.VertexBuffer.PositionKind);
     var numberOfVertices = positions.length/3;	
-    for(var i = 0; i<numberOfVertices; i++) {
-        positions[i*3] += Math.random() * 0.01;
-        positions[i*3+1] += Math.random() * 0.01;
-        positions[i*3+2] += Math.random() * 0.01;
+    for(var i = 0; i<numberOfVertices; i++) {  
+        positions[i*3] += 0.8 * 0.01;
+        positions[i*3+1] += 0.5 * 0.01;
+        positions[i*3+2] += 0.02 * 0.01;
     }
 
     Myrock.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
     const displacementmapURL = "textures/distortion.png";
-    const Myrock2 = Myrock.clone("Myrock2");
-    Myrock2.position.x = 17;
-    Myrock2.position.z = 17;
-    Myrock2.position.y = 0;
-    const Myrock3 = Myrock.clone("Myrock3");
-    Myrock3.position.x = 17;
-    Myrock3.position.z = 20;
-    const Myrock4 = Myrock.clone("Myrock4");
-    Myrock4.scaling.x = 8;
-    Myrock4.scaling.y = 8;
-    Myrock4.scaling.z = 5;
-    Myrock4.position.x = 85;
-    Myrock4.position.z = 85;
     Myrock.applyDisplacementMap(displacementmapURL, 0.1, 1);
     
-   
+    const Myrock2 = Myrock.clone("Myrock2");
+    Myrock2.position.x = -85;
+    Myrock2.position.z = 75;
+    const Myrock3 = Myrock.clone("Myrock3");
+    Myrock3.position.x = -85;
+    Myrock3.position.z = 90;
+    Myrock3.setDirection(1,0,0);
+
+    
     BABYLON.NodeMaterial.ParseFromSnippetAsync("EMIYYW", scene).then(nodeMaterial => {
         nodeMaterial.name = "rock1Material";
         scene.getMeshByName("Myrock").material = nodeMaterial;
         scene.getMeshByName("Myrock2").material = nodeMaterial;
-        scene.getMeshByName("Myrock3").material = nodeMaterial;
-        scene.getMeshByName("Myrock4").material = nodeMaterial;
     });
+
+    //Blocco di sabbia
+    var sand_block = BABYLON.MeshBuilder.CreateSphere("sand_block", 
+    {
+        segments: 30,
+        diameterX: 6,
+        diameterY: 7,
+        diameterZ: 3,
+        updatable:true 
+    }, scene);
+    sand_block.forceSharedVertices();
+    sand_block.scaling.x = 2;
+    sand_block.scaling.y = 5;
+    sand_block.position.y = -1;
+    sand_block.position.z = 90;
+    sand_block.position.x = -30;
+    sand_block.setDirection(new BABYLON.Vector3(0, 1, 0));
+
+    var positions2 = sand_block.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+
+    var numberOfVertices2 = positions2.length/3;	
+    for(var i = 0; i<numberOfVertices2; i++) {
+    positions2[i*3] += 0.8 * 0.01;
+    positions2[i*3+1] += 0.6 * 0.01;
+    positions2[i*3+2] += 0.2 * 0.01;
+    }
+
+    sand_block.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions2);
+
+    const displacementmapURL2 = "textures/waterbump.png";
+    sand_block.applyDisplacementMap(displacementmapURL2, 0.1, 1);
+    BABYLON.NodeMaterial.ParseFromSnippetAsync("XWTJA2", scene).then(nodeMaterial => {
+        nodeMaterial.name = "groundMaterial";
+        scene.getMeshByName("sand_block").material = nodeMaterial;
+    });
+
     
-    var MyBigRock = BABYLON.MeshBuilder.CreateSphere("big", {diameter: 4}, scene);
-
-
-    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-    myMaterial.bumpTexture = new BABYLON.Texture("textures/rockn.jpeg", scene);
-    myMaterial.useParallax = true;
-    myMaterial.invertNormalMapX = true;
-    //myMaterial.invertNormalMapY = true;
-    MyBigRock.material = myMaterial;
-    //const displacementmapURL2 = "textures/rockn.png";
-    //MyBigRock.applyDisplacementMap(displacementmapURL2, 0.1, 1);
-    MyBigRock.position.y = 2;
-    MyBigRock.position.z = 4;
-
     //IMPORT FISH
     BABYLON.SceneLoader.ImportMesh("", "models/", "fish.glb", scene, function(meshes) {
         meshes[0].position.x = -10;

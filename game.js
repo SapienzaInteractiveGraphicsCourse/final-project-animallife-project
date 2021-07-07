@@ -175,7 +175,13 @@ var MainMenu = function () {
 var Menu = MainMenu();
 var Sea;
 var Forest;
+
+
 var jump=0;
+var walkStepsCounter = 0;
+var outOfPosition = false;
+var alreadyWalking = false;
+var change = false;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -194,7 +200,7 @@ var FOREST_Scene = function(){
     sceneOptimizer.start();
 
     //Enable physic for the main scene
-    var gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+    var gravityVector = new BABYLON.Vector3(0,-150, 0);
     var physicsPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
 
@@ -595,7 +601,6 @@ var FOREST_Scene = function(){
         //elf_skeleton.bones[11].linkTransformNode(null);
         //BONES[10] = RIGHT SHOULDER
         //BONES[11] = RIGHT ARM
-        elf_skeleton.bones[11].rotate(BABYLON.Axis.Z, Math.PI/2, BABYLON.Space.LOCAL);
 
         scene.debugLayer.show({
             embedMode:true
@@ -607,7 +612,7 @@ var FOREST_Scene = function(){
 				dir.z = dir.z;
 				dir.x = dir.x;
                 if(clicked){
-                    ElfBoundingBox.setDirection(dir);
+                    //ElfBoundingBox.setDirection(dir);
                     if(!alreadyWalking){
                         walkForward(walk_speed);
                         alreadyWalking = true;
@@ -624,87 +629,43 @@ var FOREST_Scene = function(){
 
     });
 
-    var walkStepsCounter = 0;
-	var outOfPosition = false;
 	var walkForward = function(speed){
-        elf_skeleton.bones[11].rotate(BABYLON.Axis.Z, speed/2, BABYLON.Space.LOCAL);
-        //elf_skeleton.bones[11].rotate(BABYLON.Axis.Z, -Math.PI/2, BABYLON.Space.LOCAL);
-        /*
-		outOfPosition = true;
-		if((walkStepsCounter <= (15/(speed*10)))){
-			elf_skeleton.bones[10].rotate(BABYLON.Axis.X, -speed/2.2, BABYLON.Space.LOCAL);
-			if((walkStepsCounter <= (7/(speed*10)))){
-				elf_skeleton.bones[11].rotate(BABYLON.Axis.Z, speed/1.7, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.X, speed/2, BABYLON.Space.LOCAL);
-			}
-		}else if((walkStepsCounter <= (22/(speed*10)))){
-			elf_skeleton.bones[11].rotate(BABYLON.Axis.Z, -speed/1.7, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[12].rotate(BABYLON.Axis.X, -speed/2, BABYLON.Space.LOCAL);
-		}else if (walkStepsCounter <= (37/(speed*10))){
-			elf_skeleton.bones[10].rotate(BABYLON.Axis.X, speed/2.2, BABYLON.Space.LOCAL);
-		}
-		if (walkStepsCounter == (38/(speed*10))){
-			elf_skeleton.bones[10].rotation = startRotation10;
-			elf_skeleton.bones[11].rotation = startRotation11;
-			elf_skeleton.bones[14].rotation = startRotation14;
-			elf_skeleton.bones[16].rotation = startRotation16;
-			outOfPosition = false;
-		}
-		if(walkStepsCounter <= (18/(speed*10))){
-			elf_skeleton.bones[14].rotate(BABYLON.Axis.X, speed/3, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.X, -speed/4, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.Y, speed/12, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.Z, speed/12, BABYLON.Space.LOCAL);
-		}else if(walkStepsCounter <= (36/(speed*10)) ){
-			elf_skeleton.bones[14].rotate(BABYLON.Axis.X, -speed/3, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.X, speed/4, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.Y, -speed/12, BABYLON.Space.LOCAL);
-			elf_skeleton.bones[16].rotate(BABYLON.Axis.Z, -speed/12, BABYLON.Space.LOCAL);
-		}
-		if(walkStepsCounter > (38/(speed*10))){
-			if((walkStepsCounter <= (50/(speed*10)))){
-				elf_skeleton.bones[14].rotate(BABYLON.Axis.X, -speed/2.2, BABYLON.Space.LOCAL);
-				if((walkStepsCounter <= (45/(speed*10)))){
-					elf_skeleton.bones[15].rotate(BABYLON.Axis.Z, -speed/1.7, BABYLON.Space.LOCAL);
-					elf_skeleton.bones[16].rotate(BABYLON.Axis.X, speed/2, BABYLON.Space.LOCAL);
-				}
-			}else if((walkStepsCounter <= (60/(speed*10)))){
-				elf_skeleton.bones[15].rotate(BABYLON.Axis.Z, speed/1.7, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[16].rotate(BABYLON.Axis.X, -speed/2, BABYLON.Space.LOCAL);
-			}else if (walkStepsCounter <= (75/(speed*10))){
-				elf_skeleton.bones[14].rotate(BABYLON.Axis.X, speed/2.2, BABYLON.Space.LOCAL);
-			}else{
-				elf_skeleton.bones[10].rotation = startRotation10;
-				elf_skeleton.bones[11].rotation = startRotation11;
-				elf_skeleton.bones[12].rotation = startRotation12;
-				elf_skeleton.bones[14].rotation = startRotation14;
-				elf_skeleton.bones[15].rotation = startRotation15;
-				elf_skeleton.bones[16].rotation = startRotation16;
-				walkStepsCounter = 0;
-				outOfPosition = false;
-			}
-			if(walkStepsCounter <= (56/(speed*10))){
-				elf_skeleton.bones[10].rotate(BABYLON.Axis.X, speed/3, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.X, -speed/4, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.Y, speed/16, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.Z, -speed/16, BABYLON.Space.LOCAL);
-			}else if(walkStepsCounter <= (74/(speed*10)) ){
-				elf_skeleton.bones[10].rotate(BABYLON.Axis.X, -speed/3, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.X, speed/4, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.Y, -speed/16, BABYLON.Space.LOCAL);
-				elf_skeleton.bones[12].rotate(BABYLON.Axis.Z, speed/16, BABYLON.Space.LOCAL);
-			}
-		}
-        /*
-		if( (walkStepsCounter < (2/(speed*10))) && (walkStepsCounter > 0) ){
-			brainWalkSound.play();
-		}
-		walkStepsCounter ++;
-        */
+        if(walkStepsCounter>70){
+            change = true;
+        }else if(walkStepsCounter<0){
+            change = false;
+        }
+        if(!change){
+
+            //ARMS
+            elf_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/15, BABYLON.Space.LOCAL); //Left Arm
+            elf_skeleton.bones[8].rotate(BABYLON.Axis.Z, speed/15, BABYLON.Space.LOCAL); //Left Fore Arm
+            elf_skeleton.bones[11].rotate(BABYLON.Axis.Y, speed/15, BABYLON.Space.LOCAL);
+            elf_skeleton.bones[12].rotate(BABYLON.Axis.Z, speed/15, BABYLON.Space.LOCAL); //Right Fore Arm
+
+            //LEGS
+            elf_skeleton.bones[14].rotate(BABYLON.Axis.X, speed/20, BABYLON.Space.LOCAL); //Left Up Leg
+            elf_skeleton.bones[18].rotate(BABYLON.Axis.X, -speed/20, BABYLON.Space.LOCAL); //Right Up Leg
+            
+
+            walkStepsCounter ++;
+        }else{
+
+            //ARMS
+            elf_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/15, BABYLON.Space.LOCAL); //Left Arm
+            elf_skeleton.bones[8].rotate(BABYLON.Axis.Z, -speed/15, BABYLON.Space.LOCAL); //Left Fore Arm
+            elf_skeleton.bones[11].rotate(BABYLON.Axis.Y, -speed/15, BABYLON.Space.LOCAL);
+            elf_skeleton.bones[12].rotate(BABYLON.Axis.Z, -speed/15, BABYLON.Space.LOCAL); //Right Fore Arm
+
+            //LEGS
+            elf_skeleton.bones[14].rotate(BABYLON.Axis.X, -speed/20, BABYLON.Space.LOCAL); //Left Up Leg
+            elf_skeleton.bones[18].rotate(BABYLON.Axis.X, speed/20, BABYLON.Space.LOCAL); //Right Up Leg
+            walkStepsCounter = walkStepsCounter-1;
+        }
+        console.log(walkStepsCounter);
 	};
 
     var walk_speed = 0.3;
-    var alreadyWalking = false;
 
     //WALK
     scene.registerAfterRender(function () {
@@ -749,7 +710,7 @@ var FOREST_Scene = function(){
 			}
 		}
         if (map[" "] && jump == 0){
-            ElfBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 1000, 0), ElfBoundingBox.getAbsolutePosition());
+            ElfBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), ElfBoundingBox.getAbsolutePosition());
             jump=1;
         }
     });

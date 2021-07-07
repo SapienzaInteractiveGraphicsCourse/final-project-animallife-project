@@ -1,5 +1,6 @@
 var canvas = document.getElementById("canvas");
 var engine = new BABYLON.Engine(canvas,true);
+var fps = document.getElementById("fps");
 
 var changescene = 0;
 
@@ -1306,6 +1307,7 @@ var SEA_Scene = function(){
     return scene;
 }
 engine.runRenderLoop(function (){
+    fps.innerHTML = engine.getFps().toFixed() + " fps";
     if (changescene == 0){
         Menu.render();
     } else if (changescene == 1){

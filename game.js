@@ -636,6 +636,12 @@ var FOREST_Scene = function(){
 
     });*/
 
+    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 30, depth: 120 }, scene);
+		RexBoundingBox.position.y = 3.5;
+	var RexBoundingBoxMaterial = new BABYLON.StandardMaterial("RexBoundingBoxMaterial", scene);
+		RexBoundingBoxMaterial.alpha = 0;
+		RexBoundingBox.material = RexBoundingBoxMaterial;
+
     var rex;
     var rex_skeleton;
 
@@ -649,17 +655,17 @@ var FOREST_Scene = function(){
         rex_skeleton = skeletons[0];
         console.log("skeleton imported:", rex_skeleton);
 
-        rex.parent = ElfBoundingBox;
-        ElfBoundingBox.showBoundingBox = true;
+        rex.parent = RexBoundingBox;
+        RexBoundingBox.showBoundingBox = true;
 
-        ElfBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(ElfBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
-		ElfBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
-		ElfBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
-		ElfBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
+		RexBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
+		RexBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
+		RexBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
         scene.stopAllAnimations();
 
-		camera.target = ElfBoundingBox;
+		camera.target = RexBoundingBox;
 
         // DEBUGGIN SKELETON VIEWE
 		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
@@ -678,11 +684,11 @@ var FOREST_Scene = function(){
 
         scene.registerBeforeRender(function () {
 			var dir = camera.getTarget().subtract(camera.position);
-				dir.y = -ElfBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
+				dir.y = -RexBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 				dir.z = dir.z;
 				dir.x = dir.x;
                 if(clicked){
-                    //ElfBoundingBox.setDirection(dir);
+                    RexBoundingBox.setDirection(dir);
                     if(!alreadyWalking){
                         walkForward(walk_speed);
                         alreadyWalking = true;
@@ -691,7 +697,7 @@ var FOREST_Scene = function(){
                         outOfPosition = true;
                     }
                 }
-                ElfBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
+                RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
                     
                 });
@@ -719,6 +725,10 @@ var FOREST_Scene = function(){
             rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Left Up Leg
             rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Right Up Leg
 
+            //FOOT
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Right Foot
+
             //TAILS
             rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, speed/20, BABYLON.Space.LOCAL);  // Tail
 
@@ -736,6 +746,10 @@ var FOREST_Scene = function(){
             rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Left Up Leg
             rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Right Up Leg
 
+            //FOOT
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Right Foot
+
             //TAILS
             rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, -speed/20, BABYLON.Space.LOCAL);  // Tail
 
@@ -749,7 +763,7 @@ var FOREST_Scene = function(){
     //WALK
     scene.registerAfterRender(function () {
 		if ((map["w"] || map["W"])) {
-			ElfBoundingBox.translate(BABYLON.Axis.Z, walk_speed, BABYLON.Space.LOCAL);
+			RexBoundingBox.translate(BABYLON.Axis.Z, walk_speed, BABYLON.Space.LOCAL);
 			//if(!alreadyWalking){
 				walkForward(walk_speed);
 			//	alreadyWalking = true;
@@ -759,7 +773,7 @@ var FOREST_Scene = function(){
 			//}
 		}
 		if ((map["s"] || map["S"])) {
-			ElfBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
+			RexBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
             if(!alreadyWalking){
 				walkForward(walk_speed);
 				alreadyWalking = true;
@@ -769,7 +783,7 @@ var FOREST_Scene = function(){
 			}
 		}
 		if ((map["a"] || map["A"])) {
-			ElfBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);
+			RexBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);
             if(!alreadyWalking){
 				walkForward(walk_speed);
 				alreadyWalking = true;
@@ -779,7 +793,7 @@ var FOREST_Scene = function(){
 			}
 		}
 		if ((map["d"] || map["D"])) {
-			ElfBoundingBox.translate(BABYLON.Axis.X, walk_speed, BABYLON.Space.LOCAL);
+			RexBoundingBox.translate(BABYLON.Axis.X, walk_speed, BABYLON.Space.LOCAL);
             if(!alreadyWalking){
 				walkForward(walk_speed);
 				alreadyWalking = true;
@@ -789,7 +803,7 @@ var FOREST_Scene = function(){
 			}
 		}
         if (map[" "] && jump == 0){
-            ElfBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), ElfBoundingBox.getAbsolutePosition());
+            RexBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), RexBoundingBox.getAbsolutePosition());
             jump=1;
         }
     });

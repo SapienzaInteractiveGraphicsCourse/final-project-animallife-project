@@ -180,9 +180,11 @@ var Forest;
 
 var jump=0;
 var walkStepsCounter = 0;
+var walkBackStepsCounter = 0;
 var outOfPosition = false;
 var alreadyWalking = false;
 var change = false;
+var change_back = false;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -491,8 +493,9 @@ var FOREST_Scene = function(){
 
     var tree = BABYLON.SceneLoader.ImportMesh("","//www.babylonjs.com/assets/Tree/", "tree.babylon", scene, function (meshes) {
         var tree = meshes[0];
-        tree.scaling = new BABYLON.Vector3(200, 200, 200);
+        tree.scaling = new BABYLON.Vector3(600, 600, 600);
         tree.position = new BABYLON.Vector3(0, 0, 0);
+        tree.showBoundingBox;
         tree.material.opacityTexture = null;
         tree.material.backFaceCulling = false;
     
@@ -500,8 +503,8 @@ var FOREST_Scene = function(){
             for(j = 0; j <= 2; j++){
                 if(j%3==0){
                     var tree2 = tree.createInstance("");
-                    tree2.position.x = 10 + (i*80);
-                    tree2.position.z = -330 + (j*55);
+                    tree2.position.x = Math.sin(i*80);
+                    tree2.position.z = Math.cos(j*80);
                     //var tree3 = tree.createInstance("");
                     //tree3.position.x = 10 + (i*50);
                     //tree3.position.z = 330 - (j*25);
@@ -636,7 +639,7 @@ var FOREST_Scene = function(){
 
     });*/
 
-    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 30, depth: 120 }, scene);
+    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 20, depth: 65 }, scene);
 		RexBoundingBox.position.y = 3.5;
 	var RexBoundingBoxMaterial = new BABYLON.StandardMaterial("RexBoundingBoxMaterial", scene);
 		RexBoundingBoxMaterial.alpha = 0;
@@ -649,7 +652,7 @@ var FOREST_Scene = function(){
 
         console.log("new meshes imported:", newMeshes);
         rex=newMeshes[0];
-        rex.scaling.scaleInPlace(10);
+        rex.scaling.scaleInPlace(5);
 		rex.position.y = 1;
 
         rex_skeleton = skeletons[0];
@@ -688,7 +691,7 @@ var FOREST_Scene = function(){
 				dir.z = dir.z;
 				dir.x = dir.x;
                 if(clicked){
-                    RexBoundingBox.setDirection(dir);
+                    //RexBoundingBox.setDirection(dir);
                     if(!alreadyWalking){
                         walkForward(walk_speed);
                         alreadyWalking = true;
@@ -711,54 +714,90 @@ var FOREST_Scene = function(){
         }else if(walkStepsCounter<-30){
             change = false;
         }
-        if(!change){
+        if(!change){ //Va 
 
             //Face
-            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/15, BABYLON.Space.LOCAL); 
+            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/50, BABYLON.Space.LOCAL); 
 
             //ARMS
-            rex_skeleton.bones[33].rotate(BABYLON.Axis.X, speed/10, BABYLON.Space.LOCAL); //Right Arm
-            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, -speed/10, BABYLON.Space.LOCAL); //Left Arm
+            rex_skeleton.bones[33].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Right Arm
+            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Left Arm
 
 
             //LEGS
-            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
 
             //FOOT
-            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Left Foot
-            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Right Foot
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
 
             //TAILS
-            rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, speed/20, BABYLON.Space.LOCAL);  // Tail
+            rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, speed/60, BABYLON.Space.LOCAL);  // Tail
 
             walkStepsCounter ++;
         }else{
 
             //Face
-            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/15, BABYLON.Space.LOCAL);
+            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/50, BABYLON.Space.LOCAL);
 
             //ARMS
-            rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/10, BABYLON.Space.LOCAL); //Right Arm
-            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/10, BABYLON.Space.LOCAL); //Left Arm
+            rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Right Arm
+            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Left Arm
             
             //LEGS
-            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/20, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
 
             //FOOT
-            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Left Foot
-            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/20, BABYLON.Space.LOCAL);  //Right Foot
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Right Foot
 
             //TAILS
-            rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, -speed/20, BABYLON.Space.LOCAL);  // Tail
+            rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, -speed/60, BABYLON.Space.LOCAL);  // Tail
 
             walkStepsCounter = walkStepsCounter-1;
         }
         console.log(walkStepsCounter);
 	};
+    var walkBack = function(speed){
+        if(walkBackStepsCounter>20){
+            change_back = true;
+        }else if(walkBackStepsCounter<-20){
+            change_back = false;
+        }
+        if(!change_back){
 
-    var walk_speed = 0.3;
+            //LEGS
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
+
+            //FOOT
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
+
+            //TAILS
+            //rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, speed/20, BABYLON.Space.LOCAL);  // Tail
+
+            walkBackStepsCounter ++;
+        }else{
+            
+            //LEGS
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
+
+            //FOOT
+            rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Left Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Right Foot
+
+            //TAILS
+            //rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, -speed/20, BABYLON.Space.LOCAL);  // Tail
+
+            walkBackStepsCounter = walkBackStepsCounter-1;
+        }
+        console.log(walkBackStepsCounter);
+	};
+    var walk_speed = 1.5;
 
     //WALK
     scene.registerAfterRender(function () {
@@ -774,13 +813,13 @@ var FOREST_Scene = function(){
 		}
 		if ((map["s"] || map["S"])) {
 			RexBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
-            if(!alreadyWalking){
-				walkForward(walk_speed);
-				alreadyWalking = true;
-			}
-			if(!outOfPosition){
-				outOfPosition = true;
-			}
+            //if(!alreadyWalking){
+				walkBack(walk_speed);
+				//alreadyWalking = true;
+			//}
+			//if(!outOfPosition){
+			//	outOfPosition = true;
+			//}
 		}
 		if ((map["a"] || map["A"])) {
 			RexBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);

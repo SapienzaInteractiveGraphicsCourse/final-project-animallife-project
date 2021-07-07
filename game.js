@@ -245,228 +245,228 @@ var FOREST_Scene = function(){
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
     ground.checkCollisions = true;
 
-    var perimeter_walls = [];
-	const cubicWalls = BABYLON.Mesh.CreateBox("cubicWalls", 2, scene);
-		hemisphericLight.excludedMeshes.push(cubicWalls);
-		directionalLight.excludedMeshes.push(cubicWalls);
-		cubicWalls.setEnabled(false);
+    var perimeter_scene = [];
+	const Walls = BABYLON.Mesh.CreateBox("Walls", 2, scene);
+		hemisphericLight.excludedMeshes.push(Walls);
+		directionalLight.excludedMeshes.push(Walls);
+		Walls.setEnabled(false);
 
-        var newCubicWall_1 = cubicWalls.clone();
-        newCubicWall_1.position = new BABYLON.Vector3(150, 80, 150);
-        newCubicWall_1.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_1.rotation = new BABYLON.Vector3(0, Math.PI/4 , 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_1);
-        directionalLight.excludedMeshes.push(newCubicWall_1);
-        newCubicWall_1.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_1, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_1.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_1.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_1.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_1.freezeWorldMatrix();
-        newCubicWall_1.convertToUnIndexedMesh();
-        newCubicWall_1.setEnabled(true);
-        newCubicWall_1.showBoundingBox = true;
-        //newCubicWall__2.visibility = 0;
-        newCubicWall_1.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_1);
+        var Wall1 = Walls.clone();
+        Wall1.position = new BABYLON.Vector3(150, 80, 150);
+        Wall1.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall1.rotation = new BABYLON.Vector3(0, Math.PI/4 , 0);
+        hemisphericLight.excludedMeshes.push(Wall1);
+        directionalLight.excludedMeshes.push(Wall1);
+        Wall1.physicsImpostor = new BABYLON.PhysicsImpostor(Wall1, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall1.physicsImpostor.physicsBody.inertia.setZero();
+        Wall1.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall1.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall1.freezeWorldMatrix();
+        Wall1.convertToUnIndexedMesh();
+        Wall1.setEnabled(true);
+        Wall1.showBoundingBox = true;
+        //Wall_2.visibility = 0;
+        Wall1.checkCollisions = true;
+    perimeter_scene.push(Wall1);
 
-        var newCubicWall_2 = cubicWalls.clone();
-        newCubicWall_2.position = new BABYLON.Vector3(-150, 80, 150);
-        newCubicWall_2.scaling = new BABYLON.Vector3(80, 80,10);
-        newCubicWall_2.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_2);
-        directionalLight.excludedMeshes.push(newCubicWall_2);
-        newCubicWall_2.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_2, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_2.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_2.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_2.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_2.freezeWorldMatrix();
-        newCubicWall_2.convertToUnIndexedMesh();
-        newCubicWall_2.setEnabled(true);
-        //newCubicWall__1.visibility = 0;
-        newCubicWall_2.showBoundingBox = true;
-        newCubicWall_2.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_2); 
+        var Wall2 = Walls.clone();
+        Wall2.position = new BABYLON.Vector3(-150, 80, 150);
+        Wall2.scaling = new BABYLON.Vector3(80, 80,10);
+        Wall2.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
+        hemisphericLight.excludedMeshes.push(Wall2);
+        directionalLight.excludedMeshes.push(Wall2);
+        Wall2.physicsImpostor = new BABYLON.PhysicsImpostor(Wall2, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall2.physicsImpostor.physicsBody.inertia.setZero();
+        Wall2.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall2.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall2.freezeWorldMatrix();
+        Wall2.convertToUnIndexedMesh();
+        Wall2.setEnabled(true);
+        //Wall_1.visibility = 0;
+        Wall2.showBoundingBox = true;
+        Wall2.checkCollisions = true;
+    perimeter_scene.push(Wall2); 
 
-    var newCubicWall_3 = cubicWalls.clone();
-        newCubicWall_3.position = new BABYLON.Vector3(-150, 80, -150);
-        newCubicWall_3.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_3.rotation = new BABYLON.Vector3(0, Math.PI/4, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_3);
-        directionalLight.excludedMeshes.push(newCubicWall_3);
-        newCubicWall_3.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_3, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_3.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_3.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_3.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_3.freezeWorldMatrix();
-        newCubicWall_3.convertToUnIndexedMesh();
-        newCubicWall_3.setEnabled(true);
-        newCubicWall_3.showBoundingBox = true;
-        //newCubicWall_3.visibility = 0;
-        newCubicWall_3.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_3);
+    var Wall3 = Walls.clone();
+        Wall3.position = new BABYLON.Vector3(-150, 80, -150);
+        Wall3.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall3.rotation = new BABYLON.Vector3(0, Math.PI/4, 0);
+        hemisphericLight.excludedMeshes.push(Wall3);
+        directionalLight.excludedMeshes.push(Wall3);
+        Wall3.physicsImpostor = new BABYLON.PhysicsImpostor(Wall3, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall3.physicsImpostor.physicsBody.inertia.setZero();
+        Wall3.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall3.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall3.freezeWorldMatrix();
+        Wall3.convertToUnIndexedMesh();
+        Wall3.setEnabled(true);
+        Wall3.showBoundingBox = true;
+        //Wall3.visibility = 0;
+        Wall3.checkCollisions = true;
+    perimeter_scene.push(Wall3);
 
-    var newCubicWall_4 = cubicWalls.clone();
-        newCubicWall_4.position = new BABYLON.Vector3(150, 80, -150);
-        newCubicWall_4.diffuseColor = new BABYLON.Vector3(1, 0, 1);
-        newCubicWall_4.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_4.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
-        //hemisphericLight.excludedMeshes.push(newCubicWall_4);
-        //directionalLight.excludedMeshes.push(newCubicWall_4);
-        newCubicWall_4.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_4, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_4.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_4.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_4.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_4.freezeWorldMatrix();
-        newCubicWall_4.convertToUnIndexedMesh();
-        newCubicWall_4.setEnabled(true);
-        newCubicWall_4.showBoundingBox = true;
-        //newCubicWall_4.visibility = 0;
-        newCubicWall_4.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_4);
+    var Wall4 = Walls.clone();
+        Wall4.position = new BABYLON.Vector3(150, 80, -150);
+        Wall4.diffuseColor = new BABYLON.Vector3(1, 0, 1);
+        Wall4.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall4.rotation = new BABYLON.Vector3(0, -Math.PI/4, 0);
+        //hemisphericLight.excludedMeshes.push(Wall4);
+        //directionalLight.excludedMeshes.push(Wall4);
+        Wall4.physicsImpostor = new BABYLON.PhysicsImpostor(Wall4, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall4.physicsImpostor.physicsBody.inertia.setZero();
+        Wall4.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall4.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall4.freezeWorldMatrix();
+        Wall4.convertToUnIndexedMesh();
+        Wall4.setEnabled(true);
+        Wall4.showBoundingBox = true;
+        //Wall4.visibility = 0;
+        Wall4.checkCollisions = true;
+    perimeter_scene.push(Wall4);
 
-    var newCubicWall_5 = cubicWalls.clone();
-        newCubicWall_5.position = new BABYLON.Vector3(-80, 80, -260);
-        newCubicWall_5.scaling = new BABYLON.Vector3(60, 80, 10);
-        newCubicWall_5.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_5);
-        directionalLight.excludedMeshes.push(newCubicWall_5);
-        newCubicWall_5.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_5, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_5.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_5.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_5.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_5.freezeWorldMatrix();
-        newCubicWall_5.convertToUnIndexedMesh();
-        newCubicWall_5.setEnabled(true);
-        //newCubicWall_5.visibility = 0;
-        newCubicWall_5.checkCollisions = true;
-        newCubicWall_5.showBoundingBox = true;
-    perimeter_walls.push(newCubicWall_5);
+    var Wall5 = Walls.clone();
+        Wall5.position = new BABYLON.Vector3(-80, 80, -260);
+        Wall5.scaling = new BABYLON.Vector3(60, 80, 10);
+        Wall5.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        hemisphericLight.excludedMeshes.push(Wall5);
+        directionalLight.excludedMeshes.push(Wall5);
+        Wall5.physicsImpostor = new BABYLON.PhysicsImpostor(Wall5, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall5.physicsImpostor.physicsBody.inertia.setZero();
+        Wall5.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall5.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall5.freezeWorldMatrix();
+        Wall5.convertToUnIndexedMesh();
+        Wall5.setEnabled(true);
+        //Wall5.visibility = 0;
+        Wall5.checkCollisions = true;
+        Wall5.showBoundingBox = true;
+    perimeter_scene.push(Wall5);
 
-    var newCubicWall_6 = cubicWalls.clone();
-        newCubicWall_6.position = new BABYLON.Vector3(0, 80, -330);
-        newCubicWall_6.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_6.rotation = new BABYLON.Vector3(0, 0, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_6);
-        directionalLight.excludedMeshes.push(newCubicWall_6);
-        newCubicWall_6.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_6, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_6.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_6.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_6.physicsImpostor.physicsBody.invInertiaWorld.setZero(); 
-        newCubicWall_6.freezeWorldMatrix();
-        newCubicWall_6.convertToUnIndexedMesh();
-        newCubicWall_6.setEnabled(true);
-        newCubicWall_6.showBoundingBox = true;
-        //newCubicWall_6.visibility = 0;
-        newCubicWall_6.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_6);
+    var Wall6 = Walls.clone();
+        Wall6.position = new BABYLON.Vector3(0, 80, -330);
+        Wall6.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall6.rotation = new BABYLON.Vector3(0, 0, 0);
+        hemisphericLight.excludedMeshes.push(Wall6);
+        directionalLight.excludedMeshes.push(Wall6);
+        Wall6.physicsImpostor = new BABYLON.PhysicsImpostor(Wall6, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall6.physicsImpostor.physicsBody.inertia.setZero();
+        Wall6.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall6.physicsImpostor.physicsBody.invInertiaWorld.setZero(); 
+        Wall6.freezeWorldMatrix();
+        Wall6.convertToUnIndexedMesh();
+        Wall6.setEnabled(true);
+        Wall6.showBoundingBox = true;
+        //Wall6.visibility = 0;
+        Wall6.checkCollisions = true;
+    perimeter_scene.push(Wall6);
 
-    var newCubicWall_7 = cubicWalls.clone();
-        newCubicWall_7.position = new BABYLON.Vector3(80, 80, -260);
-        newCubicWall_7.scaling = new BABYLON.Vector3(60, 80, 10);
-        newCubicWall_7.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_7);
-        directionalLight.excludedMeshes.push(newCubicWall_7);
-        newCubicWall_7.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_7, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_7.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_7.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_7.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_7.freezeWorldMatrix();
-        newCubicWall_7.convertToUnIndexedMesh();
-        newCubicWall_7.setEnabled(true);
-        newCubicWall_7.showBoundingBox = true;
-        //newCubicWall_7.visibility = 0;
-        newCubicWall_7.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_7);
+    var Wall7 = Walls.clone();
+        Wall7.position = new BABYLON.Vector3(80, 80, -260);
+        Wall7.scaling = new BABYLON.Vector3(60, 80, 10);
+        Wall7.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        hemisphericLight.excludedMeshes.push(Wall7);
+        directionalLight.excludedMeshes.push(Wall7);
+        Wall7.physicsImpostor = new BABYLON.PhysicsImpostor(Wall7, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall7.physicsImpostor.physicsBody.inertia.setZero();
+        Wall7.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall7.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall7.freezeWorldMatrix();
+        Wall7.convertToUnIndexedMesh();
+        Wall7.setEnabled(true);
+        Wall7.showBoundingBox = true;
+        //Wall7.visibility = 0;
+        Wall7.checkCollisions = true;
+    perimeter_scene.push(Wall7);
 
-    var newCubicWall_8 = cubicWalls.clone();
-        newCubicWall_8.position = new BABYLON.Vector3(280, 80, -74);
-        newCubicWall_8.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_8.rotation = new BABYLON.Vector3(0, 0, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_8);
-        directionalLight.excludedMeshes.push(newCubicWall_8);
-        newCubicWall_8.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_8, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_8.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_8.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_8.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_8.freezeWorldMatrix();
-        newCubicWall_8.convertToUnIndexedMesh();
-        newCubicWall_8.setEnabled(true);
-        newCubicWall_8.showBoundingBox = true;
-        //newCubicWall_8.visibility = 0;
-        newCubicWall_8.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_8);
+    var Wall8 = Walls.clone();
+        Wall8.position = new BABYLON.Vector3(280, 80, -74);
+        Wall8.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall8.rotation = new BABYLON.Vector3(0, 0, 0);
+        hemisphericLight.excludedMeshes.push(Wall8);
+        directionalLight.excludedMeshes.push(Wall8);
+        Wall8.physicsImpostor = new BABYLON.PhysicsImpostor(Wall8, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall8.physicsImpostor.physicsBody.inertia.setZero();
+        Wall8.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall8.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall8.freezeWorldMatrix();
+        Wall8.convertToUnIndexedMesh();
+        Wall8.setEnabled(true);
+        Wall8.showBoundingBox = true;
+        //Wall8.visibility = 0;
+        Wall8.checkCollisions = true;
+    perimeter_scene.push(Wall8);
 
-    var newCubicWall_9 = cubicWalls.clone();
-        newCubicWall_9.position = new BABYLON.Vector3(370, 80, 0);
-        newCubicWall_9.scaling = new BABYLON.Vector3(89, 80, 10);
-        newCubicWall_9.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_9);
-        directionalLight.excludedMeshes.push(newCubicWall_9);
-        newCubicWall_9.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_9, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_9.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_9.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_9.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_9.freezeWorldMatrix();
-        newCubicWall_9.convertToUnIndexedMesh();
-        newCubicWall_9.setEnabled(true);
-        newCubicWall_9.showBoundingBox = true;
-        //newCubicWall_9.visibility = 0;
-        newCubicWall_9.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_9);
+    var Wall9 = Walls.clone();
+        Wall9.position = new BABYLON.Vector3(370, 80, 0);
+        Wall9.scaling = new BABYLON.Vector3(89, 80, 10);
+        Wall9.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        hemisphericLight.excludedMeshes.push(Wall9);
+        directionalLight.excludedMeshes.push(Wall9);
+        Wall9.physicsImpostor = new BABYLON.PhysicsImpostor(Wall9, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall9.physicsImpostor.physicsBody.inertia.setZero();
+        Wall9.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall9.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall9.freezeWorldMatrix();
+        Wall9.convertToUnIndexedMesh();
+        Wall9.setEnabled(true);
+        Wall9.showBoundingBox = true;
+        //Wall9.visibility = 0;
+        Wall9.checkCollisions = true;
+    perimeter_scene.push(Wall9);
 
-    var newCubicWall_10 = cubicWalls.clone();
-        newCubicWall_10.position = new BABYLON.Vector3(280, 80, 74);
-        newCubicWall_10.scaling = new BABYLON.Vector3(80, 80, 10);
-        newCubicWall_10.rotation = new BABYLON.Vector3(0, 0, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_10);
-        directionalLight.excludedMeshes.push(newCubicWall_10);
-        newCubicWall_10.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_10, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_10.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_10.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_10.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_10.freezeWorldMatrix();
-        newCubicWall_10.convertToUnIndexedMesh();
-        newCubicWall_10.setEnabled(true);
-        newCubicWall_10.showBoundingBox = true;
-        //newCubicWall_10.visibility = 0;
-        newCubicWall_10.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_10);
+    var Wall10 = Walls.clone();
+        Wall10.position = new BABYLON.Vector3(280, 80, 74);
+        Wall10.scaling = new BABYLON.Vector3(80, 80, 10);
+        Wall10.rotation = new BABYLON.Vector3(0, 0, 0);
+        hemisphericLight.excludedMeshes.push(Wall10);
+        directionalLight.excludedMeshes.push(Wall10);
+        Wall10.physicsImpostor = new BABYLON.PhysicsImpostor(Wall10, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall10.physicsImpostor.physicsBody.inertia.setZero();
+        Wall10.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall10.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall10.freezeWorldMatrix();
+        Wall10.convertToUnIndexedMesh();
+        Wall10.setEnabled(true);
+        Wall10.showBoundingBox = true;
+        //Wall10.visibility = 0;
+        Wall10.checkCollisions = true;
+    perimeter_scene.push(Wall10);
 
-    var newCubicWall_11 = cubicWalls.clone();
-        newCubicWall_11.position = new BABYLON.Vector3(-210, 80, 0);
-        newCubicWall_11.scaling = new BABYLON.Vector3(85, 80, 10);
-        newCubicWall_11.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_11);
-        directionalLight.excludedMeshes.push(newCubicWall_11);
-        newCubicWall_11.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_11, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_11.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_11.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_11.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_11.freezeWorldMatrix();
-        newCubicWall_11.convertToUnIndexedMesh();
-        newCubicWall_11.setEnabled(true);
-        newCubicWall_11.showBoundingBox = true;
-        //newCubicWall_11.visibility = 0;
-        newCubicWall_11.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_11);
+    var Wall11 = Walls.clone();
+        Wall11.position = new BABYLON.Vector3(-210, 80, 0);
+        Wall11.scaling = new BABYLON.Vector3(85, 80, 10);
+        Wall11.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        hemisphericLight.excludedMeshes.push(Wall11);
+        directionalLight.excludedMeshes.push(Wall11);
+        Wall11.physicsImpostor = new BABYLON.PhysicsImpostor(Wall11, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall11.physicsImpostor.physicsBody.inertia.setZero();
+        Wall11.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall11.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall11.freezeWorldMatrix();
+        Wall11.convertToUnIndexedMesh();
+        Wall11.setEnabled(true);
+        Wall11.showBoundingBox = true;
+        //Wall11.visibility = 0;
+        Wall11.checkCollisions = true;
+    perimeter_scene.push(Wall11);
 
-    var newCubicWall_12 = cubicWalls.clone();
-        newCubicWall_12.position = new BABYLON.Vector3(0, 80, 210);
-        newCubicWall_12.scaling = new BABYLON.Vector3(85, 80, 10);
-        newCubicWall_12.rotation = new BABYLON.Vector3(0, 0, 0);
-        hemisphericLight.excludedMeshes.push(newCubicWall_12);
-        directionalLight.excludedMeshes.push(newCubicWall_12);
-        newCubicWall_12.physicsImpostor = new BABYLON.PhysicsImpostor(newCubicWall_12, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
-        newCubicWall_12.physicsImpostor.physicsBody.inertia.setZero();
-        newCubicWall_12.physicsImpostor.physicsBody.invInertia.setZero();
-        newCubicWall_12.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        newCubicWall_12.freezeWorldMatrix();
-        newCubicWall_12.convertToUnIndexedMesh();
-        newCubicWall_12.setEnabled(true);
-        newCubicWall_12.showBoundingBox = true;
-        //newCubicWall_12.visibility = 0;
-        newCubicWall_12.checkCollisions = true;
-    perimeter_walls.push(newCubicWall_12);
+    var Wall12 = Walls.clone();
+        Wall12.position = new BABYLON.Vector3(0, 80, 210);
+        Wall12.scaling = new BABYLON.Vector3(85, 80, 10);
+        Wall12.rotation = new BABYLON.Vector3(0, 0, 0);
+        hemisphericLight.excludedMeshes.push(Wall12);
+        directionalLight.excludedMeshes.push(Wall12);
+        Wall12.physicsImpostor = new BABYLON.PhysicsImpostor(Wall12, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 10000, restitution: 0});
+        Wall12.physicsImpostor.physicsBody.inertia.setZero();
+        Wall12.physicsImpostor.physicsBody.invInertia.setZero();
+        Wall12.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        Wall12.freezeWorldMatrix();
+        Wall12.convertToUnIndexedMesh();
+        Wall12.setEnabled(true);
+        Wall12.showBoundingBox = true;
+        //Wall12.visibility = 0;
+        Wall12.checkCollisions = true;
+    perimeter_scene.push(Wall12);
 
 
   /*   //LOAD TREE
@@ -526,11 +526,135 @@ var FOREST_Scene = function(){
         } */
         tree.isVisible = false;
     });
+
+    // KEYBOARD INPUT
+    var map = {};
+	scene.actionManager = new BABYLON.ActionManager(scene);
+
+	scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+		map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+	}));
+	scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {
+		map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
+	}));
+
+    // IMPORT OF THE ELF
+
+    var ElfBoundingBox = BABYLON.MeshBuilder.CreateBox("ElfBoundingBox",{ height: 7.0, width: 10, depth: 30 }, scene);
+		ElfBoundingBox.position.y = 3.5;
+	var ElfBoundingBoxMaterial = new BABYLON.StandardMaterial("ElfBoundingBoxMaterial", scene);
+		ElfBoundingBoxMaterial.alpha = 0;
+		ElfBoundingBox.material = ElfBoundingBoxMaterial;
+
+    var elf;
+
+    BABYLON.SceneLoader.ImportMesh("", "models/Elf/", "Elf.gltf", scene, function (newMeshes, particleSystems, skeletons) {
+
+        console.log("new meshes imported:", newMeshes);
+        elf=newMeshes[0];
+        elf.scaling.scaleInPlace(10);
+		elf.position.y = 4;
+
+        elf_skeleton = skeletons[0];
+        console.log("skeleton imported:", elf_skeleton);
+
+        elf.parent = ElfBoundingBox;
+        ElfBoundingBox.showBoundingBox = true;
+
+        ElfBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(ElfBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 40, restitution: 0});
+		ElfBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
+		ElfBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
+		ElfBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+
+		camera.target = ElfBoundingBox;
+
+        // DEBUGGIN SKELETON VIEWE
+		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(elf_skeleton, elf, scene);
+		skeletonViewer.isEnabled = true; // Enable it
+		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+
+        for(i=0;i<22;i++){
+            elf_skeleton.bones[i].linkTransformNode(null); 
+        }
+        //elf_skeleton.bones[11].linkTransformNode(null);
+        //BONES[10] = RIGHT SHOULDER
+        //BONES[11] = RIGHT ARM
+        var bone1AxesViewer = new BABYLON.Debug.BoneAxesViewer(scene, elf_skeleton.bones[11], elf);
+        bone1AxesViewer.update();
+
+        scene.debugLayer.show({
+            embedMode:true
+        });
+
+        scene.registerBeforeRender(function () {
+			var dir = camera.getTarget().subtract(camera.position);
+				dir.y = ElfBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
+				dir.z = -dir.z;
+				dir.x = -dir.x;
+        });
+
+    });
+
+    var walk_speed = 0.3;
+
+    //WALK
+    scene.registerAfterRender(function () {
+		if ((map["w"] || map["W"])) {
+			ElfBoundingBox.translate(BABYLON.Axis.Z, walk_speed, BABYLON.Space.LOCAL);
+            /*
+			if(!alreadyWalking){
+				walkForward(walk_speed);
+				alreadyWalking = true;
+			}
+			if(!outOfPosition){
+				outOfPosition = true;
+			}
+            */
+		}
+		if ((map["s"] || map["S"])) {
+			ElfBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
+			/*
+            if(!alreadyWalking){
+				walkForward(walk_speed);
+				alreadyWalking = true;
+			}
+			if(!outOfPosition){
+				outOfPosition = true;
+			}
+            */
+		}
+		if ((map["a"] || map["A"])) {
+			ElfBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);
+			/*
+            if(!alreadyWalking){
+				walkForward(walk_speed);
+				alreadyWalking = true;
+			}
+			if(!outOfPosition){
+				outOfPosition = true;
+			}
+            */
+		}
+		if ((map["d"] || map["D"])) {
+			ElfBoundingBox.translate(BABYLON.Axis.X, walk_speed, BABYLON.Space.LOCAL);
+			/*
+            if(!alreadyWalking){
+				walkForward(walk_speed);
+				alreadyWalking = true;
+			}
+			if(!outOfPosition){
+				outOfPosition = true;
+			}
+            */
+		}
+    });
     
     
 
     return scene;
 }
+
 var SEA_Scene = function(){
 
     var scene = new BABYLON.Scene(engine);

@@ -198,8 +198,20 @@ var counterId;
 // Check if the first time call the function FOREST_Scene
 var call_forest = 0;
 
+//When is 1 start the roar anim
+var roar_anim = 0;
+
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
+
+    // Load the sound and play it automatically once ready
+    var music = new BABYLON.Sound("Forest", "sounds/forest_snd.wav", scene, null, {
+        loop: true,
+        autoplay: true,
+        volume: 0.5
+    });
+
+    var roar = new BABYLON.Sound("Forest", "sounds/roar.wav", scene, null, {volume: 0.05});
 
     //Optimization
 	var optimizerOptions = new BABYLON.SceneOptimizerOptions(60, 500);
@@ -1002,21 +1014,18 @@ var FOREST_Scene = function(){
 		camera.target = RexBoundingBox;
 
         // DEBUGGIN SKELETON VIEWER
-        /*
 		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
 		skeletonViewer.isEnabled = true; // Enable it
 		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
-        */
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
-        /* INSPECTOR
+        // INSPECTOR
         scene.debugLayer.show({
             embedMode:true
         });
-        */
 
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
         rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
@@ -1054,10 +1063,14 @@ var FOREST_Scene = function(){
         }else if(walkStepsCounter<-30){
             change = false;
         }
-        if(!change){ //Va 
+        if(!change){
+
+            if(roar_anim == 1){
+                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL); //Neck
+            }
 
             //Face
-            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/50, BABYLON.Space.LOCAL); 
+            //rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/50, BABYLON.Space.LOCAL); 
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Right Arm
@@ -1078,8 +1091,13 @@ var FOREST_Scene = function(){
             walkStepsCounter ++;
         }else{
 
+            if(roar_anim == 1){
+                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); //Neck
+                roar_anim = 0;
+            }
+
             //Face
-            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/50, BABYLON.Space.LOCAL);
+            //rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/50, BABYLON.Space.LOCAL);
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Right Arm
@@ -1188,17 +1206,22 @@ var FOREST_Scene = function(){
 
         if(RexBoundingBox.intersectsMesh(egg,true,false)){
             egg.isVisible = false;
+            roar.play();
             //egg.dispose();
             console.log("Intersection");
+
+            roar_anim = 1;
         }
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
             //egg.isVisible = false;
             egg3.dispose();
+            roar.play();
             console.log("Intersection3");
         }
         if(rex_bounding.intersectsMesh(egg2,true,false)){
             //egg2.isVisible = false;
             egg2.dispose();
+            roar.play();
             console.log("Intersection2");
         }
     });

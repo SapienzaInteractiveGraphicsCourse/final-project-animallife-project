@@ -322,10 +322,10 @@ var FOREST_Scene = function(){
     var ground = BABYLON.MeshBuilder.CreateGround("myGround", {width: 1000, height: 1000, subdivisions: 4}, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMat", scene);
   
-    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/grass2.jpg", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/grass2.jpeg", scene);
     groundMaterial.diffuseTexture.uScale = 8;
     groundMaterial.diffuseTexture.vScale = 8;
-    groundMaterial.specularTexture = new BABYLON.Texture("textures/grass2.jpg", scene);
+    groundMaterial.specularTexture = new BABYLON.Texture("textures/grass2.jpeg", scene);
     groundMaterial.specularTexture.uScale = 8;
     groundMaterial.specularTexture.vScale = 8;
 
@@ -354,6 +354,12 @@ var FOREST_Scene = function(){
     fountain.showBoundingBox = true;
     fountain.physicsImpostor = new BABYLON.PhysicsImpostor(fountain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
     shadowGenerator.addShadowCaster(fountain);
+
+    var mat1 = new BABYLON.StandardMaterial("mat1", scene);
+	mat1.diffuseTexture = new BABYLON.Texture("textures/wall1.jpeg", scene);
+    mat1.specularTexture = new BABYLON.Texture("textures/wall1.jpeg", scene);
+	mat1.bumpTexture = new BABYLON.Texture("textures/wall.jpeg", scene);
+    fountain.material = mat1;
     
 
     // Create a particle system
@@ -434,6 +440,32 @@ var FOREST_Scene = function(){
         rockTask.physicsImpostor.physicsBody.invInertia.setZero();
         rockTask.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
+    });
+
+    // ADD ROCK2
+
+    //ADD ROCK TYPE 2
+    BABYLON.SceneLoader.ImportMesh("", "models/", "Rock_6.OBJ", scene, function (newMeshes) {
+        // Only one mesh here
+        var rock = newMeshes[0];
+        rock.scaling.scaleInPlace(3);
+        rock.position.x = -100;
+        rock.position.z = -40;
+        rock.position.y = 2;
+
+        var rockMaterial2 = new BABYLON.StandardMaterial("rockmaterial2", scene);
+        rockMaterial2.diffuseTexture = new BABYLON.Texture("textures/Rock_6_d.jfif", scene);
+        rockMaterial2.specularTexture = new BABYLON.Texture("textures/Rock_6_d.jfif", scene);
+        rock.material = rockMaterial2;
+        rock.scaling.scaleInPlace(10);
+
+        rock.physicsImpostor = new BABYLON.PhysicsImpostor(rock, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, restitution: 0});
+        rock.physicsImpostor.physicsBody.inertia.setZero();
+        rock.physicsImpostor.physicsBody.invInertia.setZero();
+        rock.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+
+        rock.showBoundingBox = true;
     });
 
 
@@ -799,6 +831,7 @@ var FOREST_Scene = function(){
 
     //ADD EGGS  
     var egg;
+    var egg2;
     BABYLON.SceneLoader.ImportMesh("", "models/", "egg.obj", scene, function (newMeshes, particleSystems, skeletons) {
         egg = newMeshes[0];
         egg.position.y = 5;
@@ -808,12 +841,23 @@ var FOREST_Scene = function(){
         hl.addMesh(egg, BABYLON.Color3.Yellow());
         egg.showBoundingBox = true;
 
+        /*
+        egg.physicsImpostor = new BABYLON.PhysicsImpostor(rockTask, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
+        egg.physicsImpostor.physicsBody.inertia.setZero();
+        egg.physicsImpostor.physicsBody.invInertia.setZero();
+        egg.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        */
+
         console.log("new meshes egg imported:", newMeshes);
 
-        var egg2 = egg.createInstance("");
+        egg2 = egg.createInstance("");
         egg2.position.x = 95;
         egg2.position.z = 90;
-        egg2.position.y = 40;
+        egg2.position.y = 60;
+
+        egg3 = egg.createInstance("");
+        egg3.position.x = -150;
+        egg3.position.z = -40;
 
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
@@ -823,10 +867,12 @@ var FOREST_Scene = function(){
             }
             if(!change_egg){
                 egg.position.y += 0.1;
+                egg3.position.y += 0.1;
                 egg2.position.x += 0.2;
                 up_down_egg++;
             }else{
                 egg.position.y -= 0.1;
+                egg3.position.y -= 0.1;
                 egg2.position.x -= 0.2;
                 up_down_egg--;
             }
@@ -919,6 +965,7 @@ var FOREST_Scene = function(){
 
     var rex;
     var rex_skeleton;
+    var rex_bounding;
 
     BABYLON.SceneLoader.ImportMesh("", "models/Trex/", "trex.gltf", scene, function (newMeshes, particleSystems, skeletons) {
 
@@ -934,6 +981,7 @@ var FOREST_Scene = function(){
 
         rex.parent = RexBoundingBox;
         RexBoundingBox.showBoundingBox = true;
+        rex_bounding=newMeshes[1];
 
         /*
         newMeshes[1].showBoundingBox = true;
@@ -995,7 +1043,7 @@ var FOREST_Scene = function(){
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(rockTask.physicsImpostor, function() {
                     jump = 0;
                 });
-                
+            
         });
 
     });
@@ -1136,6 +1184,22 @@ var FOREST_Scene = function(){
         if (map[" "] && jump == 0){
             RexBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), RexBoundingBox.getAbsolutePosition());
             jump=1;
+        }
+
+        if(RexBoundingBox.intersectsMesh(egg,true,false)){
+            egg.isVisible = false;
+            //egg.dispose();
+            console.log("Intersection");
+        }
+        if(RexBoundingBox.intersectsMesh(egg3,true,false)){
+            //egg.isVisible = false;
+            egg3.dispose();
+            console.log("Intersection3");
+        }
+        if(rex_bounding.intersectsMesh(egg2,true,false)){
+            //egg2.isVisible = false;
+            egg2.dispose();
+            console.log("Intersection2");
         }
     });
     

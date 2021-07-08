@@ -1093,43 +1093,19 @@ var FOREST_Scene = function(){
     scene.registerAfterRender(function () {
 		if ((map["w"] || map["W"])) {
 			RexBoundingBox.translate(BABYLON.Axis.Z, walk_speed, BABYLON.Space.LOCAL);
-			//if(!alreadyWalking){
-				walkForward(walk_speed);
-			//	alreadyWalking = true;
-			//}
-			//if(!outOfPosition){
-			//	outOfPosition = true;
-			//}
+			walkForward(walk_speed);
 		}
 		if ((map["s"] || map["S"])) {
 			RexBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
-            //if(!alreadyWalking){
-				walkBack(walk_speed);
-				//alreadyWalking = true;
-			//}
-			//if(!outOfPosition){
-			//	outOfPosition = true;
-			//}
+			walkBack(walk_speed);
 		}
 		if ((map["a"] || map["A"])) {
 			RexBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);
-            if(!alreadyWalking){
-				walkForward(walk_speed);
-				alreadyWalking = true;
-			}
-			if(!outOfPosition){
-				outOfPosition = true;
-			}
+			walkForward(walk_speed);
 		}
 		if ((map["d"] || map["D"])) {
 			RexBoundingBox.translate(BABYLON.Axis.X, walk_speed, BABYLON.Space.LOCAL);
-            if(!alreadyWalking){
-				walkForward(walk_speed);
-				alreadyWalking = true;
-			}
-			if(!outOfPosition){
-				outOfPosition = true;
-			}
+			walkForward(walk_speed);
 		}
         if (map[" "] && jump == 0){
             RexBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), RexBoundingBox.getAbsolutePosition());

@@ -176,6 +176,7 @@ var MainMenu = function () {
 var Menu = MainMenu();
 var Sea;
 var Forest;
+var Lose;
 
 
 var jump=0;
@@ -185,6 +186,17 @@ var outOfPosition = false;
 var alreadyWalking = false;
 var change = false;
 var change_back = false;
+
+var up_down_egg = 0;
+var change_egg = false;
+
+var countdown_game = 60;
+
+//ID of set Interval
+var counterId;
+
+// Check if the first time call the function FOREST_Scene
+var call_forest = 0;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -211,6 +223,68 @@ var FOREST_Scene = function(){
     scene.clearColor = new BABYLON.Color3(0.5, 0.8, 0.5);
     scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 
+    //Optimization
+	var optimizer = new BABYLON.SceneOptimizerOptions(60, 1000);
+    optimizer.addOptimization(new BABYLON.ShadowsOptimization(0));
+    optimizer.addOptimization(new BABYLON.LensFlaresOptimization(0));
+    optimizer.addOptimization(new BABYLON.PostProcessesOptimization(1));
+    optimizer.addOptimization(new BABYLON.ParticlesOptimization(1));
+    optimizer.addOptimization(new BABYLON.TextureOptimization(2, 512));
+    optimizer.addOptimization(new BABYLON.RenderTargetsOptimization(3));
+
+    var sceneOptimizer = new BABYLON.SceneOptimizer(scene, optimizer, true, true);
+
+    sceneOptimizer.start();
+
+    //GUI
+    const guiGame = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GameGui",true,scene);
+
+    var rect1 = new BABYLON.GUI.Rectangle();
+    rect1.width = "5%";
+    rect1.height = "7%";
+    rect1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    rect1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    rect1.paddingLeft = "-32px";
+    rect1.paddingRight = "2px";
+    rect1.paddingTop = "5px";
+    rect1.paddingBottom = "-5px";
+    rect1.background = "grey";
+
+    var Countdown = new BABYLON.GUI.TextBlock("Countdown","60"); 
+    Countdown.color = "white";
+    Countdown.fontFamily = "Courier";
+    Countdown.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    Countdown.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    Countdown.paddingLeft = "-32px";
+    Countdown.paddingRight = "32px";
+    Countdown.paddingTop = "5px";
+    Countdown.paddingBottom = "-5px";
+    Countdown.fontSize = 50;
+
+    guiGame.addControl(rect1);
+    rect1.addControl(Countdown);
+
+    if(call_forest == 0){
+        counterId = setInterval(() => {
+            if(countdown_game != 0){ 
+                countdown_game--;
+                Countdown.text = String(countdown_game);
+            }
+        }, 1000);
+        call_forest++;
+    }
+
+    console.log(counterId);
+
+    Countdown.onTextChangedObservable.add(function () {
+        if(countdown_game == 0){
+            clearInterval(counterId);
+            Lose = LOSING_Scene();
+            changescene = 3;
+        }   
+    });
+    
+
     // SKYBOX
 	var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
 	var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
@@ -227,39 +301,150 @@ var FOREST_Scene = function(){
     camera.lowerRadiusLimit = 15;
     //camera.upperRadiusLimit = 180;
     camera.wheelDeltaPercentage = 0.003;
-    camera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
-    camera.checkCollisions = true;
+    //camera.ellipsoid = new BABYLON.Vector3(5, 5, 5);
+    //camera.checkCollisions = true;
     camera.lowerBetaLimit = Math.PI / 8;	//up
     camera.upperBetaLimit = Math.PI / 2.15;	//down
 
     //Defining the scene lights
-	var directionalLight =  new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -10, 0), scene);
+	var directionalLight =  new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(10, -200, 0), scene);
     directionalLight.diffuse = new BABYLON.Color3(1, 1, 1);
     directionalLight.specular = new BABYLON.Color3(1, 1, 1);
-    directionalLight.intensity = 0.8;
+    directionalLight.intensity = 0.9;
     directionalLight.excludedMeshes.push(skybox);
     var hemisphericLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 0, 1), scene);
+
+    //SHADOW GENERATOR
+    var shadowGenerator = new BABYLON.ShadowGenerator(2048, directionalLight);
+    shadowGenerator.useExponenetialShadowMap = true;
 
     //Difining the grounds
     var ground = BABYLON.MeshBuilder.CreateGround("myGround", {width: 1000, height: 1000, subdivisions: 4}, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMat", scene);
   
-    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/f.jpg", scene);
-    groundMaterial.diffuseTexture.uScale = 4;
-    groundMaterial.diffuseTexture.vScale = 4;
-    groundMaterial.specularTexture = new BABYLON.Texture("textures/f.jpg", scene);
-    groundMaterial.specularTexture.uScale = 8;
-    groundMaterial.specularTexture.vScale = 8;
+    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/f.jpeg", scene);
+    groundMaterial.diffuseTexture.uScale = 2;
+    groundMaterial.diffuseTexture.vScale = 2;
+    groundMaterial.specularTexture = new BABYLON.Texture("textures/f.jpeg", scene);
+    groundMaterial.specularTexture.uScale = 2;
+    groundMaterial.specularTexture.vScale = 2;
 
     ground.material = groundMaterial;
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
     ground.checkCollisions = true;
+    ground.receiveShadows = true;
+
+
+    const fountainProfile = [
+		new BABYLON.Vector3(0, 0, 0),
+		new BABYLON.Vector3(10, 0, 0),
+        new BABYLON.Vector3(10, 4, 0),
+		new BABYLON.Vector3(8, 4, 0),
+        new BABYLON.Vector3(8, 1, 0),
+        new BABYLON.Vector3(1, 2, 0),
+		new BABYLON.Vector3(1, 15, 0),
+		new BABYLON.Vector3(3, 17, 0)
+	];
+	
+	//Create lathe
+	const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
+	//fountain.position.y = 26;
+    fountain.position.x = 250;
+    fountain.scaling = new BABYLON.Vector3(3,3,3);
+    fountain.showBoundingBox = true;
+    fountain.physicsImpostor = new BABYLON.PhysicsImpostor(fountain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+    shadowGenerator.addShadowCaster(fountain);
+    
+
+    // Create a particle system
+    var particleSystem = new BABYLON.ParticleSystem("particles", 50000, scene);
+
+    //Texture of each particle
+    particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+
+    // Where the particles come from
+    particleSystem.emitter = new BABYLON.Vector3(250, 50, 0); // the starting object, the emitter
+    particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, 0); // Starting all from
+    particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
+
+    // Colors of all particles
+    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+    // Size of each particle (random between...
+    particleSystem.minSize = 1;
+    particleSystem.maxSize = 2;
+
+    // Life time of each particle (random between...
+    particleSystem.minLifeTime = 2;
+    particleSystem.maxLifeTime = 3.5;
+
+    // Emission rate
+    particleSystem.emitRate = 1000;
+
+    // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+    // Set the gravity of all particles
+    particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+    // Direction of each particle after it has been emitted
+    particleSystem.direction1 = new BABYLON.Vector3(-2, 8, 2);
+    particleSystem.direction2 = new BABYLON.Vector3(2, 8, -2);
+
+    // Angular speed, in radians
+    particleSystem.minAngularSpeed = 0;
+    particleSystem.maxAngularSpeed = Math.PI;
+
+    // Speed
+    particleSystem.minEmitPower = 1;
+    particleSystem.maxEmitPower = 3;
+    particleSystem.updateSpeed = 0.025;
+
+    particleSystem.start();
+
+    var rockTask;
+
+    //ADD ROCK
+    BABYLON.SceneLoader.ImportMesh("", "models/", "rock.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        // Only one mesh here
+        rockTask = newMeshes[0];
+        rockTask.position.x = 90;
+        rockTask.position.z = 90
+
+        rockTask.scaling.scaleInPlace(3);
+
+        //const displacementmapURL = "textures/distortion.jpeg";
+        //rockTask.applyDisplacementMap(displacementmapURL, 0.1, 1);
+
+        var rockMaterial = new BABYLON.StandardMaterial("rock_mat", scene);
+        rockMaterial.diffuseColor = new BABYLON.Vector3(0.3,0.3,0.3);
+        rockMaterial.specularColor = new BABYLON.Vector3(0.5,0.5,0.5);
+        //rockMaterial.disableLighting = true;
+	    //rockMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/rock.png", scene);
+	    //rockMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+
+        rockTask.material=rockMaterial;
+
+        rockTask.showBoundingBox = true;
+
+        rockTask.physicsImpostor = new BABYLON.PhysicsImpostor(rockTask, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
+        rockTask.physicsImpostor.physicsBody.inertia.setZero();
+        rockTask.physicsImpostor.physicsBody.invInertia.setZero();
+        rockTask.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+    });
+
 
     var perimeter_scene = [];
 	const Walls = BABYLON.Mesh.CreateBox("Walls", 2, scene);
 		hemisphericLight.excludedMeshes.push(Walls);
 		directionalLight.excludedMeshes.push(Walls);
 		Walls.setEnabled(false);
+
+        var wall_material = new BABYLON.StandardMaterial("wall_mat",scene);
+        wall_material.alpha = 0;
 
         var Wall1 = Walls.clone();
         Wall1.position = new BABYLON.Vector3(150, 80, 150);
@@ -277,6 +462,7 @@ var FOREST_Scene = function(){
         Wall1.showBoundingBox = true;
         //Wall_2.visibility = 0;
         Wall1.checkCollisions = true;
+        Wall1.material = wall_material;
     perimeter_scene.push(Wall1);
 
         var Wall2 = Walls.clone();
@@ -295,6 +481,7 @@ var FOREST_Scene = function(){
         //Wall_1.visibility = 0;
         Wall2.showBoundingBox = true;
         Wall2.checkCollisions = true;
+        Wall2.material = wall_material;
     perimeter_scene.push(Wall2); 
 
     var Wall3 = Walls.clone();
@@ -313,6 +500,7 @@ var FOREST_Scene = function(){
         Wall3.showBoundingBox = true;
         //Wall3.visibility = 0;
         Wall3.checkCollisions = true;
+        Wall3.material = wall_material;
     perimeter_scene.push(Wall3);
 
     var Wall4 = Walls.clone();
@@ -332,6 +520,7 @@ var FOREST_Scene = function(){
         Wall4.showBoundingBox = true;
         //Wall4.visibility = 0;
         Wall4.checkCollisions = true;
+        Wall4.material = wall_material;
     perimeter_scene.push(Wall4);
 
     var Wall5 = Walls.clone();
@@ -350,6 +539,7 @@ var FOREST_Scene = function(){
         //Wall5.visibility = 0;
         Wall5.checkCollisions = true;
         Wall5.showBoundingBox = true;
+        Wall5.material = wall_material;
     perimeter_scene.push(Wall5);
 
     var Wall6 = Walls.clone();
@@ -368,6 +558,7 @@ var FOREST_Scene = function(){
         Wall6.showBoundingBox = true;
         //Wall6.visibility = 0;
         Wall6.checkCollisions = true;
+        Wall6.material = wall_material;
     perimeter_scene.push(Wall6);
 
     var Wall7 = Walls.clone();
@@ -386,6 +577,7 @@ var FOREST_Scene = function(){
         Wall7.showBoundingBox = true;
         //Wall7.visibility = 0;
         Wall7.checkCollisions = true;
+        Wall7.material = wall_material;
     perimeter_scene.push(Wall7);
 
     var Wall8 = Walls.clone();
@@ -404,6 +596,7 @@ var FOREST_Scene = function(){
         Wall8.showBoundingBox = true;
         //Wall8.visibility = 0;
         Wall8.checkCollisions = true;
+        Wall8.material = wall_material;
     perimeter_scene.push(Wall8);
 
     var Wall9 = Walls.clone();
@@ -422,6 +615,7 @@ var FOREST_Scene = function(){
         Wall9.showBoundingBox = true;
         //Wall9.visibility = 0;
         Wall9.checkCollisions = true;
+        Wall9.material = wall_material;
     perimeter_scene.push(Wall9);
 
     var Wall10 = Walls.clone();
@@ -440,6 +634,7 @@ var FOREST_Scene = function(){
         Wall10.showBoundingBox = true;
         //Wall10.visibility = 0;
         Wall10.checkCollisions = true;
+        Wall10.material = wall_material;
     perimeter_scene.push(Wall10);
 
     var Wall11 = Walls.clone();
@@ -458,6 +653,7 @@ var FOREST_Scene = function(){
         Wall11.showBoundingBox = true;
         //Wall11.visibility = 0;
         Wall11.checkCollisions = true;
+        Wall11.material = wall_material;
     perimeter_scene.push(Wall11);
 
     var Wall12 = Walls.clone();
@@ -476,6 +672,7 @@ var FOREST_Scene = function(){
         Wall12.showBoundingBox = true;
         //Wall12.visibility = 0;
         Wall12.checkCollisions = true;
+        Wall12.material = wall_material;
     perimeter_scene.push(Wall12);
 
 
@@ -499,42 +696,81 @@ var FOREST_Scene = function(){
         tree.material.opacityTexture = null;
         tree.material.backFaceCulling = false;
     
-        for(i=0; i < 10; i++){
-            for(j = 0; j <= 2; j++){
-                if(j%3==0){
-                    var tree2 = tree.createInstance("");
-                    tree2.position.x = Math.sin(i*80);
-                    tree2.position.z = Math.cos(j*80);
-                    //var tree3 = tree.createInstance("");
-                    //tree3.position.x = 10 + (i*50);
-                    //tree3.position.z = 330 - (j*25);
-                }
-                else{
-                    //var tree2 = tree.createInstance("");
-                    //tree2.position.x = 3 + (i*50);
-                    //tree2.position.z = 5 + (j*25);
-                    //var tree3 = tree.createInstance("");
-                    //tree3.position.x = 7 + (i*50);
-                    //tree3.position.z = -80 - (j*25);
-                }
-            }
+        var tree1 = tree.createInstance("");
+        tree1.position.x = -200;
+        tree1.position.z = 400;
+        shadowGenerator.addShadowCaster(tree1);
     
-        }
-        /* for(i=0; i < 2; i++){
-            for(j = 1; j <= 5; j++){
-                if(i%2==0){
-                    var tree2 = tree.createInstance("");
-                    tree2.position.x = 10 + (i*50);
-                    tree2.position.z = 50 - (j*25);
-                }
-                else{
-                    var tree2 = tree.createInstance("");
-                    tree2.position.x = 25 + (i*50);
-                    tree2.position.z = 7 - (j*25);
-                }
-            }
-    
-        } */
+        var tree2 = tree.createInstance("");
+        tree2.position.x = 300;
+        tree2.position.z = 270;
+        shadowGenerator.addShadowCaster(tree2);
+     
+        var tree3 = tree.createInstance("");
+        tree3.position.x = -200;
+        tree3.position.z = 260;
+        shadowGenerator.addShadowCaster(tree3);
+        
+        var tree4 = tree.createInstance("");
+        tree4.position.x = 190;
+        tree4.position.z = -200;
+        shadowGenerator.addShadowCaster(tree4);
+
+        var tree5 = tree.createInstance("");
+        tree5.position.x = 350;
+        tree5.position.z = 450;
+        shadowGenerator.addShadowCaster(tree5);
+
+        var tree6 = tree.createInstance("");
+        tree6.position.x = 200;
+        tree6.position.z = 150; 
+        shadowGenerator.addShadowCaster(tree6);
+
+        var tree7 = tree.createInstance("");
+        tree7.position.x = 400;
+        tree7.position.z = 200;
+        shadowGenerator.addShadowCaster(tree7);
+        
+        var tree8 = tree.createInstance("");
+        tree8.position.x = 0;
+        tree8.position.z = -425;
+        shadowGenerator.addShadowCaster(tree8);
+
+        var tree9 = tree.createInstance("");
+        tree9.position.x = -400;
+        tree9.position.z = 30;
+        shadowGenerator.addShadowCaster(tree9);
+
+        var tree10 = tree.createInstance("");
+        tree10.position.x = -350;
+        tree10.position.z = 100;
+        shadowGenerator.addShadowCaster(tree10);
+
+        var tree11 = tree.createInstance("");
+        tree11.position.x = -450;
+        tree11.position.z = 300;
+        shadowGenerator.addShadowCaster(tree11);
+        
+        var tree12 = tree.createInstance("");
+        tree12.position.x = -390;
+        tree12.position.z = -60;
+        shadowGenerator.addShadowCaster(tree12);
+        
+        var tree13 = tree.createInstance("");
+        tree13.position.x = -350;
+        tree13.position.z = -300;
+        shadowGenerator.addShadowCaster(tree13);
+
+        var tree14 = tree.createInstance("");
+        tree14.position.x = 270;
+        tree14.position.z = -190;
+        shadowGenerator.addShadowCaster(tree14);
+        
+        var tree15 = tree.createInstance("");
+        tree15.position.x = 350;
+        tree15.position.z = -100;
+        shadowGenerator.addShadowCaster(tree15);
+
         tree.isVisible = false;
     });
 
@@ -549,30 +785,66 @@ var FOREST_Scene = function(){
 		map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 	}));
 
-    var clicked = false;
-	canvas.addEventListener("pointerdown", function (evt) {
-		clicked = true;
-	});
-	canvas.addEventListener("pointermove", function (evt) {
-		if (!clicked) {
-			return;
-		}
-	});
-	canvas.addEventListener("pointerup", function (evt) {
-		clicked = false;
-	});
-
     // IMPORT OF THE ELF
 
-    var ElfBoundingBox = BABYLON.MeshBuilder.CreateBox("ElfBoundingBox",{ height: 7.0, width: 20, depth: 30 }, scene);
+    var ElfBoundingBox = BABYLON.MeshBuilder.CreateBox("ElfBoundingBox",{ height: 7.0, width: 10, depth: 20 }, scene);
 		ElfBoundingBox.position.y = 3.5;
 	var ElfBoundingBoxMaterial = new BABYLON.StandardMaterial("ElfBoundingBoxMaterial", scene);
 		ElfBoundingBoxMaterial.alpha = 0;
 		ElfBoundingBox.material = ElfBoundingBoxMaterial;
 
-    var elf;
-    var elf_skeleton;
+    // Add the highlight layer.
+    var hl = new BABYLON.HighlightLayer("hl1", scene);
 
+
+    //ADD EGGS  
+    var egg;
+    BABYLON.SceneLoader.ImportMesh("", "models/", "egg.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        egg = newMeshes[0];
+        egg.position.y = 5;
+        egg.position.x = 320;
+        egg.scaling.scaleInPlace(2);
+
+        hl.addMesh(egg, BABYLON.Color3.Yellow());
+        egg.showBoundingBox = true;
+
+        console.log("new meshes egg imported:", newMeshes);
+
+        var egg2 = egg.createInstance("");
+        egg2.position.x = 95;
+        egg2.position.z = 90;
+        egg2.position.y = 40;
+
+        scene.registerBeforeRender(function () {
+            if(up_down_egg>50){
+                change_egg = true;
+            }else if(up_down_egg<0){
+                change_egg = false;
+            }
+            if(!change_egg){
+                egg.position.y += 0.1;
+                egg2.position.x += 0.2;
+                up_down_egg++;
+            }else{
+                egg.position.y -= 0.1;
+                egg2.position.x -= 0.2;
+                up_down_egg--;
+            }
+            //egg1.rotate(BABYLON.Axis.Z, 0.01, BABYLON.Space.LOCAL);
+        });
+
+    });
+
+    //ADD TRONCO
+    BABYLON.SceneLoader.ImportMesh("", "models/", "tronco.obj", scene, function (newMeshes) {
+        // Only one mesh here
+        var tronco = newMeshes[0];
+        tronco.position.x = 10;
+        tronco.position.z = 10;
+        tronco.position.y = 20;
+
+        tronco.scaling.scaleInPlace(6);
+    });
 
     /*
     BABYLON.SceneLoader.ImportMesh("", "models/Elf/", "Elf.gltf", scene, function (newMeshes, particleSystems, skeletons) {
@@ -639,7 +911,7 @@ var FOREST_Scene = function(){
 
     });*/
 
-    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 20, depth: 65 }, scene);
+    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 10, depth: 35 }, scene);
 		RexBoundingBox.position.y = 3.5;
 	var RexBoundingBoxMaterial = new BABYLON.StandardMaterial("RexBoundingBoxMaterial", scene);
 		RexBoundingBoxMaterial.alpha = 0;
@@ -653,7 +925,9 @@ var FOREST_Scene = function(){
         console.log("new meshes imported:", newMeshes);
         rex=newMeshes[0];
         rex.scaling.scaleInPlace(5);
-		rex.position.y = 1;
+		rex.position.y = -0.2;
+
+        shadowGenerator.addShadowCaster(rex);
 
         rex_skeleton = skeletons[0];
         console.log("skeleton imported:", rex_skeleton);
@@ -661,26 +935,40 @@ var FOREST_Scene = function(){
         rex.parent = RexBoundingBox;
         RexBoundingBox.showBoundingBox = true;
 
+        /*
+        newMeshes[1].showBoundingBox = true;
+
+        RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
+		RexBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
+		RexBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
+		RexBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+        */
+
         RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
 		RexBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
 		RexBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
 		RexBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
-        scene.stopAllAnimations();
+        //scene.stopAllAnimations();
 
 		camera.target = RexBoundingBox;
 
-        // DEBUGGIN SKELETON VIEWE
+        // DEBUGGIN SKELETON VIEWER
+        /*
 		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
 		skeletonViewer.isEnabled = true; // Enable it
 		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+        */
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
+       
+        /* INSPECTOR
         scene.debugLayer.show({
             embedMode:true
         });
+        */
 
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
         rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
@@ -690,20 +978,24 @@ var FOREST_Scene = function(){
 				dir.y = -RexBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 				dir.z = dir.z;
 				dir.x = dir.x;
-                if(clicked){
-                    //RexBoundingBox.setDirection(dir);
-                    if(!alreadyWalking){
-                        walkForward(walk_speed);
-                        alreadyWalking = true;
-                    }
-                    if(!outOfPosition){
-                        outOfPosition = true;
-                    }
-                }
+                //if(clicked){
+                    RexBoundingBox.setDirection(dir);
+                    //if(!alreadyWalking){
+                    //    walkForward(walk_speed);
+                    //    alreadyWalking = true;
+                    //}
+                    //if(!outOfPosition){
+                    //    outOfPosition = true;
+                    //}
+                //}
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
-                    
                 });
+
+                RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(rockTask.physicsImpostor, function() {
+                    jump = 0;
+                });
+                
         });
 
     });
@@ -848,6 +1140,79 @@ var FOREST_Scene = function(){
     });
     
     
+
+    return scene;
+}
+
+var LOSING_Scene = function(){
+    var scene = new BABYLON.Scene(engine);
+
+    var camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/4, Math.PI/4, 3, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius = 3;
+    camera.lowerAlphaLimit = camera.upperAlphaLimit = camera.alpha = null;
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.attachControl(canvas, true);
+
+    var loseGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    var Lose = new BABYLON.GUI.TextBlock("Lose","YOU LOSE"); 
+    Lose.color = "white";
+    Lose.fontFamily = "Courier";
+    //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    Lose.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    Lose.fontSize = "74px";
+    Lose.paddingLeft = "-32px";
+    Lose.paddingRight = "32px";
+    Lose.paddingTop = "5px";
+    Lose.paddingBottom = "-5px";
+    Lose.resizeToFit = true;
+
+    var rect1 = new BABYLON.GUI.Rectangle();
+    rect1.width = "70%";
+    rect1.height = "70%";
+    rect1.paddingLeft = "-32px";
+    rect1.paddingRight = "2px";
+    rect1.paddingTop = "5px";
+    rect1.paddingBottom = "-5px";
+    rect1.background = "black";
+
+    const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart", "RESTART");
+    restartBtn.width = 0.2;
+    restartBtn.height = 0.2;
+    //restartBtn.height = "40px";
+    restartBtn.color = "black";
+    restartBtn.top = "-14px";
+    restartBtn.fontSize = 50;
+    restartBtn.thickness = 0;
+    restartBtn.background = "white";
+    restartBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    rect1.addControl(restartBtn);
+
+
+    loseGui.addControl(rect1);
+    loseGui.addControl(Lose);
+
+    restartBtn.onPointerUpObservable.addOnce(function () {
+        jump=0;
+        walkStepsCounter = 0;
+        walkBackStepsCounter = 0;
+        outOfPosition = false;
+        alreadyWalking = false;
+        change = false;
+        change_back = false;
+
+        console.log("clickedRestart");
+
+        up_down_egg = 0;
+        change_egg = false;
+
+        countdown_game = 60;
+
+        // Check if the first time call the function FOREST_Scene
+        call_forest = 0;
+        Forest = FOREST_Scene(); 
+        changescene = 2;   
+    });
 
     return scene;
 }
@@ -1359,6 +1724,7 @@ var SEA_Scene = function(){
 
     return scene;
 }
+
 engine.runRenderLoop(function (){
     fps.innerHTML = engine.getFps().toFixed() + " fps";
     if (changescene == 0){
@@ -1383,6 +1749,18 @@ engine.runRenderLoop(function (){
 
             Menu.dispose();
             Forest.render();
+
+        } else {
+            window.document.getElementById("loadingBar").style.visibility = "visible";
+    	    engine.displayLoadingUI();
+	    }
+    } else if (changescene == 3){
+        if (Lose.getWaitingItemsCount() === 0) {
+            window.document.getElementById("loadingBar").style.visibility = "hidden";
+            engine.hideLoadingUI();
+
+            Forest.dispose();
+            Lose.render();
 
         } else {
             window.document.getElementById("loadingBar").style.visibility = "visible";

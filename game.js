@@ -177,6 +177,7 @@ var Menu = MainMenu();
 var Sea;
 var Forest;
 var Lose;
+var Winning;
 
 
 var jump=0;
@@ -206,6 +207,9 @@ var roar_anim = 0;
 var intersct_egg = 0;
 var intersct_egg2 = 0;
 var intersct_egg3 = 0;
+
+//Egg count
+var num_eggs = 3;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -948,18 +952,18 @@ var FOREST_Scene = function(){
 		camera.target = RexBoundingBox;
 
         // DEBUGGIN SKELETON VIEWER
-		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
-		skeletonViewer.isEnabled = true; // Enable it
-		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+		//var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
+		//skeletonViewer.isEnabled = true; // Enable it
+		//skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
         // INSPECTOR
-        scene.debugLayer.show({
-            embedMode:true
-        });
+        //scene.debugLayer.show({
+        //    embedMode:true
+        //});
 
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
         rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
@@ -1091,6 +1095,10 @@ var FOREST_Scene = function(){
 
     //WALK
     scene.registerAfterRender(function () {
+        if(num_eggs == 0){
+            Winning = WINNING_Scene();
+            changescene = 4;
+        }
 		if ((map["w"] || map["W"])) {
 			RexBoundingBox.translate(BABYLON.Axis.Z, walk_speed, BABYLON.Space.LOCAL);
 			walkForward(walk_speed);
@@ -1120,6 +1128,7 @@ var FOREST_Scene = function(){
             console.log("Intersection");
 
             roar_anim = 1;
+            num_eggs--;
         }
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
 
@@ -1130,6 +1139,7 @@ var FOREST_Scene = function(){
             console.log("Intersection3");
 
             roar_anim = 1;
+            num_eggs--;
             }
             intersct_egg3++;
         }
@@ -1142,12 +1152,87 @@ var FOREST_Scene = function(){
             console.log("Intersection2");
 
             roar_anim = 1;
+            num_eggs--;
             }
             intersct_egg2++;
         }
     });
     
     
+
+    return scene;
+}
+
+var WINNING_Scene = function (){
+    var scene = new BABYLON.Scene(engine);
+
+    var camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/4, Math.PI/4, 3, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius = 3;
+    camera.lowerAlphaLimit = camera.upperAlphaLimit = camera.alpha = null;
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.attachControl(canvas, true);
+
+    var loseGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    var Lose = new BABYLON.GUI.TextBlock("Lose","YOU WIN!"); 
+    Lose.color = "Red";
+    Lose.fontFamily = "Courier";
+    //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    Lose.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    Lose.fontSize = "100px";
+    Lose.paddingLeft = "-32px";
+    Lose.paddingRight = "32px";
+    Lose.paddingTop = "5px";
+    Lose.paddingBottom = "-5px";
+    Lose.resizeToFit = true;
+
+    var rect1 = new BABYLON.GUI.Rectangle();
+    rect1.width = "70%";
+    rect1.height = "70%";
+    rect1.paddingLeft = "-32px";
+    rect1.paddingRight = "2px";
+    rect1.paddingTop = "5px";
+    rect1.paddingBottom = "-5px";
+    rect1.background = "white";
+
+    const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart", "RESTART");
+    restartBtn.width = 0.2;
+    restartBtn.height = 0.2;
+    //restartBtn.height = "40px";
+    restartBtn.color = "red";
+    restartBtn.top = "-14px";
+    restartBtn.fontSize = 50;
+    restartBtn.thickness = 0;
+    restartBtn.background = "grey";
+    restartBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    rect1.addControl(restartBtn);
+
+
+    loseGui.addControl(rect1);
+    loseGui.addControl(Lose);
+
+    restartBtn.onPointerUpObservable.addOnce(function () {
+        jump=0;
+        walkStepsCounter = 0;
+        walkBackStepsCounter = 0;
+        outOfPosition = false;
+        alreadyWalking = false;
+        change = false;
+        change_back = false;
+        num_eggs = 3;
+
+        console.log("clickedRestart");
+
+        up_down_egg = 0;
+        change_egg = false;
+
+        countdown_game = 60;
+
+        // Check if the first time call the function FOREST_Scene
+        call_forest = 0;
+        Forest = FOREST_Scene(); 
+        changescene = 2;   
+    });
 
     return scene;
 }
@@ -1208,6 +1293,7 @@ var LOSING_Scene = function(){
         alreadyWalking = false;
         change = false;
         change_back = false;
+        num_eggs = 3;
 
         console.log("clickedRestart");
 
@@ -1769,6 +1855,18 @@ engine.runRenderLoop(function (){
 
             Forest.dispose();
             Lose.render();
+
+        } else {
+            window.document.getElementById("loadingBar").style.visibility = "visible";
+    	    engine.displayLoadingUI();
+	    }
+    } else if (changescene == 4){
+        if (Winning.getWaitingItemsCount() === 0) {
+            window.document.getElementById("loadingBar").style.visibility = "hidden";
+            engine.hideLoadingUI();
+
+            Forest.dispose();
+            Winning.render();
 
         } else {
             window.document.getElementById("loadingBar").style.visibility = "visible";

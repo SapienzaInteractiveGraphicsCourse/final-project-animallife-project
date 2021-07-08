@@ -182,10 +182,11 @@ var Lose;
 var jump=0;
 var walkStepsCounter = 0;
 var walkBackStepsCounter = 0;
-var outOfPosition = false;
-var alreadyWalking = false;
+var RoarCounter = 0;
+
 var change = false;
 var change_back = false;
+var change_roar = false;
 
 var up_down_egg = 0;
 var change_egg = false;
@@ -201,6 +202,11 @@ var call_forest = 0;
 //When is 1 start the roar anim
 var roar_anim = 0;
 
+//Variables for check eggs
+var intersct_egg = 0;
+var intersct_egg2 = 0;
+var intersct_egg3 = 0;
+
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
 
@@ -208,7 +214,7 @@ var FOREST_Scene = function(){
     var music = new BABYLON.Sound("Forest", "sounds/forest_snd.wav", scene, null, {
         loop: true,
         autoplay: true,
-        volume: 0.5
+        volume: 0.2
     });
 
     var roar = new BABYLON.Sound("Forest", "sounds/roar.wav", scene, null, {volume: 0.05});
@@ -853,13 +859,6 @@ var FOREST_Scene = function(){
         hl.addMesh(egg, BABYLON.Color3.Yellow());
         egg.showBoundingBox = true;
 
-        /*
-        egg.physicsImpostor = new BABYLON.PhysicsImpostor(rockTask, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
-        egg.physicsImpostor.physicsBody.inertia.setZero();
-        egg.physicsImpostor.physicsBody.invInertia.setZero();
-        egg.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        */
-
         console.log("new meshes egg imported:", newMeshes);
 
         egg2 = egg.createInstance("");
@@ -903,71 +902,6 @@ var FOREST_Scene = function(){
 
         tronco.scaling.scaleInPlace(6);
     });
-
-    /*
-    BABYLON.SceneLoader.ImportMesh("", "models/Elf/", "Elf.gltf", scene, function (newMeshes, particleSystems, skeletons) {
-
-        console.log("new meshes imported:", newMeshes);
-        elf=newMeshes[0];
-        elf.scaling.scaleInPlace(10);
-		elf.position.y = 4;
-
-        elf_skeleton = skeletons[0];
-        console.log("skeleton imported:", elf_skeleton);
-
-        elf.parent = ElfBoundingBox;
-        ElfBoundingBox.showBoundingBox = true;
-
-        var elfMaterial = new BABYLON.StandardMaterial("elf_material", scene);
-        elfMaterial.diffuseTexture = new BABYLON.Texture("textures/earth.jpg", scene);
-        newMeshes[1].material=elfMaterial;
-
-        ElfBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(ElfBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
-		ElfBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
-		ElfBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
-		ElfBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-
-
-		camera.target = ElfBoundingBox;
-
-        // DEBUGGIN SKELETON VIEWE
-		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(elf_skeleton, elf, scene);
-		skeletonViewer.isEnabled = true; // Enable it
-		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
-
-        for(i=0;i<22;i++){
-            elf_skeleton.bones[i].linkTransformNode(null); 
-        }
-        //elf_skeleton.bones[11].linkTransformNode(null);
-        //BONES[10] = RIGHT SHOULDER
-        //BONES[11] = RIGHT ARM
-
-        scene.debugLayer.show({
-            embedMode:true
-        });
-
-        scene.registerBeforeRender(function () {
-			var dir = camera.getTarget().subtract(camera.position);
-				dir.y = -ElfBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
-				dir.z = dir.z;
-				dir.x = dir.x;
-                if(clicked){
-                    //ElfBoundingBox.setDirection(dir);
-                    if(!alreadyWalking){
-                        walkForward(walk_speed);
-                        alreadyWalking = true;
-                    }
-                    if(!outOfPosition){
-                        outOfPosition = true;
-                    }
-                }
-                ElfBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
-                    jump = 0;
-                    
-                });
-        });
-
-    });*/
 
     var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 10, depth: 35 }, scene);
 		RexBoundingBox.position.y = 3.5;
@@ -1035,16 +969,7 @@ var FOREST_Scene = function(){
 				dir.y = -RexBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 				dir.z = dir.z;
 				dir.x = dir.x;
-                //if(clicked){
-                    RexBoundingBox.setDirection(dir);
-                    //if(!alreadyWalking){
-                    //    walkForward(walk_speed);
-                    //    alreadyWalking = true;
-                    //}
-                    //if(!outOfPosition){
-                    //    outOfPosition = true;
-                    //}
-                //}
+                RexBoundingBox.setDirection(dir);
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
                 });
@@ -1063,14 +988,26 @@ var FOREST_Scene = function(){
         }else if(walkStepsCounter<-30){
             change = false;
         }
+        if(roar_anim == 1){
+            if(RoarCounter>40){
+                change_roar = true;
+            }else if(RoarCounter<0){
+                change_roar = false;
+                roar_anim = 0;
+            }
+            if(!change_roar){
+                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL); //Neck
+                RoarCounter++;
+            }
+            else{
+                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); //Neck
+                RoarCounter--;
+            }
+        }
         if(!change){
 
-            if(roar_anim == 1){
-                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL); //Neck
-            }
-
             //Face
-            //rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/50, BABYLON.Space.LOCAL); 
+            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, speed/50, BABYLON.Space.LOCAL); 
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Right Arm
@@ -1091,13 +1028,8 @@ var FOREST_Scene = function(){
             walkStepsCounter ++;
         }else{
 
-            if(roar_anim == 1){
-                rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); //Neck
-                roar_anim = 0;
-            }
-
             //Face
-            //rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/50, BABYLON.Space.LOCAL);
+            rex_skeleton.bones[7].rotate(BABYLON.Axis.Y, -speed/50, BABYLON.Space.LOCAL);
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Right Arm
@@ -1206,6 +1138,7 @@ var FOREST_Scene = function(){
 
         if(RexBoundingBox.intersectsMesh(egg,true,false)){
             egg.isVisible = false;
+            egg.position.y = -1000;
             roar.play();
             //egg.dispose();
             console.log("Intersection");
@@ -1213,16 +1146,28 @@ var FOREST_Scene = function(){
             roar_anim = 1;
         }
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
+
+            if(intersct_egg3 == 0){
             //egg.isVisible = false;
             egg3.dispose();
             roar.play();
             console.log("Intersection3");
+
+            roar_anim = 1;
+            }
+            intersct_egg3++;
         }
         if(rex_bounding.intersectsMesh(egg2,true,false)){
+
+            if(intersct_egg2 == 0){
             //egg2.isVisible = false;
             egg2.dispose();
             roar.play();
             console.log("Intersection2");
+
+            roar_anim = 1;
+            }
+            intersct_egg2++;
         }
     });
     

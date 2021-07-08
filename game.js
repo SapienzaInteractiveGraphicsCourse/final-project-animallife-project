@@ -322,12 +322,12 @@ var FOREST_Scene = function(){
     var ground = BABYLON.MeshBuilder.CreateGround("myGround", {width: 1000, height: 1000, subdivisions: 4}, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMat", scene);
   
-    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/f.jpeg", scene);
-    groundMaterial.diffuseTexture.uScale = 2;
-    groundMaterial.diffuseTexture.vScale = 2;
-    groundMaterial.specularTexture = new BABYLON.Texture("textures/f.jpeg", scene);
-    groundMaterial.specularTexture.uScale = 2;
-    groundMaterial.specularTexture.vScale = 2;
+    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/grass2.jpg", scene);
+    groundMaterial.diffuseTexture.uScale = 8;
+    groundMaterial.diffuseTexture.vScale = 8;
+    groundMaterial.specularTexture = new BABYLON.Texture("textures/grass2.jpg", scene);
+    groundMaterial.specularTexture.uScale = 8;
+    groundMaterial.specularTexture.vScale = 8;
 
     ground.material = groundMaterial;
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);

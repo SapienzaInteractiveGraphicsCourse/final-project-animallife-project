@@ -84,8 +84,67 @@ var MainMenu = function () {
         Title.fontSize = "74px";
         Title.color = "white";
         Title.resizeToFit = true;
+        Title.paddingTop = "40px";
         Title.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         guiMenu.addControl(Title);
+
+
+        /*
+        const SelectLevel = new BABYLON.GUI.TextBlock();
+        SelectLevel.text = "SELECT DIFFICULTY";
+        SelectLevel.fontFamily = "Ceviche One";
+        SelectLevel.fontSize = "47px";
+        SelectLevel.color = "white";
+        SelectLevel.paddingLeft = "150px";
+        SelectLevel.resizeToFit = true;
+        SelectLevel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        SelectLevel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        SelectLevel.paddingBottom = "220px";
+        guiMenu.addControl(SelectLevel);
+        */
+
+        var panel_difficulty = new BABYLON.GUI.StackPanel();
+        panel_difficulty.left = "-820px";
+        guiMenu.addControl(panel_difficulty);
+
+        var textblock = new BABYLON.GUI.TextBlock();
+        textblock.height = "150px";
+        textblock.fontSize = 40;
+        textblock.fontFamily = "Ceviche One";
+        textblock.text = "SELECT DIFFICULTY";
+        textblock.color = "white";
+        panel_difficulty.addControl(textblock); 
+
+        var addRadio = function(text, parent) {
+
+            var button = new BABYLON.GUI.RadioButton();
+            button.width = "30px";
+            button.height = "30px";
+            button.color = "white";
+            button.background = "green";     
+    
+            /*button.onIsCheckedChangedObservable.add(function(state) {
+                if (state) {
+                    textblock.text = "You selected " + text;
+                }
+            });*/ 
+    
+            var header = BABYLON.GUI.Control.AddHeader(button, text, "150px", { isHorizontal: true, controlFirst: true });
+            header.height = "60px";
+            header.children[1].fontSize = 30;
+            header.children[1].fontFamily = "Ceviche One";
+            header.children[1].color = "white";
+            header.children[1].width ="180px";
+    
+            parent.addControl(header);    
+        }
+    
+    
+        addRadio("EASY", panel_difficulty);
+        addRadio("MEDIUM", panel_difficulty);
+        addRadio("IMPOSSIBLE", panel_difficulty);
+
+
        
         // Create the 3D UI manager for the shpere panels
         var manager = new BABYLON.GUI.GUI3DManager(main_menu);
@@ -222,19 +281,6 @@ var FOREST_Scene = function(){
     });
 
     var roar = new BABYLON.Sound("Forest", "sounds/roar.wav", scene, null, {volume: 0.05});
-
-    //Optimization
-	var optimizerOptions = new BABYLON.SceneOptimizerOptions(60, 500);
-    optimizerOptions.addOptimization(new BABYLON.ShadowsOptimization(0));
-    optimizerOptions.addOptimization(new BABYLON.LensFlaresOptimization(0));
-    optimizerOptions.addOptimization(new BABYLON.PostProcessesOptimization(1));
-    optimizerOptions.addOptimization(new BABYLON.ParticlesOptimization(1));
-    optimizerOptions.addOptimization(new BABYLON.TextureOptimization(2, 512));
-    optimizerOptions.addOptimization(new BABYLON.RenderTargetsOptimization(3));
-
-    var sceneOptimizer = new BABYLON.SceneOptimizer(scene, optimizerOptions, true, true);
-
-    sceneOptimizer.start();
 
     //Enable physic for the main scene
     var gravityVector = new BABYLON.Vector3(0,-150, 0);
@@ -489,6 +535,28 @@ var FOREST_Scene = function(){
 
         rock.showBoundingBox = true;
     });
+
+    //BUSH
+
+    /*
+    BABYLON.SceneLoader.ImportMesh("", "models/obj-files/", "bush1.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        //console.log(newMeshes);
+        newMeshes[0].scaling.scaleInPlace(5);
+        newMeshes[1].scaling.scaleInPlace(5);
+        var leafMaterial = new BABYLON.StandardMaterial("leaf", scene);
+        //leafMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Base_Color.png", scene);
+        //leafMaterial.specularTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Base_Color.png", scene);
+        //leafMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Normal.png", scene);
+        newMeshes[1].material = leafMaterial;
+
+        var woodMaterial = new BABYLON.StandardMaterial("wood", scene);
+        woodMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/textures/wood.png", scene);
+        woodMaterial.specularTexture = new BABYLON.Texture("models/obj-files/textures/wood.png", scene);
+        //woodMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bark_04_3K_Normal.png", scene);
+        newMeshes[0].material =  woodMaterial; 
+
+    });
+    */
 
 
     var perimeter_scene = [];
@@ -1121,40 +1189,38 @@ var FOREST_Scene = function(){
         }
 
         if(RexBoundingBox.intersectsMesh(egg,true,false)){
-            egg.isVisible = false;
-            egg.position.y = -1000;
-            roar.play();
-            //egg.dispose();
-            console.log("Intersection");
+                egg.isVisible = false;
+                egg.position.y = -1000;
+                roar.play();
+                //egg.dispose();
+                console.log("Intersection");
 
-            roar_anim = 1;
-            num_eggs--;
+                roar_anim = 1;
+                num_eggs--;
         }
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
 
             if(intersct_egg3 == 0){
-            //egg.isVisible = false;
-            egg3.dispose();
-            roar.play();
-            console.log("Intersection3");
+                egg3.dispose();
+                roar.play();
+                console.log("Intersection3");
 
-            roar_anim = 1;
-            num_eggs--;
-            }
-            intersct_egg3++;
+                roar_anim = 1;
+                num_eggs--;
+                }
+                intersct_egg3++;
         }
         if(rex_bounding.intersectsMesh(egg2,true,false)){
 
             if(intersct_egg2 == 0){
-            //egg2.isVisible = false;
-            egg2.dispose();
-            roar.play();
-            console.log("Intersection2");
+                egg2.dispose();
+                roar.play();
+                console.log("Intersection2");
 
-            roar_anim = 1;
-            num_eggs--;
-            }
-            intersct_egg2++;
+                roar_anim = 1;
+                num_eggs--;
+                }
+                intersct_egg2++;
         }
     });
     
@@ -1172,19 +1238,19 @@ var WINNING_Scene = function (){
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
-    var loseGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var WinningGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("WinningUI");
 
-    var Lose = new BABYLON.GUI.TextBlock("Lose","YOU WIN!"); 
-    Lose.color = "Red";
-    Lose.fontFamily = "Courier";
+    var Win = new BABYLON.GUI.TextBlock("Win","YOU WIN!"); 
+    Win.color = "Red";
+    Win.fontFamily = "Courier";
     //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    Lose.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    Lose.fontSize = "100px";
-    Lose.paddingLeft = "-32px";
-    Lose.paddingRight = "32px";
-    Lose.paddingTop = "5px";
-    Lose.paddingBottom = "-5px";
-    Lose.resizeToFit = true;
+    Win.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    Win.fontSize = "150px";
+    Win.paddingLeft = "-32px";
+    Win.paddingRight = "32px";
+    Win.paddingTop = "5px";
+    Win.paddingBottom = "-5px";
+    Win.resizeToFit = true;
 
     var rect1 = new BABYLON.GUI.Rectangle();
     rect1.width = "70%";
@@ -1195,7 +1261,7 @@ var WINNING_Scene = function (){
     rect1.paddingBottom = "-5px";
     rect1.background = "white";
 
-    const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart", "RESTART");
+    const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart_win", "RESTART");
     restartBtn.width = 0.2;
     restartBtn.height = 0.2;
     //restartBtn.height = "40px";
@@ -1208,10 +1274,11 @@ var WINNING_Scene = function (){
     rect1.addControl(restartBtn);
 
 
-    loseGui.addControl(rect1);
-    loseGui.addControl(Lose);
+    WinningGui.addControl(rect1);
+    WinningGui.addControl(Win);
 
     restartBtn.onPointerUpObservable.addOnce(function () {
+        clearInterval(counterId);
         jump=0;
         walkStepsCounter = 0;
         walkBackStepsCounter = 0;
@@ -1221,7 +1288,7 @@ var WINNING_Scene = function (){
         change_back = false;
         num_eggs = 3;
 
-        console.log("clickedRestart");
+        console.log("clickedRestartWin");
 
         up_down_egg = 0;
         change_egg = false;

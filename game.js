@@ -599,6 +599,126 @@ var FOREST_Scene = function(){
 
     });
 
+    BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        console.log("Tulips");
+        console.log(newMeshes);
+        for (var i = 0; i<13; i ++){
+            newMeshes[i].scaling.scaleInPlace(10);
+            //newMeshes[i].position.x = 20;
+        }
+        //newMeshes[0].scaleInPlace(3);
+    });
+
+    //FENCE
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        newMeshes[1].position.x = 370;
+        newMeshes[0].position.x = 370;
+        newMeshes[1].position.z = 30;
+        newMeshes[0].position.z = 30;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        newMeshes[1].position.x = 370;
+        newMeshes[0].position.x = 370;
+        newMeshes[1].position.z = -30;
+        newMeshes[0].position.z = -30;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+
+        newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[1].position.x = 310;
+        newMeshes[0].position.x = 310;
+        newMeshes[1].position.z = -75;
+        newMeshes[0].position.z = -75;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[1].position.x = 250;
+        newMeshes[0].position.x = 250;
+        newMeshes[1].position.z = -75;
+        newMeshes[0].position.z = -75;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+
+        newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[1].position.x = 310;
+        newMeshes[0].position.x = 310;
+        newMeshes[1].position.z = 75;
+        newMeshes[0].position.z = 75;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
+        newMeshes[1].position.x = 250;
+        newMeshes[0].position.x = 250;
+        newMeshes[1].position.z = 75;
+        newMeshes[0].position.z = 75;
+        newMeshes[1].scaling.scaleInPlace(11);
+        newMeshes[0].scaling.scaleInPlace(11);
+
+        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
+        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+        newMeshes[0].material= Material;
+        newMeshes[1].material= Material;
+
+    });
+
 
     var perimeter_scene = [];
 	const Walls = BABYLON.Mesh.CreateBox("Walls", 2, scene);

@@ -1,6 +1,6 @@
 # Blender v2.76 (sub 0) OBJ File: 'wooden fence.blend'
 # www.blender.org
-mtllib wooden fence.mtl
+#mtllib wooden fence.mtl
 o Плоскость.009_Плоскость.011
 v 0.242425 -0.001713 -2.782804
 v -0.075582 0.003057 -2.771211

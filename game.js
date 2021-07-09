@@ -994,10 +994,10 @@ var FOREST_Scene = function(){
         tree3.position.z = 260;
         shadowGenerator.addShadowCaster(tree3);
         
-        var tree4 = tree.createInstance("");
-        tree4.position.x = 190;
-        tree4.position.z = -200;
-        shadowGenerator.addShadowCaster(tree4);
+        // var tree4 = tree.createInstance("");
+        // tree4.position.x = 190;
+        // tree4.position.z = -200;
+        // shadowGenerator.addShadowCaster(tree4);
 
         var tree5 = tree.createInstance("");
         tree5.position.x = 350;
@@ -1045,8 +1045,8 @@ var FOREST_Scene = function(){
         shadowGenerator.addShadowCaster(tree13);
 
         var tree14 = tree.createInstance("");
-        tree14.position.x = 270;
-        tree14.position.z = -190;
+        tree14.position.x = 180;
+        tree14.position.z = -290;
         shadowGenerator.addShadowCaster(tree14);
         
         var tree15 = tree.createInstance("");
@@ -1054,8 +1054,34 @@ var FOREST_Scene = function(){
         tree15.position.z = -100;
         shadowGenerator.addShadowCaster(tree15);
 
+        var tree16 = tree.createInstance("");
+        tree16.position.x = 280;
+        tree16.position.z = -200;
+        shadowGenerator.addShadowCaster(tree16);
+
+        var tree17 = tree.createInstance("");
+        tree17.position.x = 100;
+        tree17.position.z = -200;
+        shadowGenerator.addShadowCaster(tree17);
+
+        var tree18 = tree.createInstance("");
+        tree18.position.x = 150;
+        tree18.position.z = -150;
+        shadowGenerator.addShadowCaster(tree18);
+
+        var tree19 = tree.createInstance("");
+        tree19.position.x = 200;
+        tree19.position.z = -100;
+        shadowGenerator.addShadowCaster(tree19);
+
+        var tree20 = tree.createInstance("");
+        tree20.position.x = 100;
+        tree20.position.z = -280;
+        shadowGenerator.addShadowCaster(tree20); 
+
         tree.isVisible = false;
     });
+
 
     // KEYBOARD INPUT
     var map = {};

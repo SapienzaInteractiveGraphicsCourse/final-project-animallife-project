@@ -573,8 +573,17 @@ var FOREST_Scene = function(){
     //BUSH
     BABYLON.SceneLoader.ImportMesh("", "models/obj-files/", "bush1.obj", scene, function (newMeshes, particleSystems, skeletons) {
         //console.log(newMeshes);
-        newMeshes[0].scaling.scaleInPlace(7);
-        newMeshes[1].scaling.scaleInPlace(7);
+        newMeshes[0].scaling.scaleInPlace(9);
+        newMeshes[1].scaling.scaleInPlace(9);
+        var bush = newMeshes[0];
+        var leaves = newMeshes[1];
+
+        bush.position.z = -180;
+        leaves.position.z = -180; 
+
+        bush.showBoundingBox = true;
+        leaves.showBoundingBox = true;
+
         var leafMaterial = new BABYLON.StandardMaterial("leaf", scene);
         leafMaterial.diffuseColor = new BABYLON.Vector3(0,0.3,0.1);
         //leafMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/Bush_leaf_1K_Base_Color.png", scene);
@@ -583,10 +592,10 @@ var FOREST_Scene = function(){
         newMeshes[1].material = leafMaterial;
 
         var woodMaterial = new BABYLON.StandardMaterial("wood", scene);
-        //woodMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
-        //woodMaterial.specularTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
+        woodMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
+        woodMaterial.specularTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
         //woodMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bark_04_3K_Normal.png", scene);
-        //newMeshes[0].material =  woodMaterial; 
+        newMeshes[0].material =  woodMaterial; 
 
     });
 

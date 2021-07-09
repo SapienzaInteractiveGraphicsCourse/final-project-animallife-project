@@ -301,8 +301,8 @@ var num_eggs = 4;
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
 
-    // Load the sound and play it automatically once ready
-    var music = new BABYLON.Sound("Forest", "sounds/forest_snd.wav", scene, null, {
+     // Load the sound and play it automatically once ready
+     var music = new BABYLON.Sound("Forest", "sounds/forest_snd.wav", scene, null, {
         loop: true,
         autoplay: true,
         volume: 0.2
@@ -397,10 +397,10 @@ var FOREST_Scene = function(){
 	skybox.material = skyboxMaterial;		
     
 	//Defininng the scene camera
-	var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 34, new BABYLON.Vector3(0, 0, 60), scene);
+	var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 3.5, Math.PI / 2.5, 35, new BABYLON.Vector3(0, 0, 60), scene);
     scene.activeCamera = camera;
     scene.activeCamera.attachControl(canvas, true);
-    camera.lowerRadiusLimit = 15;
+    camera.lowerRadiusLimit = 10;
     //camera.upperRadiusLimit = 180;
     camera.wheelDeltaPercentage = 0.003;
     //camera.ellipsoid = new BABYLON.Vector3(5, 5, 5);
@@ -452,7 +452,7 @@ var FOREST_Scene = function(){
 	const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
 	//fountain.position.y = 26;
     fountain.position.x = 250;
-    fountain.scaling = new BABYLON.Vector3(3,3,3);
+    fountain.scaling = new BABYLON.Vector3(2.5,2,2.5);
     fountain.showBoundingBox = true;
     fountain.physicsImpostor = new BABYLON.PhysicsImpostor(fountain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
     shadowGenerator.addShadowCaster(fountain);
@@ -471,7 +471,7 @@ var FOREST_Scene = function(){
     particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
 
     // Where the particles come from
-    particleSystem.emitter = new BABYLON.Vector3(250, 50, 0); // the starting object, the emitter
+    particleSystem.emitter = new BABYLON.Vector3(250, 30, 0); // the starting object, the emitter
     particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, 0); // Starting all from
     particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
 
@@ -515,7 +515,7 @@ var FOREST_Scene = function(){
     var rockTask;
 
     //ADD ROCK
-    BABYLON.SceneLoader.ImportMesh("", "models/", "rock.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "rock.obj", scene, function (newMeshes) {
         // Only one mesh here
         rockTask = newMeshes[0];
         rockTask.position.x = 90;
@@ -545,8 +545,6 @@ var FOREST_Scene = function(){
     });
 
     // ADD ROCK2
-
-    //ADD ROCK TYPE 2
     BABYLON.SceneLoader.ImportMesh("", "models/", "Rock_6.OBJ", scene, function (newMeshes) {
         // Only one mesh here
         var rock = newMeshes[0];
@@ -571,10 +569,10 @@ var FOREST_Scene = function(){
     });
 
     //BUSH
-    BABYLON.SceneLoader.ImportMesh("", "models/obj-files/", "bush1.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/obj-files/", "bush1.obj", scene, function (newMeshes) {
         //console.log(newMeshes);
-        newMeshes[0].scaling.scaleInPlace(9);
-        newMeshes[1].scaling.scaleInPlace(9);
+        newMeshes[0].scaling.scaleInPlace(2);
+        newMeshes[1].scaling.scaleInPlace(2);
         var bush = newMeshes[0];
         var leaves = newMeshes[1];
 
@@ -597,54 +595,203 @@ var FOREST_Scene = function(){
         //woodMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bark_04_3K_Normal.png", scene);
         newMeshes[0].material =  woodMaterial; 
 
+        var bush1 = bush.createInstance("");
+        bush1.scaling.scaleInPlace(5);
+        bush1.position.x = 40;
+        bush1.position.z = -250;
+        shadowGenerator.addShadowCaster(bush1);
+        var leaves1 = leaves.createInstance("");
+        leaves1.scaling.scaleInPlace(5);
+        leaves1.position.x = 40;
+        leaves1.position.z = -250;
+        shadowGenerator.addShadowCaster(leaves1);
+
+        var bush2 = bush.createInstance("");
+        bush2.scaling.scaleInPlace(3);
+        bush2.position.x = 190;
+        bush2.position.z = -80;
+        shadowGenerator.addShadowCaster(bush2);
+        var leaves2 = leaves.createInstance("");
+        leaves2.scaling.scaleInPlace(3);
+        leaves2.position.x = 190;
+        leaves2.position.z = -80;
+        shadowGenerator.addShadowCaster(leaves2);
+
+        var bush3 = bush.createInstance("");
+        bush3.scaling.scaleInPlace(5);
+        bush3.position.x = 0;
+        bush3.position.z = -280;
+        shadowGenerator.addShadowCaster(bush3);
+        var leaves3 = leaves.createInstance("");
+        leaves3.scaling.scaleInPlace(5);
+        leaves3.position.x = 0;
+        leaves3.position.z = -280;
+        shadowGenerator.addShadowCaster(leaves3);
+
+        var bush4 = bush.createInstance("");
+        bush4.scaling.scaleInPlace(5);
+        bush4.position.x = -70;
+        bush4.position.z = -160;
+        shadowGenerator.addShadowCaster(bush4);
+        var leaves4 = leaves.createInstance("");
+        leaves4.scaling.scaleInPlace(5);
+        leaves4.position.x = -70;
+        leaves4.position.z = -160;
+        shadowGenerator.addShadowCaster(leaves4);
+
+        var bush5 = bush.createInstance("");
+        bush5.scaling.scaleInPlace(5);
+        bush5.position.x = 60;
+        bush5.position.z = -215;
+        shadowGenerator.addShadowCaster(bush5);
+        var leaves5 = leaves.createInstance("");
+        leaves5.scaling.scaleInPlace(5);
+        leaves5.position.x = 60;
+        leaves5.position.z = -215;
+        shadowGenerator.addShadowCaster(leaves5);
+
+        var bush6 = bush.createInstance("");
+        bush6.scaling.scaleInPlace(5);
+        bush6.position.x = -60;
+        bush6.position.z = -215;
+        shadowGenerator.addShadowCaster(bush6);
+        var leaves6 = leaves.createInstance("");
+        leaves6.scaling.scaleInPlace(5);
+        leaves6.position.x = -60;
+        leaves6.position.z = -215;
+        shadowGenerator.addShadowCaster(leaves6);
+
+        var bush7 = bush.createInstance("");
+        bush7.scaling.scaleInPlace(5);
+        bush7.position.x = 20;
+        bush7.position.z = -270;
+        shadowGenerator.addShadowCaster(bush7);
+        var leaves7 = leaves.createInstance("");
+        leaves7.scaling.scaleInPlace(5);
+        leaves7.position.x = 20;
+        leaves7.position.z = -270;
+        shadowGenerator.addShadowCaster(leaves7);
+       
+
+        bush.isVisible = false;
+        leaves.isVisible = false;
+
     });
 
-    BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes, particleSystems, skeletons) {
+
+    var logMaterial = new BABYLON.StandardMaterial("log", scene);
+    logMaterial.diffuseTexture = new BABYLON.Texture("models/Log_Material_Diffuse.png", scene);
+    logMaterial.specularTexture = new BABYLON.Texture("models/Log_Material_Glossiness.png", scene);
+    logMaterial.bumpTexture = new BABYLON.Texture("models/Log_Material_Normal.png", scene);
+
+    //LOG
+    var log1;
+    var log0;
+    var log_bounding;
+
+    var LogBoundingBox = BABYLON.MeshBuilder.CreateBox("LogBoundingBox",{ height: 20.0, width: 20, depth: 120 }, scene);
+		//LogBoundingBox.position.y = 3.5;
+	var LogBoundingBoxMaterial = new BABYLON.StandardMaterial("LogBoundingBoxMaterial", scene);
+		LogBoundingBoxMaterial.alpha = 0;
+		LogBoundingBox.material = LogBoundingBoxMaterial;
+
+    BABYLON.SceneLoader.ImportMesh("", "models/", "wood_2.obj", scene, function (newMeshes) {
+        console.log("wood");
+        console.log(newMeshes);
+        log1 = newMeshes[1];
+        log0 = newMeshes[0];
+        //newMeshes[1].showBoundingBox = true;
+        newMeshes[1].rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+        newMeshes[0].rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+
+        newMeshes[0].position.y = 5;
+        newMeshes[1].position.y = 5;
+        newMeshes[0].position.x = -40;
+        newMeshes[1].position.x = -40;
+
+
+        newMeshes[0].material = logMaterial;
+        newMeshes[1].material = logMaterial;
+
+        log0.parent = LogBoundingBox;
+        LogBoundingBox.showBoundingBox = true;
+        log_bounding = newMeshes[1];
+
+        LogBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
+        LogBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
+        LogBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
+        LogBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
+    });
+
+    //FLOWERS
+    BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
+        console.log("Tulips");
+        console.log(newMeshes);
+        for (var i = 0; i<13; i ++){
+            newMeshes[i].scaling.scaleInPlace(15);
+            newMeshes[i].position.x = 360;
+            newMeshes[i].position.z = 75;
+        }
+    });
+
+     //FLOWERS
+    BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
         console.log("Tulips");
         console.log(newMeshes);
         for (var i = 0; i<13; i ++){
             newMeshes[i].scaling.scaleInPlace(10);
-            //newMeshes[i].position.x = 20;
+            newMeshes[i].position.x = 365;
+            newMeshes[i].position.z = 60;
         }
-        //newMeshes[0].scaleInPlace(3);
+    });
+
+     //FLOWERS
+     BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
+        console.log("Tulips");
+        console.log(newMeshes);
+        for (var i = 0; i<13; i ++){
+            newMeshes[i].scaling.scaleInPlace(20);
+            newMeshes[i].position.x = 365;
+            newMeshes[i].position.z = 70;
+        }
     });
 
     //FENCE
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    var FenceMaterial = new BABYLON.StandardMaterial("fence_mat",scene);
+    FenceMaterial.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
+    FenceMaterial.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+    FenceMaterial.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
         newMeshes[1].position.x = 370;
         newMeshes[0].position.x = 370;
         newMeshes[1].position.z = 30;
         newMeshes[0].position.z = 30;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
-
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
     });
 
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
         newMeshes[1].position.x = 370;
         newMeshes[0].position.x = 370;
         newMeshes[1].position.z = -30;
         newMeshes[0].position.z = -30;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
 
     });
 
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
 
         newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
@@ -654,16 +801,13 @@ var FOREST_Scene = function(){
         newMeshes[0].position.z = -75;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
 
     });
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
         newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[1].position.x = 250;
@@ -672,16 +816,13 @@ var FOREST_Scene = function(){
         newMeshes[0].position.z = -75;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
 
     });
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
 
         newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
@@ -691,16 +832,13 @@ var FOREST_Scene = function(){
         newMeshes[0].position.z = 75;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
 
     });
-    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "fence_2.obj", scene, function (newMeshes) {
         newMeshes[1].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[0].rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
         newMeshes[1].position.x = 250;
@@ -709,13 +847,10 @@ var FOREST_Scene = function(){
         newMeshes[0].position.z = 75;
         newMeshes[1].scaling.scaleInPlace(11);
         newMeshes[0].scaling.scaleInPlace(11);
-
-        var Material = new BABYLON.StandardMaterial("tronco_mat",scene);
-        Material.bumpTexture = new BABYLON.Texture("models/fence_normals.png",scene);
-        Material.diffuseTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        Material.specularTexture = new BABYLON.Texture("models/fence_occlusion.png",scene);
-        newMeshes[0].material= Material;
-        newMeshes[1].material= Material;
+        newMeshes[0].material= FenceMaterial;
+        newMeshes[1].material= FenceMaterial;
+        shadowGenerator.addShadowCaster(newMeshes[1]);
+        shadowGenerator.addShadowCaster(newMeshes[0]);
 
     });
 
@@ -958,19 +1093,7 @@ var FOREST_Scene = function(){
         Wall12.material = wall_material;
     perimeter_scene.push(Wall12);
 
-
-  /*   //LOAD TREE
-    BABYLON.SceneLoader.ImportMesh("", "//www.babylonjs.com/assets/Tree/", "tree.babylon", scene, function (newMeshes) {
-        var tree = newMeshes[0];
-        tree.material.opacityTexture = null;
-        tree.material.backFaceCulling = false;
-        tree.scaling.x = 150;
-        tree.scaling.z = 150;
-        tree.scaling.y = 150;
-         
-       
-    }); */
-
+    //TREE
     var tree = BABYLON.SceneLoader.ImportMesh("","//www.babylonjs.com/assets/Tree/", "tree.babylon", scene, function (meshes) {
         var tree = meshes[0];
         tree.scaling = new BABYLON.Vector3(600, 600, 600);
@@ -1081,8 +1204,6 @@ var FOREST_Scene = function(){
 
         tree.isVisible = false;
     });
-
-
     // KEYBOARD INPUT
     var map = {};
 	scene.actionManager = new BABYLON.ActionManager(scene);
@@ -1101,7 +1222,7 @@ var FOREST_Scene = function(){
     //ADD EGGS  
     var egg;
     var egg2;
-    BABYLON.SceneLoader.ImportMesh("", "models/", "egg.obj", scene, function (newMeshes, particleSystems, skeletons) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "egg.obj", scene, function (newMeshes) {
         egg = newMeshes[0];
         egg.position.y = 5;
         egg.position.x = 320;
@@ -1169,8 +1290,9 @@ var FOREST_Scene = function(){
 		tronco.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
         var TroncoMaterial = new BABYLON.StandardMaterial("tronco_mat",scene);
-        TroncoMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/wood.jpeg",scene);
-        tronco.material= TroncoMaterial;
+        TroncoMaterial.diffuseTexture = new BABYLON.Texture("models/wood_tex.jpg",scene);
+        TroncoMaterial.specularTexture = new BABYLON.Texture("models/wood_tex.jpg",scene);
+        tronco.material = TroncoMaterial;
 
         label.linkWithMesh(tronco);
     });
@@ -1245,11 +1367,13 @@ var FOREST_Scene = function(){
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
                 });
-
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(rockTask.physicsImpostor, function() {
                     jump = 0;
                 });
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(tronco.physicsImpostor, function() {
+                    jump = 0;
+                });
+                RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(LogBoundingBox.physicsImpostor, function() {
                     jump = 0;
                 });
         });
@@ -1933,7 +2057,6 @@ var SEA_Scene = function(){
 	skybox.material = skyboxMaterial;			
 
     //ADD WALLS TO INDOVIDUATE THE SCENE
-    var walls = [];
 	const wall_1 = BABYLON.Mesh.CreateBox("wall_1", 10, scene);
    // wall_1.position = new BABYLON.Vector3(94, 80, 66);
 	//wall_1.scaling = new BABYLON.Vector3(27, 80, 23);

@@ -104,7 +104,11 @@ var MainMenu = function () {
         */
 
         var panel_difficulty = new BABYLON.GUI.StackPanel();
-        panel_difficulty.left = "-820px";
+        panel_difficulty.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        panel_difficulty.paddingTop = "25.5%";
+        panel_difficulty.paddingBottom = "-25.5%";
+        panel_difficulty.paddingRight = "38%";
+        panel_difficulty.paddingLeft = "-32%";
         guiMenu.addControl(panel_difficulty);
 
         var textblock = new BABYLON.GUI.TextBlock();
@@ -123,11 +127,22 @@ var MainMenu = function () {
             button.color = "white";
             button.background = "green";     
     
-            /*button.onIsCheckedChangedObservable.add(function(state) {
+            button.onIsCheckedChangedObservable.add(function(state) {
                 if (state) {
-                    textblock.text = "You selected " + text;
+                    if (text == "EASY"){
+                        countdown_game = easy;
+                        selected_difficulty = easy;
+                    } 
+                    if (text == "MEDIUM"){
+                        countdown_game = medium;
+                        selected_difficulty = medium;
+                    }
+                    if (text == "IMPOSSIBLE"){ 
+                        countdown_game = impossible;
+                        selected_difficulty = impossible;
+                    }
                 }
-            });*/ 
+            });
     
             var header = BABYLON.GUI.Control.AddHeader(button, text, "150px", { isHorizontal: true, controlFirst: true });
             header.height = "60px";
@@ -226,6 +241,10 @@ var MainMenu = function () {
             Forest = FOREST_Scene(); 
             changescene = 2;   
          });
+         city_button.onPointerUpObservable.add(function () {
+            Lose = LOSING_Scene(); 
+            changescene = 3;   
+         });
 
         engine.hideLoadingUI();
 
@@ -251,7 +270,15 @@ var change_roar = false;
 var up_down_egg = 0;
 var change_egg = false;
 
-var countdown_game = 60;
+
+//Difficultu countodowns
+var easy = 90;
+var medium = 60;
+var impossible = 45;
+var selected_difficulty = medium;
+
+//By default
+var countdown_game = medium;
 
 //ID of set Interval
 var counterId;
@@ -266,9 +293,10 @@ var roar_anim = 0;
 var intersct_egg = 0;
 var intersct_egg2 = 0;
 var intersct_egg3 = 0;
+var intersct_egg4 = 0;
 
 //Egg count
-var num_eggs = 3;
+var num_eggs = 4;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -318,7 +346,7 @@ var FOREST_Scene = function(){
     rect1.paddingBottom = "-5px";
     rect1.background = "grey";
 
-    var Countdown = new BABYLON.GUI.TextBlock("Countdown","60"); 
+    var Countdown = new BABYLON.GUI.TextBlock("Countdown",countdown_game); 
     Countdown.color = "white";
     Countdown.fontFamily = "Courier";
     Countdown.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
@@ -331,6 +359,12 @@ var FOREST_Scene = function(){
 
     guiGame.addControl(rect1);
     rect1.addControl(Countdown);
+
+    var label = new BABYLON.GUI.TextBlock();
+    label.fontFamily = "Courier";
+    label.text = "Hit the trunk\n to move it";
+    label.color = "white";
+    guiGame.addControl(label);
 
     if(call_forest == 0){
         counterId = setInterval(() => {
@@ -537,26 +571,24 @@ var FOREST_Scene = function(){
     });
 
     //BUSH
-
-    /*
     BABYLON.SceneLoader.ImportMesh("", "models/obj-files/", "bush1.obj", scene, function (newMeshes, particleSystems, skeletons) {
         //console.log(newMeshes);
-        newMeshes[0].scaling.scaleInPlace(5);
-        newMeshes[1].scaling.scaleInPlace(5);
+        newMeshes[0].scaling.scaleInPlace(7);
+        newMeshes[1].scaling.scaleInPlace(7);
         var leafMaterial = new BABYLON.StandardMaterial("leaf", scene);
-        //leafMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Base_Color.png", scene);
-        //leafMaterial.specularTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Base_Color.png", scene);
-        //leafMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bush_leaf_1K_Normal.png", scene);
+        leafMaterial.diffuseColor = new BABYLON.Vector3(0,0.3,0.1);
+        //leafMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/Bush_leaf_1K_Base_Color.png", scene);
+        //leafMaterial.specularTexture = new BABYLON.Texture("models/obj-files/Bush_leaf_1K_Base_Color.png", scene);
+        //leafMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/Bush_leaf_1K_Normal.png", scene);
         newMeshes[1].material = leafMaterial;
 
         var woodMaterial = new BABYLON.StandardMaterial("wood", scene);
-        woodMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/textures/wood.png", scene);
-        woodMaterial.specularTexture = new BABYLON.Texture("models/obj-files/textures/wood.png", scene);
+        //woodMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
+        //woodMaterial.specularTexture = new BABYLON.Texture("models/obj-files/wood.jpeg", scene);
         //woodMaterial.bumpTexture = new BABYLON.Texture("models/obj-files/textures/Bark_04_3K_Normal.png", scene);
-        newMeshes[0].material =  woodMaterial; 
+        //newMeshes[0].material =  woodMaterial; 
 
     });
-    */
 
 
     var perimeter_scene = [];
@@ -907,14 +939,6 @@ var FOREST_Scene = function(){
 		map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 	}));
 
-    // IMPORT OF THE ELF
-
-    var ElfBoundingBox = BABYLON.MeshBuilder.CreateBox("ElfBoundingBox",{ height: 7.0, width: 10, depth: 20 }, scene);
-		ElfBoundingBox.position.y = 3.5;
-	var ElfBoundingBoxMaterial = new BABYLON.StandardMaterial("ElfBoundingBoxMaterial", scene);
-		ElfBoundingBoxMaterial.alpha = 0;
-		ElfBoundingBox.material = ElfBoundingBoxMaterial;
-
     // Add the highlight layer.
     var hl = new BABYLON.HighlightLayer("hl1", scene);
 
@@ -942,6 +966,11 @@ var FOREST_Scene = function(){
         egg3.position.x = -150;
         egg3.position.z = -40;
 
+        egg4 = egg.createInstance("");
+        egg4.position.x = 150;
+        egg4.position.z = -80;
+        egg4.position.y = 70;
+
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
                 change_egg = true;
@@ -951,11 +980,13 @@ var FOREST_Scene = function(){
             if(!change_egg){
                 egg.position.y += 0.1;
                 egg3.position.y += 0.1;
+                egg4.position.y += 0.1;
                 egg2.position.x += 0.2;
                 up_down_egg++;
             }else{
                 egg.position.y -= 0.1;
                 egg3.position.y -= 0.1;
+                egg4.position.y -= 0.1;
                 egg2.position.x -= 0.2;
                 up_down_egg--;
             }
@@ -964,15 +995,29 @@ var FOREST_Scene = function(){
 
     });
 
+    var tronco;
+
     //ADD TRONCO
     BABYLON.SceneLoader.ImportMesh("", "models/", "tronco.obj", scene, function (newMeshes) {
         // Only one mesh here
-        var tronco = newMeshes[0];
-        tronco.position.x = 10;
-        tronco.position.z = 10;
-        tronco.position.y = 20;
+        tronco = newMeshes[0];
+        tronco.position.x = 40;
+        tronco.position.z = -160;
+        tronco.position.y = 32;
 
-        tronco.scaling.scaleInPlace(6);
+        tronco.scaling.scaleInPlace(8);
+        tronco.showBoundingBox = true;
+
+        tronco.physicsImpostor = new BABYLON.PhysicsImpostor(tronco, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 20, restitution: 0});
+		tronco.physicsImpostor.physicsBody.inertia.setZero();
+		tronco.physicsImpostor.physicsBody.invInertia.setZero();
+		tronco.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+        var TroncoMaterial = new BABYLON.StandardMaterial("tronco_mat",scene);
+        TroncoMaterial.diffuseTexture = new BABYLON.Texture("models/obj-files/wood.jpeg",scene);
+        tronco.material= TroncoMaterial;
+
+        label.linkWithMesh(tronco);
     });
 
     var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 10, depth: 35 }, scene);
@@ -1049,7 +1094,9 @@ var FOREST_Scene = function(){
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(rockTask.physicsImpostor, function() {
                     jump = 0;
                 });
-            
+                RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(tronco.physicsImpostor, function() {
+                    jump = 0;
+                });
         });
 
     });
@@ -1222,6 +1269,18 @@ var FOREST_Scene = function(){
                 }
                 intersct_egg2++;
         }
+        if(rex_bounding.intersectsMesh(egg4,true,false)){
+
+            if(intersct_egg4 == 0){
+                egg4.dispose();
+                roar.play();
+                console.log("Intersection4");
+
+                roar_anim = 1;
+                num_eggs--;
+                }
+                intersct_egg4++;
+        }
     });
     
     
@@ -1270,8 +1329,24 @@ var WINNING_Scene = function (){
     restartBtn.fontSize = 50;
     restartBtn.thickness = 0;
     restartBtn.background = "grey";
+    restartBtn.right = "13%";
+	restartBtn.left = "-13%";
     restartBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     rect1.addControl(restartBtn);
+
+    const MenuBtn = BABYLON.GUI.Button.CreateSimpleButton("Menu", "MENU");
+    MenuBtn.width = 0.2;
+    MenuBtn.height = 0.2;
+    //MenuBtn.height = "40px";
+    MenuBtn.color = "red";
+    MenuBtn.top = "-14px";
+    MenuBtn.fontSize = 50;
+    MenuBtn.thickness = 0;
+    MenuBtn.background = "grey";
+    MenuBtn.right = "-13%";
+	MenuBtn.left = "13%";
+    MenuBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    rect1.addControl(MenuBtn);
 
 
     WinningGui.addControl(rect1);
@@ -1286,19 +1361,53 @@ var WINNING_Scene = function (){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 3;
+        num_eggs = 4;
+
+        intersct_egg = 0;
+        intersct_egg2 = 0;
+        intersct_egg3 = 0;
+        intersct_egg4 = 0;
 
         console.log("clickedRestartWin");
 
         up_down_egg = 0;
         change_egg = false;
 
-        countdown_game = 60;
+        countdown_game = selected_difficulty;
 
         // Check if the first time call the function FOREST_Scene
         call_forest = 0;
         Forest = FOREST_Scene(); 
         changescene = 2;   
+    });
+
+    MenuBtn.onPointerUpObservable.addOnce(function () {
+        clearInterval(counterId);
+        jump=0;
+        walkStepsCounter = 0;
+        walkBackStepsCounter = 0;
+        outOfPosition = false;
+        alreadyWalking = false;
+        change = false;
+        change_back = false;
+        num_eggs = 4;
+
+        intersct_egg = 0;
+        intersct_egg2 = 0;
+        intersct_egg3 = 0;
+        intersct_egg4 = 0;
+
+        console.log("clickedMenu");
+
+        up_down_egg = 0;
+        change_egg = false;
+
+        countdown_game = medium;
+
+        // Check if the first time call the function FOREST_Scene
+        call_forest = 0;
+        Menu = MainMenu(); 
+        changescene = 0;   
     });
 
     return scene;
@@ -1345,14 +1454,34 @@ var LOSING_Scene = function(){
     restartBtn.fontSize = 50;
     restartBtn.thickness = 0;
     restartBtn.background = "white";
+    //restartBtn.width = "12%";
+	//restartBtn.height = "9%";
+	restartBtn.right = "13%";
+	restartBtn.left = "-13%";
     restartBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    //restartBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     rect1.addControl(restartBtn);
+
+    const MenuBtn = BABYLON.GUI.Button.CreateSimpleButton("Menu", "MENU");
+    MenuBtn.width = 0.2;
+    MenuBtn.height = 0.2;
+    //MenuBtn.height = "40px";
+    MenuBtn.color = "black";
+    MenuBtn.top = "-14px";
+    MenuBtn.fontSize = 50;
+    MenuBtn.thickness = 0;
+    MenuBtn.background = "white";
+    MenuBtn.right = "-13%";
+	MenuBtn.left = "13%";
+    MenuBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    rect1.addControl(MenuBtn);
 
 
     loseGui.addControl(rect1);
     loseGui.addControl(Lose);
 
     restartBtn.onPointerUpObservable.addOnce(function () {
+        clearInterval(counterId);
         jump=0;
         walkStepsCounter = 0;
         walkBackStepsCounter = 0;
@@ -1360,19 +1489,53 @@ var LOSING_Scene = function(){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 3;
+        num_eggs = 4;
+
+        intersct_egg = 0;
+        intersct_egg2 = 0;
+        intersct_egg3 = 0;
+        intersct_egg4 = 0;
 
         console.log("clickedRestart");
 
         up_down_egg = 0;
         change_egg = false;
 
-        countdown_game = 60;
+        countdown_game = selected_difficulty;
 
         // Check if the first time call the function FOREST_Scene
         call_forest = 0;
         Forest = FOREST_Scene(); 
         changescene = 2;   
+    });
+
+    MenuBtn.onPointerUpObservable.addOnce(function () {
+        clearInterval(counterId);
+        jump=0;
+        walkStepsCounter = 0;
+        walkBackStepsCounter = 0;
+        outOfPosition = false;
+        alreadyWalking = false;
+        change = false;
+        change_back = false;
+        num_eggs = 4;
+
+        intersct_egg = 0;
+        intersct_egg2 = 0;
+        intersct_egg3 = 0;
+        intersct_egg4 = 0;
+
+        console.log("clickedMenu");
+
+        up_down_egg = 0;
+        change_egg = false;
+
+        countdown_game = medium;
+
+        // Check if the first time call the function FOREST_Scene
+        call_forest = 0;
+        Menu = MainMenu(); 
+        changescene = 0;   
     });
 
     return scene;
@@ -1920,7 +2083,7 @@ engine.runRenderLoop(function (){
             window.document.getElementById("loadingBar").style.visibility = "hidden";
             engine.hideLoadingUI();
 
-            Forest.dispose();
+            Menu.dispose();
             Lose.render();
 
         } else {

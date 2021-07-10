@@ -119,6 +119,7 @@ var MainMenu = function () {
                         selected_difficulty = easy;
                         eggs_level = 4;
                         num_eggs = eggs_level;
+                        //number_url = number4_url;
                         textblock.text = "You Selected Easy";
                     } 
                     if (text == "MEDIUM"){
@@ -126,6 +127,7 @@ var MainMenu = function () {
                         selected_difficulty = medium;
                         eggs_level = 5;
                         num_eggs = eggs_level;
+                        number_url = number5_url;
                         textblock.text = "You Selected Medium";
                     }
                     if (text == "IMPOSSIBLE"){ 
@@ -133,6 +135,7 @@ var MainMenu = function () {
                         selected_difficulty = impossible;
                         eggs_level = 6;
                         num_eggs = eggs_level;
+                        number_url = number6_url;
                         textblock.text = "You Selected Impossible";
                     }
                 }
@@ -280,13 +283,22 @@ var intersct_egg2 = 0;
 var intersct_egg3 = 0;
 var intersct_egg4 = 0;
 var intersct_egg5 = 0;
+var intersct_egg6 = 0;
 
 //URL for current number
-var number_url = "textures/6.png";
+var number6_url = "textures/6.png";
+var number5_url = "textures/5.png";
+var number_url = number5_url;
 
 //Egg count
 var eggs_level;
 var num_eggs = 5;
+
+var URL_Eggs = function(){
+    if(num_eggs == 6){
+        number_url = number5_url;
+    }
+}
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -311,7 +323,7 @@ var FOREST_Scene = function(){
     scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 
     //Optimization
-	var optimizer = new BABYLON.SceneOptimizerOptions(60, 500);
+	var optimizer = new BABYLON.SceneOptimizerOptions(60, 2000);
     optimizer.addOptimization(new BABYLON.ShadowsOptimization(0));
     optimizer.addOptimization(new BABYLON.LensFlaresOptimization(0));
     optimizer.addOptimization(new BABYLON.PostProcessesOptimization(1));
@@ -321,7 +333,6 @@ var FOREST_Scene = function(){
 
     var sceneOptimizer = new BABYLON.SceneOptimizer(scene, optimizer, true, true);
 
-    sceneOptimizer.start();
 
     //GUI
     const guiGame = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GameGui",true,scene);
@@ -802,7 +813,7 @@ var FOREST_Scene = function(){
     BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
         console.log("Tulips");
         console.log(newMeshes);
-        for (var i = 0; i<13; i ++){
+        for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(15);
             newMeshes[i].position.x = 360;
             newMeshes[i].position.z = 75;
@@ -813,7 +824,7 @@ var FOREST_Scene = function(){
     BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
         console.log("Tulips");
         console.log(newMeshes);
-        for (var i = 0; i<13; i ++){
+        for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(10);
             newMeshes[i].position.x = 365;
             newMeshes[i].position.z = 60;
@@ -824,7 +835,7 @@ var FOREST_Scene = function(){
      BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
         console.log("Tulips");
         console.log(newMeshes);
-        for (var i = 0; i<13; i ++){
+        for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(20);
             newMeshes[i].position.x = 365;
             newMeshes[i].position.z = 70;
@@ -1326,6 +1337,13 @@ var FOREST_Scene = function(){
         egg5.position.z = 190;
         egg5.position.y = 60;
 
+        if(selected_difficulty == impossible){
+            egg6 = egg.createInstance("");
+            egg6.position.z = 5;
+            egg6.position.x = 60;
+            egg6.position.z = -280;
+        }
+
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
                 change_egg = true;
@@ -1340,7 +1358,10 @@ var FOREST_Scene = function(){
                 if(selected_difficulty != easy)
                     egg4.position.y += 0.1;
                 
-                    egg2.position.x += 0.2;
+                egg2.position.x += 0.2;
+
+                if(selected_difficulty == impossible)
+                    egg6.position.y += 0.1;
                 up_down_egg++;
             }else{
                 egg.position.y -= 0.1;
@@ -1350,10 +1371,12 @@ var FOREST_Scene = function(){
                 if(selected_difficulty != easy)
                     egg4.position.y -= 0.1;
                 
+                if(selected_difficulty == impossible)
+                    egg6.position.y -= 0.1;
+                
                 egg2.position.x -= 0.2;
                 up_down_egg--;
             }
-            //egg1.rotate(BABYLON.Axis.Z, 0.01, BABYLON.Space.LOCAL);
         });
 
     });
@@ -1410,15 +1433,6 @@ var FOREST_Scene = function(){
         RexBoundingBox.showBoundingBox = true;
         rex_bounding=newMeshes[1];
 
-        /*
-        newMeshes[1].showBoundingBox = true;
-
-        RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
-		RexBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
-		RexBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
-		RexBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
-        */
-
         RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
 		RexBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
 		RexBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
@@ -1437,11 +1451,12 @@ var FOREST_Scene = function(){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
-        // INSPECTOR
+        //INSPECTOR
         //scene.debugLayer.show({
         //    embedMode:true
         //});
 
+        //INITIAL POSITION
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
         rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
 
@@ -1579,6 +1594,8 @@ var FOREST_Scene = function(){
 
     //WALK
     scene.registerAfterRender(function () {
+        number_image.source = number_url;
+        sceneOptimizer.start();
         if(num_eggs == 0){
             music.stop();
             Winning = WINNING_Scene();
@@ -1606,6 +1623,7 @@ var FOREST_Scene = function(){
         }
 
         if(RexBoundingBox.intersectsMesh(egg,true,false)){
+                URL_Eggs();
                 egg.isVisible = false;
                 egg.position.y = -1000;
                 roar.play();
@@ -1618,6 +1636,7 @@ var FOREST_Scene = function(){
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
 
             if(intersct_egg3 == 0){
+                URL_Eggs();
                 egg3.dispose();
                 roar.play();
                 console.log("Intersection3");
@@ -1630,6 +1649,7 @@ var FOREST_Scene = function(){
         if(rex_bounding.intersectsMesh(egg2,true,false)){
 
             if(intersct_egg2 == 0){
+                URL_Eggs();
                 egg2.dispose();
                 roar.play();
                 console.log("Intersection2");
@@ -1642,9 +1662,10 @@ var FOREST_Scene = function(){
         if(rex_bounding.intersectsMesh(egg5,true,false)){
 
             if(intersct_egg5 == 0){
+                URL_Eggs();
                 egg5.dispose();
                 roar.play();
-                console.log("Intersection4");
+                console.log("Intersection5");
 
                 roar_anim = 1;
                 num_eggs--;
@@ -1656,14 +1677,31 @@ var FOREST_Scene = function(){
             if(rex_bounding.intersectsMesh(egg4,true,false)){
 
                 if(intersct_egg4 == 0){
+                    URL_Eggs();
                     egg4.dispose();
                     roar.play();
-                    console.log("Intersection5");
+                    console.log("Intersection4");
 
                     roar_anim = 1;
                     num_eggs--;
                     }
                     intersct_egg4++;
+            }
+        }
+
+        if(selected_difficulty == impossible){
+            if(rex_bounding.intersectsMesh(egg6,true,false)){
+
+                if(intersct_egg6 == 0){
+                    URL_Eggs();
+                    egg6.dispose();
+                    roar.play();
+                    console.log("Intersection6");
+
+                    roar_anim = 1;
+                    num_eggs--;
+                    }
+                    intersct_egg6++;
             }
         }
     });

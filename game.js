@@ -67,27 +67,16 @@ var MainMenu = function () {
         const guiMenu = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI",true,main_menu);
         //guiMenu.idealHeight = 720; //fit our fullscreen ui to this height
 
-        //create the Play button
-        const startBtn = BABYLON.GUI.Button.CreateSimpleButton("start", "PLAY");
-        startBtn.width = 0.2;
-        startBtn.height = "40px";
-        startBtn.color = "white";
-        startBtn.top = "-14px";
-        startBtn.thickness = 0;
-        startBtn.background = "red";
-        startBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        guiMenu.addControl(startBtn);
         //create a title -> Game's Name
         const Title = new BABYLON.GUI.TextBlock();
-        Title.text = "Animal Life";
-        Title.fontFamily = "Ceviche One";
-        Title.fontSize = "74px";
+        Title.text = "A n i m a l    L i f e";
+        Title.fontFamily = "My Font";
+        Title.fontSize = "90px";
         Title.color = "white";
         Title.resizeToFit = true;
         Title.paddingTop = "40px";
         Title.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         guiMenu.addControl(Title);
-
 
         /*
         const SelectLevel = new BABYLON.GUI.TextBlock();
@@ -103,6 +92,24 @@ var MainMenu = function () {
         guiMenu.addControl(SelectLevel);
         */
 
+        var panel_info = new BABYLON.GUI.StackPanel();
+        panel_info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        //panel_info.paddingTop = "35.5%";
+        panel_info.width = "800px";
+        panel_info.paddingBottom = "-25.5%";
+        panel_info.paddingRight = "48%";
+        //panel_info.paddingLeft = "-32%";
+        guiMenu.addControl(panel_info);
+
+        var textblock_info = new BABYLON.GUI.TextBlock();
+        textblock_info.height = "150px";
+        textblock_info.resizeToFit = true;
+        textblock_info.fontSize = 40;
+        textblock_info.fontFamily = "My Font";
+        textblock_info.text = "Select difficulty and check the earth planet to start!";
+        textblock_info.color = "white";
+        panel_info.addControl(textblock_info);
+
         var panel_difficulty = new BABYLON.GUI.StackPanel();
         panel_difficulty.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         panel_difficulty.paddingTop = "25.5%";
@@ -113,9 +120,9 @@ var MainMenu = function () {
 
         var textblock = new BABYLON.GUI.TextBlock();
         textblock.height = "150px";
-        textblock.fontSize = 40;
-        textblock.fontFamily = "Ceviche One";
-        textblock.text = "SELECT DIFFICULTY";
+        textblock.fontSize = 32;
+        textblock.fontFamily = "My Font";
+        textblock.text = "DIFFICULTY";
         textblock.color = "white";
         panel_difficulty.addControl(textblock); 
 
@@ -147,13 +154,12 @@ var MainMenu = function () {
             var header = BABYLON.GUI.Control.AddHeader(button, text, "150px", { isHorizontal: true, controlFirst: true });
             header.height = "60px";
             header.children[1].fontSize = 30;
-            header.children[1].fontFamily = "Ceviche One";
+            header.children[1].fontFamily = "My Font";
             header.children[1].color = "white";
             header.children[1].width ="180px";
     
             parent.addControl(header);    
         }
-    
     
         addRadio("EASY", panel_difficulty);
         addRadio("MEDIUM", panel_difficulty);
@@ -202,7 +208,8 @@ var MainMenu = function () {
         sea_button.scaling.y = 0.1;
         sea_button.scaling.z = -0.1;
         sea_button.text = "SEA";
-        sea_button.imageUrl = "textures/Play.png"
+        sea_button.imageUrl = "textures/Play.png";
+        sea_button.isVisible = false;
 
         var pole_button = new BABYLON.GUI.HolographicButton();
         pole_button.position.x = 5.5;
@@ -211,7 +218,8 @@ var MainMenu = function () {
         pole_button.scaling.y = 0.1;
         pole_button.scaling.z = -0.1;
         pole_button.text = "NORTH POLE";
-        pole_button.imageUrl = "textures/Play.png"
+        pole_button.imageUrl = "textures/Play.png";
+        pole_button.isVisible = false;
     
         var forest_button = new BABYLON.GUI.HolographicButton();
         forest_button.position.x = 5.5;
@@ -221,7 +229,7 @@ var MainMenu = function () {
         forest_button.scaling.z = -0.1;
         forest_button.text = "FOREST";
         panel2.blockLayout = true;
-        forest_button.imageUrl = "textures/Play.png"
+        forest_button.imageUrl = "textures/Play.png";
     
         var city_button = new BABYLON.GUI.HolographicButton();
         city_button.position.x = 0.5;
@@ -231,6 +239,7 @@ var MainMenu = function () {
         city_button.scaling.z = -0.1;
         city_button.text = "CITY";
         city_button.imageUrl = "textures/Play.png";
+        city_button.isVisible = false;
 
         sea_button.onPointerUpObservable.add(function () {
             Sea = SEA_Scene(); 

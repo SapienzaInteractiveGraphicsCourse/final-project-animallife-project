@@ -306,9 +306,10 @@ var intersct_egg = 0;
 var intersct_egg2 = 0;
 var intersct_egg3 = 0;
 var intersct_egg4 = 0;
+var intersct_egg5 = 0;
 
 //Egg count
-var num_eggs = 4;
+var num_eggs = 5;
 
 var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
@@ -718,8 +719,8 @@ var FOREST_Scene = function(){
         LogBoundingBox2.position.x = 90;
         LogBoundingBox2.position.z = -90;
     var LogBoundingBoxMaterial2 = new BABYLON.StandardMaterial("LogBoundingBoxMaterial2", scene);
-        LogBoundingBoxMaterial2.diffuseColor = new BABYLON.Color3(1,0,0);
-        //LogBoundingBoxMaterial2.alpha = 0;
+        //LogBoundingBoxMaterial2.diffuseColor = new BABYLON.Color3(1,0,0);
+        LogBoundingBoxMaterial2.alpha = 0;
 		LogBoundingBox2.material = LogBoundingBoxMaterial2;
     
     //BOUDING BOX FOR TRUNK 3
@@ -729,8 +730,8 @@ var FOREST_Scene = function(){
         LogBoundingBox3.position.x = 90;
         LogBoundingBox3.position.z = -90;
     var LogBoundingBoxMaterial3 = new BABYLON.StandardMaterial("LogBoundingBoxMaterial3", scene);
-        LogBoundingBoxMaterial3.diffuseColor = new BABYLON.Color3(0,1,0);
-        //LogBoundingBoxMaterial2.alpha = 0;
+        //LogBoundingBoxMaterial3.diffuseColor = new BABYLON.Color3(0,1,0);
+        LogBoundingBoxMaterial3.alpha = 0;
 		LogBoundingBox3.material = LogBoundingBoxMaterial3;
 
     BABYLON.SceneLoader.ImportMesh("", "models/", "wood_2.obj", scene, function (newMeshes) {
@@ -753,7 +754,6 @@ var FOREST_Scene = function(){
         log0.material = logMaterial;
         log1.material = logMaterial;
 
-        LogBoundingBox.showBoundingBox = true;
         log_bounding = newMeshes[1];
 
         LogBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, restitution: 0});
@@ -781,8 +781,10 @@ var FOREST_Scene = function(){
         LogBoundingBox3.physicsImpostor.physicsBody.invInertia.setZero();
         LogBoundingBox3.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
-        LogBoundingBox2.showBoundingBox = true;
-        LogBoundingBox3.showBoundingBox = true;
+        //FOR DEBUGGING
+        //LogBoundingBox.showBoundingBox = true;
+        //LogBoundingBox2.showBoundingBox = true;
+        //LogBoundingBox3.showBoundingBox = true;
 
 
         shadowGenerator.addShadowCaster(newMeshes[1]);
@@ -1310,6 +1312,12 @@ var FOREST_Scene = function(){
         egg4.position.z = -80;
         egg4.position.y = 70;
 
+
+        egg5 = egg.createInstance("");
+        egg5.position.x = -50;
+        egg5.position.z = 190;
+        egg5.position.y = 70;
+
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
                 change_egg = true;
@@ -1320,12 +1328,14 @@ var FOREST_Scene = function(){
                 egg.position.y += 0.1;
                 egg3.position.y += 0.1;
                 egg4.position.y += 0.1;
+                egg5.position.y += 0.1;
                 egg2.position.x += 0.2;
                 up_down_egg++;
             }else{
                 egg.position.y -= 0.1;
                 egg3.position.y -= 0.1;
                 egg4.position.y -= 0.1;
+                egg5.position.y -= 0.1;
                 egg2.position.x -= 0.2;
                 up_down_egg--;
             }
@@ -1706,7 +1716,7 @@ var WINNING_Scene = function (){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 4;
+        num_eggs = 5;
 
         intersct_egg = 0;
         intersct_egg2 = 0;
@@ -1735,7 +1745,7 @@ var WINNING_Scene = function (){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 4;
+        num_eggs = 5;
 
         intersct_egg = 0;
         intersct_egg2 = 0;
@@ -1834,7 +1844,7 @@ var LOSING_Scene = function(){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 4;
+        num_eggs = 5;
 
         intersct_egg = 0;
         intersct_egg2 = 0;
@@ -1863,7 +1873,7 @@ var LOSING_Scene = function(){
         alreadyWalking = false;
         change = false;
         change_back = false;
-        num_eggs = 4;
+        num_eggs = 5;
 
         intersct_egg = 0;
         intersct_egg2 = 0;

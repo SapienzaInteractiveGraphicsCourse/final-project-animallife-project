@@ -12,13 +12,7 @@ BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function() {
     loadingBar.style.width = 100 - scene.getWaitingItemsCount() + "%";
     loadingBar.innerHTML = 100 - scene.getWaitingItemsCount() + "%";
     */
-    var bar_width = 0;
-    setInterval(load,0);
-    function load() {
-        bar_width +=1; /*(100 - 2*scene.getWaitingItemsCount());*/
-        window.document.getElementById("loadingBar").style.width = bar_width + "px";
-        //window.document.getElementById("loadingBar").innerHTML = "Loading:     " + (100 - scene.getWaitingItemsCount()) + "%";
-    }
+    window.document.getElementById("loadingBar").style.display = "inline";
 }
 BABYLON.DefaultLoadingScreen.prototype.hideLoadingUI = function() {
     window.document.getElementById("loadingBar").style.display = "none";
@@ -121,9 +115,9 @@ var MainMenu = function () {
 
         var textblock = new BABYLON.GUI.TextBlock();
         textblock.height = "150px";
-        textblock.fontSize = 32;
+        textblock.fontSize = 50;
         textblock.fontFamily = "My Font";
-        textblock.text = "DIFFICULTY";
+        textblock.text = "SELECT DIFFICULTY";
         textblock.color = "white";
         panel_difficulty.addControl(textblock); 
 
@@ -283,7 +277,7 @@ var up_down_egg = 0;
 var change_egg = false;
 
 
-//Difficultu countodowns
+//Difficulty countodowns
 var easy = 90;
 var medium = 60;
 var impossible = 45;
@@ -333,13 +327,13 @@ var FOREST_Scene = function(){
     scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 
     //Optimization
-	var optimizer = new BABYLON.SceneOptimizerOptions(60, 1000);
+	var optimizer = new BABYLON.SceneOptimizerOptions(60, 500);
     optimizer.addOptimization(new BABYLON.ShadowsOptimization(0));
     optimizer.addOptimization(new BABYLON.LensFlaresOptimization(0));
     optimizer.addOptimization(new BABYLON.PostProcessesOptimization(1));
     optimizer.addOptimization(new BABYLON.ParticlesOptimization(1));
     optimizer.addOptimization(new BABYLON.TextureOptimization(2, 512));
-    optimizer.addOptimization(new BABYLON.RenderTargetsOptimization(3));
+    optimizer.addOptimization(new BABYLON.RenderTargetsOptimization(0));
 
     var sceneOptimizer = new BABYLON.SceneOptimizer(scene, optimizer, true, true);
 
@@ -378,18 +372,6 @@ var FOREST_Scene = function(){
     label.text = "Hit the trunk\n to move it";
     label.color = "white";
     guiGame.addControl(label);
-
-    if(call_forest == 0){
-        counterId = setInterval(() => {
-            if(countdown_game != 0){ 
-                countdown_game--;
-                Countdown.text = String(countdown_game);
-            }
-        }, 1000);
-        call_forest++;
-    }
-
-    console.log(counterId);
 
     Countdown.onTextChangedObservable.add(function () {
         if(countdown_game == 0){
@@ -1648,9 +1630,21 @@ var FOREST_Scene = function(){
                 roar_anim = 1;
                 num_eggs--;
                 }
-                intersct_egg4++;
+                intersct_egg5++;
         }
     });
+
+    if(call_forest == 0){
+        counterId = setInterval(() => {
+            if(countdown_game != 0){ 
+                countdown_game--;
+                Countdown.text = String(countdown_game);
+            }
+        }, 1000);
+        call_forest++;
+    }
+
+    console.log(counterId);
     
     
 

@@ -321,7 +321,7 @@ var FOREST_Scene = function(){
         volume: 0.2
     });
 
-    var roar = new BABYLON.Sound("Forest", "sounds/roar.wav", scene, null, {volume: 0.05});
+    var roar = new BABYLON.Sound("Forest", "sounds/roar.wav", scene, null, {volume: 0.1});
 
     //Enable physic for the main scene
     var gravityVector = new BABYLON.Vector3(0,-150, 0);
@@ -393,6 +393,7 @@ var FOREST_Scene = function(){
 
     Countdown.onTextChangedObservable.add(function () {
         if(countdown_game == 0){
+            music.stop();
             clearInterval(counterId);
             Lose = LOSING_Scene();
             changescene = 3;
@@ -1316,7 +1317,7 @@ var FOREST_Scene = function(){
         egg5 = egg.createInstance("");
         egg5.position.x = -50;
         egg5.position.z = 190;
-        egg5.position.y = 70;
+        egg5.position.y = 60;
 
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
@@ -1566,6 +1567,7 @@ var FOREST_Scene = function(){
     //WALK
     scene.registerAfterRender(function () {
         if(num_eggs == 0){
+            music.stop();
             Winning = WINNING_Scene();
             changescene = 4;
         }
@@ -1636,6 +1638,18 @@ var FOREST_Scene = function(){
                 }
                 intersct_egg4++;
         }
+        if(rex_bounding.intersectsMesh(egg5,true,false)){
+
+            if(intersct_egg5 == 0){
+                egg5.dispose();
+                roar.play();
+                console.log("Intersection5");
+
+                roar_anim = 1;
+                num_eggs--;
+                }
+                intersct_egg4++;
+        }
     });
     
     
@@ -1651,6 +1665,11 @@ var WINNING_Scene = function (){
     camera.lowerAlphaLimit = camera.upperAlphaLimit = camera.alpha = null;
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
+
+    var music = new BABYLON.Sound("Win", "sounds/win.wav", scene, null, {
+        autoplay: true,
+        volume: 0.2
+    });
 
     var WinningGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("WinningUI");
 
@@ -1776,6 +1795,11 @@ var LOSING_Scene = function(){
     camera.lowerAlphaLimit = camera.upperAlphaLimit = camera.alpha = null;
     camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
+
+    var music = new BABYLON.Sound("Lose", "sounds/lose.wav", scene, null, {
+        autoplay: true,
+        volume: 0.2
+    });
 
     var loseGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 

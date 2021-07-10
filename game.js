@@ -701,6 +701,7 @@ var FOREST_Scene = function(){
     var log0;
     var log_bounding;
 
+    //BOUNDING BOX FOR TRUNK 1
     var LogBoundingBox = BABYLON.MeshBuilder.CreateBox("LogBoundingBox",{ height: 20.0, width: 20, depth: 100 }, scene);
         LogBoundingBox.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);
         LogBoundingBox.position.y = 10;
@@ -709,6 +710,28 @@ var FOREST_Scene = function(){
 	var LogBoundingBoxMaterial = new BABYLON.StandardMaterial("LogBoundingBoxMaterial", scene);
 		LogBoundingBoxMaterial.alpha = 0;
 		LogBoundingBox.material = LogBoundingBoxMaterial;
+
+    //BOUDNING BOX FOR TRUNK 2
+    var LogBoundingBox2 = BABYLON.MeshBuilder.CreateBox("LogBoundingBox2",{ height: 15.0, width: 20, depth: 100 }, scene);
+        LogBoundingBox2.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);
+        LogBoundingBox2.position.y = 10;
+        LogBoundingBox2.position.x = 90;
+        LogBoundingBox2.position.z = -90;
+    var LogBoundingBoxMaterial2 = new BABYLON.StandardMaterial("LogBoundingBoxMaterial2", scene);
+        LogBoundingBoxMaterial2.diffuseColor = new BABYLON.Color3(1,0,0);
+        //LogBoundingBoxMaterial2.alpha = 0;
+		LogBoundingBox2.material = LogBoundingBoxMaterial2;
+    
+    //BOUDING BOX FOR TRUNK 3
+    var LogBoundingBox3 = BABYLON.MeshBuilder.CreateBox("LogBoundingBox3",{ height: 18.0, width: 20, depth: 100 }, scene);
+        LogBoundingBox3.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);
+        LogBoundingBox3.position.y = 30;
+        LogBoundingBox3.position.x = 90;
+        LogBoundingBox3.position.z = -90;
+    var LogBoundingBoxMaterial3 = new BABYLON.StandardMaterial("LogBoundingBoxMaterial3", scene);
+        LogBoundingBoxMaterial3.diffuseColor = new BABYLON.Color3(0,1,0);
+        //LogBoundingBoxMaterial2.alpha = 0;
+		LogBoundingBox3.material = LogBoundingBoxMaterial3;
 
     BABYLON.SceneLoader.ImportMesh("", "models/", "wood_2.obj", scene, function (newMeshes) {
         console.log("wood");
@@ -737,6 +760,30 @@ var FOREST_Scene = function(){
         LogBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
         LogBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
         LogBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+        //TRUNK 2
+        var trunk2 = log1.createInstance("");
+        trunk2.position.y = 5;
+        trunk2.position.x = 65;
+        trunk2.position.z = -135;
+        LogBoundingBox2.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox2, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, restitution: 0});
+        LogBoundingBox2.physicsImpostor.physicsBody.inertia.setZero();
+        LogBoundingBox2.physicsImpostor.physicsBody.invInertia.setZero();
+        LogBoundingBox2.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+        //TRUNK 3
+        var trunk3 = log1.createInstance("");
+        trunk3.position.y = 28;
+        trunk3.position.x = 65;
+        trunk3.position.z = -135;
+        LogBoundingBox3.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox3, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, restitution: 0});
+        LogBoundingBox3.physicsImpostor.physicsBody.inertia.setZero();
+        LogBoundingBox3.physicsImpostor.physicsBody.invInertia.setZero();
+        LogBoundingBox3.physicsImpostor.physicsBody.invInertiaWorld.setZero();
+
+        LogBoundingBox2.showBoundingBox = true;
+        LogBoundingBox3.showBoundingBox = true;
+
 
         shadowGenerator.addShadowCaster(newMeshes[1]);
         shadowGenerator.addShadowCaster(newMeshes[0]);
@@ -1390,6 +1437,9 @@ var FOREST_Scene = function(){
                     jump = 0;
                 });
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(LogBoundingBox.physicsImpostor, function() {
+                    jump = 0;
+                });
+                RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(LogBoundingBox3.physicsImpostor, function() {
                     jump = 0;
                 });
         });

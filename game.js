@@ -573,6 +573,8 @@ var FOREST_Scene = function(){
         rockTask.physicsImpostor.physicsBody.invInertia.setZero();
         rockTask.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
+        shadowGenerator.addShadowCaster(rockTask);
+
     });
 
     // ADD ROCK2
@@ -597,6 +599,8 @@ var FOREST_Scene = function(){
 
 
         rock.showBoundingBox = true;
+
+        shadowGenerator.addShadowCaster(rock);
     });
 
     //BUSH
@@ -803,7 +807,6 @@ var FOREST_Scene = function(){
         //LogBoundingBox.showBoundingBox = true;
         //LogBoundingBox2.showBoundingBox = true;
         //LogBoundingBox3.showBoundingBox = true;
-
 
         shadowGenerator.addShadowCaster(newMeshes[1]);
         shadowGenerator.addShadowCaster(newMeshes[0]);
@@ -1330,6 +1333,8 @@ var FOREST_Scene = function(){
             egg4.position.x = 150;
             egg4.position.z = -80;
             egg4.position.y = 70;
+
+            shadowGenerator.addShadowCaster(egg4);
         }
 
         egg5 = egg.createInstance("");
@@ -1342,7 +1347,14 @@ var FOREST_Scene = function(){
             egg6.position.z = 5;
             egg6.position.x = 60;
             egg6.position.z = -280;
+
+            shadowGenerator.addShadowCaster(egg6);
         }
+
+        shadowGenerator.addShadowCaster(egg);
+        shadowGenerator.addShadowCaster(egg2);
+        shadowGenerator.addShadowCaster(egg3);
+
 
         scene.registerBeforeRender(function () {
             if(up_down_egg>50){
@@ -1407,7 +1419,7 @@ var FOREST_Scene = function(){
         label.linkWithMesh(tronco);
     });
 
-    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 10, depth: 35 }, scene);
+    var RexBoundingBox = BABYLON.MeshBuilder.CreateBox("RexBoundingBox",{ height: 7.0, width: 10, depth: 25 }, scene);
 		RexBoundingBox.position.y = 3.5;
 	var RexBoundingBoxMaterial = new BABYLON.StandardMaterial("RexBoundingBoxMaterial", scene);
 		RexBoundingBoxMaterial.alpha = 0;

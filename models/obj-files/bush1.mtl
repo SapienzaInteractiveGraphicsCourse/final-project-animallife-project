@@ -10,15 +10,9 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-<<<<<<< HEAD
 map_Bump wood_n.jpeg
 map_Kd wood.jpeg
 map_Ns wood_r.jpeg
-=======
-map_Bump D:\\Projects\\Exterior House Project\\Leftovers\\Generic Tree Pack 1\\textures\\Bark_04_3K_Normal.png
-map_Kd D:\\Projects\\Exterior House Project\\Leftovers\\Generic Tree Pack 1\\textures\\Bark_04_3K_Base_Color.png
-map_Ns D:\\Projects\\Exterior House Project\\Leftovers\\Generic Tree Pack 1\\textures\\Bark_04_3K_Roughness.png
->>>>>>> 256624e4101e9196cd0dd16fdd9671e746aee359
 
 newmtl Leaves_tree
 Ns 323.999994

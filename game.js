@@ -92,23 +92,24 @@ var MainMenu = function () {
         guiMenu.addControl(SelectLevel);
         */
 
-        var panel_info = new BABYLON.GUI.StackPanel();
-        panel_info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        //var panel_info = new BABYLON.GUI.StackPanel();
+        //panel_info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         //panel_info.paddingTop = "35.5%";
-        panel_info.width = "800px";
-        panel_info.paddingBottom = "-25.5%";
-        panel_info.paddingRight = "48%";
+        //panel_info.width = "800px";
+        //panel_info.paddingBottom = "-25.5%";
+        //panel_info.paddingRight = "48%";
         //panel_info.paddingLeft = "-32%";
-        guiMenu.addControl(panel_info);
+        //guiMenu.addControl(panel_info);
 
         var textblock_info = new BABYLON.GUI.TextBlock();
+        textblock_info.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         textblock_info.height = "150px";
         textblock_info.resizeToFit = true;
         textblock_info.fontSize = 40;
         textblock_info.fontFamily = "My Font";
         textblock_info.text = "Select difficulty and check the earth planet to start!";
         textblock_info.color = "white";
-        panel_info.addControl(textblock_info);
+        guiMenu.addControl(textblock_info);
 
         var panel_difficulty = new BABYLON.GUI.StackPanel();
         panel_difficulty.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
@@ -139,14 +140,17 @@ var MainMenu = function () {
                     if (text == "EASY"){
                         countdown_game = easy;
                         selected_difficulty = easy;
+                        textblock.text = "You Selected Easy";
                     } 
                     if (text == "MEDIUM"){
                         countdown_game = medium;
                         selected_difficulty = medium;
+                        textblock.text = "You Selected Medium";
                     }
                     if (text == "IMPOSSIBLE"){ 
                         countdown_game = impossible;
                         selected_difficulty = impossible;
+                        textblock.text = "You Selected Impossible";
                     }
                 }
             });
@@ -227,7 +231,6 @@ var MainMenu = function () {
         forest_button.scaling.x = -0.1;
         forest_button.scaling.y = 0.1;
         forest_button.scaling.z = -0.1;
-        forest_button.text = "FOREST";
         panel2.blockLayout = true;
         forest_button.imageUrl = "textures/Play.png";
     
@@ -698,8 +701,11 @@ var FOREST_Scene = function(){
     var log0;
     var log_bounding;
 
-    var LogBoundingBox = BABYLON.MeshBuilder.CreateBox("LogBoundingBox",{ height: 20.0, width: 20, depth: 120 }, scene);
-		//LogBoundingBox.position.y = 3.5;
+    var LogBoundingBox = BABYLON.MeshBuilder.CreateBox("LogBoundingBox",{ height: 20.0, width: 20, depth: 100 }, scene);
+        LogBoundingBox.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);
+        LogBoundingBox.position.y = 10;
+        LogBoundingBox.position.x = 65;
+        LogBoundingBox.position.z = -80;
 	var LogBoundingBoxMaterial = new BABYLON.StandardMaterial("LogBoundingBoxMaterial", scene);
 		LogBoundingBoxMaterial.alpha = 0;
 		LogBoundingBox.material = LogBoundingBoxMaterial;
@@ -710,23 +716,24 @@ var FOREST_Scene = function(){
         log1 = newMeshes[1];
         log0 = newMeshes[0];
         //newMeshes[1].showBoundingBox = true;
-        newMeshes[1].rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
-        newMeshes[0].rotation = new BABYLON.Vector3(Math.PI/2, 0, 0);
+        log1.rotation = new BABYLON.Vector3(Math.PI/2, 0, -Math.PI/6);
+        log0.rotation = new BABYLON.Vector3(Math.PI/2, 0, -Math.PI/6);
 
-        newMeshes[0].position.y = 5;
-        newMeshes[1].position.y = 5;
-        newMeshes[0].position.x = -40;
-        newMeshes[1].position.x = -40;
+        log0.position.y = 5;
+        log1.position.y = 5;
+        log0.position.x = 40;
+        log1.position.x = 40;
+        log0.position.z = -120;
+        log1.position.z = -120;
 
 
-        newMeshes[0].material = logMaterial;
-        newMeshes[1].material = logMaterial;
+        log0.material = logMaterial;
+        log1.material = logMaterial;
 
-        log0.parent = LogBoundingBox;
         LogBoundingBox.showBoundingBox = true;
         log_bounding = newMeshes[1];
 
-        LogBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
+        LogBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(LogBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 0, restitution: 0});
         LogBoundingBox.physicsImpostor.physicsBody.inertia.setZero();
         LogBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
         LogBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
@@ -1286,8 +1293,8 @@ var FOREST_Scene = function(){
     BABYLON.SceneLoader.ImportMesh("", "models/", "tronco.obj", scene, function (newMeshes) {
         // Only one mesh here
         tronco = newMeshes[0];
-        tronco.position.x = 40;
-        tronco.position.z = -160;
+        tronco.position.x = 0;
+        tronco.position.z = 140;
         tronco.position.y = 32;
 
         tronco.scaling.scaleInPlace(8);

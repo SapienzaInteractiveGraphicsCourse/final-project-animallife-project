@@ -243,6 +243,15 @@ var MainMenu = function () {
         city_button.text = "CITY";
         city_button.imageUrl = "textures/Play.png";
         city_button.isVisible = false;
+
+        var command_image = new BABYLON.GUI.Image("command_image", "textures/comandi.jpg");
+        command_image.width = "30%";
+        command_image.height = "35%";
+        command_image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        command_image.paddingTop = "100px";
+        command_image.paddingRight = "115px";
+        guiMenu.addControl(command_image);
+
         forest_button.onPointerUpObservable.add(function () {
             Forest = FOREST_Scene(); 
             changescene = 2;   
@@ -1502,7 +1511,7 @@ var FOREST_Scene = function(){
 				dir.y = -RexBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 				dir.z = dir.z;
 				dir.x = dir.x;
-                //RexBoundingBox.setDirection(dir);
+                RexBoundingBox.setDirection(dir);
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
                 });

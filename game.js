@@ -455,12 +455,12 @@ var FOREST_Scene = function(){
     var ground = BABYLON.MeshBuilder.CreateGround("myGround", {width: 1000, height: 1000, subdivisions: 4}, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMat", scene);
   
-    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/grass2.jpeg", scene);
-    groundMaterial.diffuseTexture.uScale = 8;
-    groundMaterial.diffuseTexture.vScale = 8;
-    groundMaterial.specularTexture = new BABYLON.Texture("textures/grass2.jpeg", scene);
-    groundMaterial.specularTexture.uScale = 8;
-    groundMaterial.specularTexture.vScale = 8;
+    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/prato.jpg", scene);
+    //groundMaterial.diffuseTexture.uScale = 8;
+    //groundMaterial.diffuseTexture.vScale = 8;
+    groundMaterial.specularTexture = new BABYLON.Texture("textures/prato.jpg", scene);
+    //groundMaterial.specularTexture.uScale = 8;
+    //groundMaterial.specularTexture.vScale = 8;
 
     ground.material = groundMaterial;
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
@@ -484,7 +484,7 @@ var FOREST_Scene = function(){
 	//fountain.position.y = 26;
     fountain.position.x = 250;
     fountain.scaling = new BABYLON.Vector3(2.5,2,2.5);
-    fountain.showBoundingBox = true;
+    //fountain.showBoundingBox = true;
     fountain.physicsImpostor = new BABYLON.PhysicsImpostor(fountain, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
     shadowGenerator.addShadowCaster(fountain);
 
@@ -566,7 +566,7 @@ var FOREST_Scene = function(){
 
         rockTask.material=rockMaterial;
 
-        rockTask.showBoundingBox = true;
+        //rockTask.showBoundingBox = true;
 
         rockTask.physicsImpostor = new BABYLON.PhysicsImpostor(rockTask, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 150, restitution: 0});
         rockTask.physicsImpostor.physicsBody.inertia.setZero();
@@ -598,7 +598,7 @@ var FOREST_Scene = function(){
         rock.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
 
-        rock.showBoundingBox = true;
+        //rock.showBoundingBox = true;
 
         shadowGenerator.addShadowCaster(rock);
     });
@@ -614,8 +614,8 @@ var FOREST_Scene = function(){
         bush.position.z = -180;
         leaves.position.z = -180; 
 
-        bush.showBoundingBox = true;
-        leaves.showBoundingBox = true;
+        //bush.showBoundingBox = true;
+        //leaves.showBoundingBox = true;
 
         var leafMaterial = new BABYLON.StandardMaterial("leaf", scene);
         leafMaterial.diffuseColor = new BABYLON.Vector3(0,0.3,0.1);
@@ -1184,7 +1184,7 @@ var FOREST_Scene = function(){
         var tree = meshes[0];
         tree.scaling = new BABYLON.Vector3(600, 600, 600);
         tree.position = new BABYLON.Vector3(0, 0, 0);
-        tree.showBoundingBox;
+        //tree.showBoundingBox;
         tree.material.opacityTexture = null;
         tree.material.backFaceCulling = false;
     
@@ -1315,7 +1315,7 @@ var FOREST_Scene = function(){
         egg.scaling.scaleInPlace(2);
 
         hl.addMesh(egg, BABYLON.Color3.Yellow());
-        egg.showBoundingBox = true;
+        //egg.showBoundingBox = true;
 
         console.log("new meshes egg imported:", newMeshes);
 
@@ -1404,7 +1404,7 @@ var FOREST_Scene = function(){
         tronco.position.y = 32;
 
         tronco.scaling.scaleInPlace(8);
-        tronco.showBoundingBox = true;
+        //tronco.showBoundingBox = true;
 
         tronco.physicsImpostor = new BABYLON.PhysicsImpostor(tronco, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 20, restitution: 0});
 		tronco.physicsImpostor.physicsBody.inertia.setZero();
@@ -1442,7 +1442,8 @@ var FOREST_Scene = function(){
         console.log("skeleton imported:", rex_skeleton);
 
         rex.parent = RexBoundingBox;
-        RexBoundingBox.showBoundingBox = true;
+
+        //RexBoundingBox.showBoundingBox = true;
         rex_bounding=newMeshes[1];
 
         RexBoundingBox.physicsImpostor = new BABYLON.PhysicsImpostor(RexBoundingBox, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 60, restitution: 0});
@@ -1455,18 +1456,18 @@ var FOREST_Scene = function(){
 		camera.target = RexBoundingBox;
 
         // DEBUGGIN SKELETON VIEWER
-		//var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
-		//skeletonViewer.isEnabled = true; // Enable it
-		//skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
+		skeletonViewer.isEnabled = true; // Enable it
+		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
         //INSPECTOR
-        //scene.debugLayer.show({
-        //    embedMode:true
-        //});
+        scene.debugLayer.show({
+            embedMode:true
+        });
 
         //INITIAL POSITION
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg

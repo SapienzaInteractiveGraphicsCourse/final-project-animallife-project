@@ -963,7 +963,7 @@ var FOREST_Scene = function(){
         Wall1.freezeWorldMatrix();
         Wall1.convertToUnIndexedMesh();
         Wall1.setEnabled(true);
-        Wall1.showBoundingBox = true;
+        //Wall1.showBoundingBox = true;
         //Wall_2.visibility = 0;
         Wall1.checkCollisions = true;
         Wall1.material = wall_material;
@@ -983,7 +983,7 @@ var FOREST_Scene = function(){
         Wall2.convertToUnIndexedMesh();
         Wall2.setEnabled(true);
         //Wall_1.visibility = 0;
-        Wall2.showBoundingBox = true;
+        //Wall2.showBoundingBox = true;
         Wall2.checkCollisions = true;
         Wall2.material = wall_material;
     perimeter_scene.push(Wall2); 
@@ -1001,7 +1001,7 @@ var FOREST_Scene = function(){
         Wall3.freezeWorldMatrix();
         Wall3.convertToUnIndexedMesh();
         Wall3.setEnabled(true);
-        Wall3.showBoundingBox = true;
+        //Wall3.showBoundingBox = true;
         //Wall3.visibility = 0;
         Wall3.checkCollisions = true;
         Wall3.material = wall_material;
@@ -1021,7 +1021,7 @@ var FOREST_Scene = function(){
         Wall4.freezeWorldMatrix();
         Wall4.convertToUnIndexedMesh();
         Wall4.setEnabled(true);
-        Wall4.showBoundingBox = true;
+        //Wall4.showBoundingBox = true;
         //Wall4.visibility = 0;
         Wall4.checkCollisions = true;
         Wall4.material = wall_material;
@@ -1042,7 +1042,7 @@ var FOREST_Scene = function(){
         Wall5.setEnabled(true);
         //Wall5.visibility = 0;
         Wall5.checkCollisions = true;
-        Wall5.showBoundingBox = true;
+        //Wall5.showBoundingBox = true;
         Wall5.material = wall_material;
     perimeter_scene.push(Wall5);
 
@@ -1059,7 +1059,7 @@ var FOREST_Scene = function(){
         Wall6.freezeWorldMatrix();
         Wall6.convertToUnIndexedMesh();
         Wall6.setEnabled(true);
-        Wall6.showBoundingBox = true;
+        //Wall6.showBoundingBox = true;
         //Wall6.visibility = 0;
         Wall6.checkCollisions = true;
         Wall6.material = wall_material;
@@ -1078,7 +1078,7 @@ var FOREST_Scene = function(){
         Wall7.freezeWorldMatrix();
         Wall7.convertToUnIndexedMesh();
         Wall7.setEnabled(true);
-        Wall7.showBoundingBox = true;
+        //Wall7.showBoundingBox = true;
         //Wall7.visibility = 0;
         Wall7.checkCollisions = true;
         Wall7.material = wall_material;
@@ -1097,7 +1097,7 @@ var FOREST_Scene = function(){
         Wall8.freezeWorldMatrix();
         Wall8.convertToUnIndexedMesh();
         Wall8.setEnabled(true);
-        Wall8.showBoundingBox = true;
+        //Wall8.showBoundingBox = true;
         //Wall8.visibility = 0;
         Wall8.checkCollisions = true;
         Wall8.material = wall_material;
@@ -1116,7 +1116,7 @@ var FOREST_Scene = function(){
         Wall9.freezeWorldMatrix();
         Wall9.convertToUnIndexedMesh();
         Wall9.setEnabled(true);
-        Wall9.showBoundingBox = true;
+        //Wall9.showBoundingBox = true;
         //Wall9.visibility = 0;
         Wall9.checkCollisions = true;
         Wall9.material = wall_material;
@@ -1135,7 +1135,7 @@ var FOREST_Scene = function(){
         Wall10.freezeWorldMatrix();
         Wall10.convertToUnIndexedMesh();
         Wall10.setEnabled(true);
-        Wall10.showBoundingBox = true;
+        //Wall10.showBoundingBox = true;
         //Wall10.visibility = 0;
         Wall10.checkCollisions = true;
         Wall10.material = wall_material;
@@ -1154,7 +1154,7 @@ var FOREST_Scene = function(){
         Wall11.freezeWorldMatrix();
         Wall11.convertToUnIndexedMesh();
         Wall11.setEnabled(true);
-        Wall11.showBoundingBox = true;
+        //Wall11.showBoundingBox = true;
         //Wall11.visibility = 0;
         Wall11.checkCollisions = true;
         Wall11.material = wall_material;
@@ -1173,7 +1173,7 @@ var FOREST_Scene = function(){
         Wall12.freezeWorldMatrix();
         Wall12.convertToUnIndexedMesh();
         Wall12.setEnabled(true);
-        Wall12.showBoundingBox = true;
+        //Wall12.showBoundingBox = true;
         //Wall12.visibility = 0;
         Wall12.checkCollisions = true;
         Wall12.material = wall_material;
@@ -1456,18 +1456,18 @@ var FOREST_Scene = function(){
 		camera.target = RexBoundingBox;
 
         // DEBUGGIN SKELETON VIEWER
-		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
-		skeletonViewer.isEnabled = true; // Enable it
-		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+		//var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
+		//skeletonViewer.isEnabled = true; // Enable it
+		//skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
         //INSPECTOR
-        scene.debugLayer.show({
-            embedMode:true
-        });
+        //scene.debugLayer.show({
+        //    embedMode:true
+        //});
 
         //INITIAL POSITION
         rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
@@ -1822,6 +1822,11 @@ var WINNING_Scene = function (){
         intersct_egg2 = 0;
         intersct_egg3 = 0;
         intersct_egg4 = 0;
+        intersct_egg5 = 0;
+
+        if(selected_difficulty == impossible){
+            intersct_egg6 = 0;
+        }
 
         console.log("clickedRestartWin");
 
@@ -1851,6 +1856,8 @@ var WINNING_Scene = function (){
         intersct_egg2 = 0;
         intersct_egg3 = 0;
         intersct_egg4 = 0;
+        intersct_egg6 = 0;
+        intersct_egg5 = 0;
 
         console.log("clickedMenu");
 
@@ -1955,6 +1962,12 @@ var LOSING_Scene = function(){
         intersct_egg2 = 0;
         intersct_egg3 = 0;
         intersct_egg4 = 0;
+        intersct_egg5 = 0;
+
+        if(selected_difficulty == impossible){
+            intersct_egg6 = 0;
+        }
+
 
         console.log("clickedRestart");
 
@@ -1984,6 +1997,8 @@ var LOSING_Scene = function(){
         intersct_egg2 = 0;
         intersct_egg3 = 0;
         intersct_egg4 = 0;
+        intersct_egg5 = 0;
+        intersct_egg6 = 0;
 
         console.log("clickedMenu");
 

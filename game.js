@@ -84,6 +84,20 @@ var MainMenu = function () {
         textblock_info.color = "white";
         guiMenu.addControl(textblock_info);
 
+        var textblock_goal = new BABYLON.GUI.TextBlock();
+        textblock_goal.paddingLeft = "1200px";
+        textblock_goal.paddingRight = "2px";
+        textblock_goal.paddingTop = "200px";
+        //textblock_goal.paddingBottom = "-5px";
+        textblock_goal.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        textblock_goal.height = "150px";
+        textblock_goal.resizeToFit = true;
+        textblock_goal.fontSize = 40;
+        textblock_goal.fontFamily = "My Font";
+        textblock_goal.text = "The goal of the game is to find\n all the eggs before the \n time runs out";
+        textblock_goal.color = "white";
+        guiMenu.addControl(textblock_goal);
+
         var panel_difficulty = new BABYLON.GUI.StackPanel();
         panel_difficulty.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         panel_difficulty.paddingTop = "25.5%";

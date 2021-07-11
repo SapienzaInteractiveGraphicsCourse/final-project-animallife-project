@@ -1434,7 +1434,7 @@ var FOREST_Scene = function(){
         console.log("new meshes imported:", newMeshes);
         rex=newMeshes[0];
         rex.scaling.scaleInPlace(5);
-		rex.position.y = -0.2;
+		rex.position.y = -1.5;
 
         shadowGenerator.addShadowCaster(rex);
 
@@ -1470,15 +1470,25 @@ var FOREST_Scene = function(){
         //});
 
         //INITIAL POSITION
-        rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, 150, BABYLON.Space.LOCAL);  //Left Up Leg
+        //rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -44.7, BABYLON.Space.LOCAL);  //Left Up Leg
+        rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -44, BABYLON.Space.LOCAL);  //Left Up Leg
+        rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL);  //Left Leg
         rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
+        rex_skeleton.bones[50].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootIndex1
+        rex_skeleton.bones[48].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootMiddle1
+        rex_skeleton.bones[46].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight1
+        rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootIndex2
+        rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootMiddle2
+        rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight2
 
+
+        
         scene.registerBeforeRender(function () {
 			var dir = camera.getTarget().subtract(camera.position);
 				dir.y = -RexBoundingBox.getDirection(new BABYLON.Vector3(0, 0, 1)).y;
 				dir.z = dir.z;
 				dir.x = dir.x;
-                RexBoundingBox.setDirection(dir);
+                //RexBoundingBox.setDirection(dir);
                 RexBoundingBox.physicsImpostor.registerOnPhysicsCollide(ground.physicsImpostor, function() {
                     jump = 0;
                 });
@@ -1564,7 +1574,7 @@ var FOREST_Scene = function(){
 
             walkStepsCounter = walkStepsCounter-1;
         }
-        console.log(walkStepsCounter);
+        //console.log(walkStepsCounter);
 	};
     var walkBack = function(speed){
         if(walkBackStepsCounter>20){
@@ -1601,7 +1611,7 @@ var FOREST_Scene = function(){
 
             walkBackStepsCounter = walkBackStepsCounter-1;
         }
-        console.log(walkBackStepsCounter);
+        //console.log(walkBackStepsCounter);
 	};
     var walk_speed = 1.5;
 
@@ -1621,14 +1631,6 @@ var FOREST_Scene = function(){
 		if ((map["s"] || map["S"])) {
 			RexBoundingBox.translate(BABYLON.Axis.Z, -walk_speed, BABYLON.Space.LOCAL);
 			walkBack(walk_speed);
-		}
-		if ((map["a"] || map["A"])) {
-			RexBoundingBox.translate(BABYLON.Axis.X, -walk_speed, BABYLON.Space.LOCAL);
-			walkForward(walk_speed);
-		}
-		if ((map["d"] || map["D"])) {
-			RexBoundingBox.translate(BABYLON.Axis.X, walk_speed, BABYLON.Space.LOCAL);
-			walkForward(walk_speed);
 		}
         if (map[" "] && jump == 0){
             RexBoundingBox.physicsImpostor.applyImpulse(new BABYLON.Vector3(0, 5000, 0), RexBoundingBox.getAbsolutePosition());
@@ -2091,6 +2093,7 @@ engine.runRenderLoop(function (){
             Load.dispose();
             Forest.render();
         } else {
+           Load = LOADING_Scene();
            Menu.dispose();
            Load.render();
 	    }

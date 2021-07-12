@@ -244,12 +244,12 @@ var MainMenu = function () {
         city_button.imageUrl = "textures/Play.png";
         city_button.isVisible = false;
 
-        var command_image = new BABYLON.GUI.Image("command_image", "textures/comandi.jpg");
-        command_image.width = "30%";
-        command_image.height = "35%";
+        var command_image = new BABYLON.GUI.Image("command_image", "GUI_IMAGES/tastiera_mouse.png");
+        command_image.width = "29%";
+        command_image.height = "50%";
         command_image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         command_image.paddingTop = "100px";
-        command_image.paddingRight = "115px";
+        command_image.paddingRight = "25px";
         guiMenu.addControl(command_image);
 
         forest_button.onPointerUpObservable.add(function () {
@@ -1487,10 +1487,10 @@ var FOREST_Scene = function(){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
-        //INSPECTOR
-        //scene.debugLayer.show({
-        //    embedMode:true
-        //});
+        INSPECTOR
+        scene.debugLayer.show({
+            embedMode:true
+        });
 
         //INITIAL POSITION
         //rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -44.7, BABYLON.Space.LOCAL);  //Left Up Leg
@@ -1781,7 +1781,7 @@ var WINNING_Scene = function (){
 
     var Win = new BABYLON.GUI.TextBlock("Win","YOU WIN!"); 
     Win.color = "Red";
-    Win.fontFamily = "Courier";
+    Win.fontFamily = "My Font";
     //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     Win.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     Win.fontSize = "150px";
@@ -1803,6 +1803,7 @@ var WINNING_Scene = function (){
     const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart_win", "RESTART");
     restartBtn.width = 0.2;
     restartBtn.height = 0.2;
+    restartBtn.fontFamily = "My Font";
     //restartBtn.height = "40px";
     restartBtn.color = "red";
     restartBtn.top = "-14px";
@@ -1817,6 +1818,7 @@ var WINNING_Scene = function (){
     const MenuBtn = BABYLON.GUI.Button.CreateSimpleButton("Menu", "MENU");
     MenuBtn.width = 0.2;
     MenuBtn.height = 0.2;
+    MenuBtn.fontFamily = "My Font";
     //MenuBtn.height = "40px";
     MenuBtn.color = "red";
     MenuBtn.top = "-14px";
@@ -1918,7 +1920,7 @@ var LOSING_Scene = function(){
 
     var Lose = new BABYLON.GUI.TextBlock("Lose","YOU LOSE"); 
     Lose.color = "white";
-    Lose.fontFamily = "Courier";
+    Lose.fontFamily = "My Font";
     //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     Lose.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
     Lose.fontSize = "74px";
@@ -1940,6 +1942,7 @@ var LOSING_Scene = function(){
     const restartBtn = BABYLON.GUI.Button.CreateSimpleButton("restart", "RESTART");
     restartBtn.width = 0.2;
     restartBtn.height = 0.2;
+    restartBtn.fontFamily = "My Font";
     //restartBtn.height = "40px";
     restartBtn.color = "black";
     restartBtn.top = "-14px";
@@ -1957,6 +1960,7 @@ var LOSING_Scene = function(){
     const MenuBtn = BABYLON.GUI.Button.CreateSimpleButton("Menu", "MENU");
     MenuBtn.width = 0.2;
     MenuBtn.height = 0.2;
+    MenuBtn.fontFamily = "My Font";
     //MenuBtn.height = "40px";
     MenuBtn.color = "black";
     MenuBtn.top = "-14px";
@@ -1993,7 +1997,6 @@ var LOSING_Scene = function(){
             intersct_egg6 = 0;
         }
 
-
         console.log("clickedRestart");
 
         up_down_egg = 0;
@@ -2009,7 +2012,7 @@ var LOSING_Scene = function(){
 
     MenuBtn.onPointerUpObservable.addOnce(function () {
         clearInterval(counterId);
-        jump=0;
+        jump = 0;
         walkStepsCounter = 0;
         walkBackStepsCounter = 0;
         outOfPosition = false;
@@ -2089,6 +2092,23 @@ var LOADING_Scene = function(){
 
     //loadGui.addControl(rect1);
     loadGui.addControl(Loading);
+
+    var textblock_goal = new BABYLON.GUI.TextBlock();
+        //textblock_goal.paddingLeft = "1200px";
+        //textblock_goal.paddingRight = "2px";
+        textblock_goal.paddingTop = "70%";
+        //textblock_goal.paddingBottom = "-5px";
+        textblock_goal.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        textblock_goal.height = "350px";
+        textblock_goal.width = "770px";
+        textblock_goal.resizeToFit = true;
+        textblock_goal.fontSize = "46px";
+        textblock_goal.fontFamily = "My Font";
+        textblock_goal.text = "Find\n all the eggs before the \n time runs out !!!";
+        textblock_goal.color = "white";
+        loadGui.addControl(textblock_goal);
+
+
 
     scene.registerAfterRender( function () {
         earth.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);

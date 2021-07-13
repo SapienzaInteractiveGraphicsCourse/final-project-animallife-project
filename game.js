@@ -283,9 +283,9 @@ var change_egg = false;
 
 
 //Difficulty countodowns
-var easy = 90;
-var medium = 60;
-var impossible = 45;
+var easy = 98;
+var medium = 68;
+var impossible = 53;
 var selected_difficulty = medium;
 
 //By default
@@ -453,6 +453,7 @@ var FOREST_Scene = function(){
     camera.wheelDeltaPercentage = 0.003;
     //camera.ellipsoid = new BABYLON.Vector3(5, 5, 5);
     //camera.checkCollisions = true;
+
     camera.lowerBetaLimit = Math.PI / 8;	//up
     camera.upperBetaLimit = Math.PI / 2.15;	//down
 
@@ -770,8 +771,8 @@ var FOREST_Scene = function(){
 		LogBoundingBox3.material = LogBoundingBoxMaterial3;
 
     BABYLON.SceneLoader.ImportMesh("", "models/", "wood_2.obj", scene, function (newMeshes) {
-        console.log("wood");
-        console.log(newMeshes);
+        //console.log("wood");
+        //console.log(newMeshes);
         log1 = newMeshes[1];
         log0 = newMeshes[0];
         //newMeshes[1].showBoundingBox = true;
@@ -827,8 +828,8 @@ var FOREST_Scene = function(){
 
     //FLOWERS
     BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
-        console.log("Tulips");
-        console.log(newMeshes);
+        //console.log("Tulips");
+        //console.log(newMeshes);
         for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(15);
             newMeshes[i].position.x = 360;
@@ -838,8 +839,8 @@ var FOREST_Scene = function(){
 
      //FLOWERS
     BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
-        console.log("Tulips");
-        console.log(newMeshes);
+        //console.log("Tulips");
+        //console.log(newMeshes);
         for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(10);
             newMeshes[i].position.x = 365;
@@ -849,8 +850,8 @@ var FOREST_Scene = function(){
 
      //FLOWERS
      BABYLON.SceneLoader.ImportMesh("", "models/", "flowers.obj", scene, function (newMeshes) {
-        console.log("Tulips");
-        console.log(newMeshes);
+        //console.log("Tulips");
+        //console.log(newMeshes);
         for (var i = 0; i<12; i ++){
             newMeshes[i].scaling.scaleInPlace(20);
             newMeshes[i].position.x = 365;
@@ -1330,7 +1331,7 @@ var FOREST_Scene = function(){
         hl.addMesh(egg, BABYLON.Color3.Yellow());
         //egg.showBoundingBox = true;
 
-        console.log("new meshes egg imported:", newMeshes);
+        //console.log("new meshes egg imported:", newMeshes);
 
         egg2 = egg.createInstance("");
         egg2.position.x = 95;
@@ -1444,7 +1445,7 @@ var FOREST_Scene = function(){
 
     BABYLON.SceneLoader.ImportMesh("", "models/Trex/", "trex.gltf", scene, function (newMeshes, particleSystems, skeletons) {
 
-        console.log("new meshes imported:", newMeshes);
+        //console.log("new meshes imported:", newMeshes);
         rex=newMeshes[0];
         rex.scaling.scaleInPlace(5);
 		rex.position.y = -5.5;
@@ -1452,7 +1453,7 @@ var FOREST_Scene = function(){
         shadowGenerator.addShadowCaster(rex);
 
         rex_skeleton = skeletons[0];
-        console.log("skeleton imported:", rex_skeleton);
+        //console.log("skeleton imported:", rex_skeleton);
 
         rex.parent = RexBoundingBox;
 
@@ -1478,9 +1479,9 @@ var FOREST_Scene = function(){
         }
        
         //INSPECTOR
-        scene.debugLayer.show({
-            embedMode:true
-        });
+        //scene.debugLayer.show({
+        //    embedMode:true
+        //});
 
         //INITIAL POSITION
         rex_skeleton.bones[3].rotate(BABYLON.Axis.Z, -0.5, BABYLON.Space.LOCAL);  //torace Up Leg
@@ -1535,9 +1536,9 @@ var FOREST_Scene = function(){
     });
 
 	var walkForward = function(speed){
-        if(walkStepsCounter > 25){
+        if(walkStepsCounter > 15){
             change = true;
-        }else if(walkStepsCounter < -25){
+        }else if(walkStepsCounter < -10){
             change = false;
         }
         if(roar_anim == 1){
@@ -1549,12 +1550,12 @@ var FOREST_Scene = function(){
             }
             if(!change_roar){
                 rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL); //Neck
-                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL); //Bocca
+                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL); //Bocca
                 RoarCounter++;
             }
             else{
                 rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); //Neck
-                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL); //Bocca
+                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL); //Bocca
                 RoarCounter--;
             }
         }
@@ -1582,6 +1583,7 @@ var FOREST_Scene = function(){
 
             rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Right Up Leg
             rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, +speed/50, BABYLON.Space.LOCAL);
+            
             //FOOT
             rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Left Foot
             rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
@@ -1597,7 +1599,7 @@ var FOREST_Scene = function(){
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Right Arm
-            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/60, BABYLON.Space.LOCAL); //Left Arm
+            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Left Arm
             
             //LEGS
             rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Left Up Leg
@@ -1617,9 +1619,9 @@ var FOREST_Scene = function(){
         //console.log(walkStepsCounter);
 	};
     var walkBack = function(speed){
-        if(walkBackStepsCounter>20){
+        if(walkBackStepsCounter>18){
             change_back = true;
-        }else if(walkBackStepsCounter<-20){
+        }else if(walkBackStepsCounter<-8){
             change_back = false;
         }
         if(!change_back){
@@ -1682,8 +1684,8 @@ var FOREST_Scene = function(){
                 egg.position.y = -1000;
                 roar.play();
                 //egg.dispose();
-                console.log("Intersection");
-                console.log(num_eggs);
+                //console.log("Intersection");
+                //console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 URL_Eggs();
@@ -1693,8 +1695,8 @@ var FOREST_Scene = function(){
             if(intersct_egg3 == 0){
                 egg3.dispose();
                 roar.play();
-                console.log("Intersection3");
-                console.log(num_eggs);
+                //console.log("Intersection3");
+                //console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
@@ -1706,8 +1708,8 @@ var FOREST_Scene = function(){
             if(intersct_egg2 == 0){
                 egg2.dispose();
                 roar.play();
-                console.log("Intersection2");
-                console.log(num_eggs);
+                //console.log("Intersection2");
+                //console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
@@ -1719,8 +1721,8 @@ var FOREST_Scene = function(){
             if(intersct_egg5 == 0){
                 egg5.dispose();
                 roar.play();
-                console.log("Intersection5");
-                console.log(num_eggs);
+                //console.log("Intersection5");
+                //console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
@@ -1734,8 +1736,8 @@ var FOREST_Scene = function(){
                 if(intersct_egg4 == 0){
                     egg4.dispose();
                     roar.play();
-                    console.log("Intersection4");
-                    console.log(num_eggs);
+                    //console.log("Intersection4");
+                    //console.log(num_eggs);
 
                     roar_anim = 1;
                     num_eggs--;
@@ -1752,8 +1754,8 @@ var FOREST_Scene = function(){
                     URL_Eggs();
                     egg6.dispose();
                     roar.play();
-                    console.log("Intersection6");
-                    console.log(num_eggs);
+                    //console.log("Intersection6");
+                    //console.log(num_eggs);
                     roar_anim = 1;
                     num_eggs--;
                     }
@@ -1772,7 +1774,7 @@ var FOREST_Scene = function(){
         call_forest++;
     }
 
-    console.log(counterId);
+    //console.log(counterId);
 
     engine.hideLoadingUI();
     
@@ -1904,7 +1906,7 @@ var WINNING_Scene = function (){
         intersct_egg6 = 0;
         intersct_egg5 = 0;
 
-        console.log("clickedMenu");
+        //console.log("clickedMenu");
 
         up_down_egg = 0;
         change_egg = false;
@@ -2046,7 +2048,7 @@ var LOSING_Scene = function(){
         intersct_egg5 = 0;
         intersct_egg6 = 0;
 
-        console.log("clickedMenu");
+        //console.log("clickedMenu");
 
         up_down_egg = 0;
         change_egg = false;

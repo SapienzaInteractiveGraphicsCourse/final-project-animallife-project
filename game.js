@@ -1470,9 +1470,9 @@ var FOREST_Scene = function(){
 		camera.target = RexBoundingBox;
 
         //DEBUGGIN SKELETON VIEWER
-		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
-		skeletonViewer.isEnabled = true; // Enable it
-		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+		//var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
+		//skeletonViewer.isEnabled = true; // Enable it
+		//skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 

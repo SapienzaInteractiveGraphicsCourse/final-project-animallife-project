@@ -1447,7 +1447,7 @@ var FOREST_Scene = function(){
         console.log("new meshes imported:", newMeshes);
         rex=newMeshes[0];
         rex.scaling.scaleInPlace(5);
-		rex.position.y = -1.5;
+		rex.position.y = -5.5;
 
         shadowGenerator.addShadowCaster(rex);
 
@@ -1468,10 +1468,10 @@ var FOREST_Scene = function(){
 
 		camera.target = RexBoundingBox;
 
-        // DEBUGGIN SKELETON VIEWER
-		//var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
-		//skeletonViewer.isEnabled = true; // Enable it
-		//skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
+        //DEBUGGIN SKELETON VIEWER
+		var skeletonViewer = new BABYLON.Debug.SkeletonViewer(rex_skeleton, rex, scene);
+		skeletonViewer.isEnabled = true; // Enable it
+		skeletonViewer.color = BABYLON.Color3.Red(); // Change default color from white to red
 
         for(i=0;i<72;i++){
             rex_skeleton.bones[i].linkTransformNode(null); 
@@ -1483,16 +1483,30 @@ var FOREST_Scene = function(){
         });
 
         //INITIAL POSITION
-        //rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -44.7, BABYLON.Space.LOCAL);  //Left Up Leg
-        rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -44, BABYLON.Space.LOCAL);  //Left Up Leg
-        rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL);  //Left Leg
-        rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //Right Up Leg
-        rex_skeleton.bones[50].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootIndex1
-        rex_skeleton.bones[48].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootMiddle1
-        rex_skeleton.bones[46].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight1
-        rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootIndex2
-        rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootMiddle2
-        rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight2
+        rex_skeleton.bones[3].rotate(BABYLON.Axis.Z, -0.5, BABYLON.Space.LOCAL);  //torace Up Leg
+
+        rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -0.80, BABYLON.Space.LOCAL);  //Left Up Leg
+        rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, -0.35, BABYLON.Space.LOCAL);  //Left Leg
+        rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Left Up Leg
+        rex_skeleton.bones[45].rotate(BABYLON.Axis.Z, -0.5, BABYLON.Space.LOCAL); //Left Up Leg
+        rex_skeleton.bones[50].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+        rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+        rex_skeleton.bones[48].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+        rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+        rex_skeleton.bones[46].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+        rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, 0, BABYLON.Space.LOCAL); //Dito Leg
+        
+        rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, 0.35, BABYLON.Space.LOCAL); //Right Up Leg
+        rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, -0.95, BABYLON.Space.LOCAL); //Right Lower Leg
+        rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, 1,  BABYLON.Space.LOCAL); //Right Up Leg
+        rex_skeleton.bones[56].rotate(BABYLON.Axis.Z, -0.4, BABYLON.Space.LOCAL); //Right Up Leg
+        
+        //rex_skeleton.bones[50].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootIndex1
+        //rex_skeleton.bones[48].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootMiddle1
+        //rex_skeleton.bones[46].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight1
+        //rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootIndex2
+        //rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootMiddle2
+        //rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight2
 
         
         scene.registerBeforeRender(function () {
@@ -1521,9 +1535,9 @@ var FOREST_Scene = function(){
     });
 
 	var walkForward = function(speed){
-        if(walkStepsCounter>30){
+        if(walkStepsCounter > 25){
             change = true;
-        }else if(walkStepsCounter<-30){
+        }else if(walkStepsCounter < -25){
             change = false;
         }
         if(roar_anim == 1){
@@ -1535,10 +1549,12 @@ var FOREST_Scene = function(){
             }
             if(!change_roar){
                 rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL); //Neck
+                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL); //Bocca
                 RoarCounter++;
             }
             else{
                 rex_skeleton.bones[6].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); //Neck
+                rex_skeleton.bones[8].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL); //Bocca
                 RoarCounter--;
             }
         }
@@ -1553,9 +1569,19 @@ var FOREST_Scene = function(){
 
 
             //LEGS
-            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, +speed/70, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL);  //Left Leg
+            //rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Left Up Leg
+            //rex_skeleton.bones[45].rotate(BABYLON.Axis.Z, -0.5, BABYLON.Space.LOCAL); //Left Up Leg
+            //rex_skeleton.bones[50].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+            //rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+            //rex_skeleton.bones[48].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+            //rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+            //rex_skeleton.bones[46].rotate(BABYLON.Axis.Z, 1, BABYLON.Space.LOCAL); //Dito Leg
+            //rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, 0, BABYLON.Space.LOCAL); //Dito Leg
 
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, +speed/50, BABYLON.Space.LOCAL);
             //FOOT
             rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Left Foot
             rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
@@ -1571,11 +1597,13 @@ var FOREST_Scene = function(){
 
             //ARMS
             rex_skeleton.bones[33].rotate(BABYLON.Axis.X, -speed/50, BABYLON.Space.LOCAL); //Right Arm
-            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/50, BABYLON.Space.LOCAL); //Left Arm
+            rex_skeleton.bones[25].rotate(BABYLON.Axis.X, speed/60, BABYLON.Space.LOCAL); //Left Arm
             
             //LEGS
-            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, speed/90, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/90, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Left Up Leg
+            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); 
+            rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, +speed/70, BABYLON.Space.LOCAL);  //Right Up Leg
+            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL);
 
             //FOOT
             rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Left Foot

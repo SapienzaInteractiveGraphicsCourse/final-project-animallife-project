@@ -309,8 +309,12 @@ var intersct_egg5 = 0;
 var intersct_egg6 = 0;
 
 //URL for current number
-var number6_url = "textures/6.png";
-var number5_url = "textures/5.png";
+var number6_url = "GUI_IMAGES/6eggs.png";
+var number5_url = "GUI_IMAGES/5eggs.png";
+var number4_url = "GUI_IMAGES/4eggs.png";
+var number3_url = "GUI_IMAGES/3eggs.png";
+var number2_url = "GUI_IMAGES/2eggs.png";
+var number1_url = "GUI_IMAGES/1egg.png";
 var number_url = number5_url;
 
 //Egg count
@@ -319,8 +323,24 @@ var num_eggs = 5;
 
 var URL_Eggs = function(){
     if(num_eggs == 6){
+        number_url = number6_url;
+    }
+    else if (num_eggs == 5){
         number_url = number5_url;
     }
+    else if (num_eggs == 4){
+        number_url = number4_url;
+    }
+    else if (num_eggs == 3){
+        number_url = number3_url;
+    }
+    else if (num_eggs == 2){
+        number_url = number2_url;
+    }
+    else if (num_eggs == 1){
+        number_url = number1_url;
+    }
+
 }
 
 var FOREST_Scene = function(){
@@ -400,43 +420,17 @@ var FOREST_Scene = function(){
         }   
     });
 
-
-    //REMAINING LIFES
-    var remain_image = new BABYLON.GUI.Image("remaim_eggs_image", "textures/remain.png");
-        remain_image.width = "250px";
-        remain_image.height = "100px";
-        remain_image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        remain_image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        remain_image.paddingLeft = "-25px";
-        remain_image.paddingRight = "25px";
-        remain_image.paddingTop = "90px";
-        remain_image.paddingBottom = "-70px";
     
-    guiGame.addControl(remain_image);
 
-
-    //EGG ICON
-    var egg_image = new BABYLON.GUI.Image("eggs_image", "textures/egg_img.png");
-        egg_image.width = "50px";
-        egg_image.height = "200px";
-        egg_image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        egg_image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-        egg_image.paddingLeft = "-25px";
-        egg_image.paddingRight = "25px";
-        egg_image.paddingTop = "200px";
-        egg_image.paddingBottom = "-70px";
-    
-    guiGame.addControl(egg_image);    
-
-    //6 ICON
+    //6 ICON for remaining eggs
     var number_image = new BABYLON.GUI.Image("number_image",number_url);
-        number_image.width = "150px";
-        number_image.height = "200px";
+        number_image.width = "400px";
+        number_image.height = "250px";
         number_image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
         number_image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         number_image.paddingLeft = "-25px";
-        number_image.paddingRight = "70px";
-        number_image.paddingTop = "200px";
+        number_image.paddingRight = "10px";
+        number_image.paddingTop = "140px";
         number_image.paddingBottom = "-70px";
     
     guiGame.addControl(number_image);    
@@ -471,7 +465,7 @@ var FOREST_Scene = function(){
     var hemisphericLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 0, 1), scene);
 
     //SHADOW GENERATOR
-    var shadowGenerator = new BABYLON.ShadowGenerator(2048, directionalLight);
+    var shadowGenerator = new BABYLON.ShadowGenerator(1000, directionalLight);
     shadowGenerator.useExponenetialShadowMap = true;
 
     //Difining the grounds
@@ -479,11 +473,7 @@ var FOREST_Scene = function(){
     var groundMaterial = new BABYLON.StandardMaterial("groundMat", scene);
   
     groundMaterial.diffuseTexture = new BABYLON.Texture("textures/prato.jpg", scene);
-    //groundMaterial.diffuseTexture.uScale = 8;
-    //groundMaterial.diffuseTexture.vScale = 8;
     groundMaterial.specularTexture = new BABYLON.Texture("textures/prato.jpg", scene);
-    //groundMaterial.specularTexture.uScale = 8;
-    //groundMaterial.specularTexture.vScale = 8;
 
     ground.material = groundMaterial;
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
@@ -516,7 +506,6 @@ var FOREST_Scene = function(){
     mat1.specularTexture = new BABYLON.Texture("textures/wall1.jpeg", scene);
 	mat1.bumpTexture = new BABYLON.Texture("textures/wall.jpeg", scene);
     fountain.material = mat1;
-    
 
     // Create a particle system
     var particleSystem = new BABYLON.ParticleSystem("particles", 50000, scene);
@@ -566,9 +555,10 @@ var FOREST_Scene = function(){
 
     particleSystem.start();
 
-    var rockTask;
 
     //ADD ROCK
+    var rockTask;
+
     BABYLON.SceneLoader.ImportMesh("", "models/", "rock.obj", scene, function (newMeshes) {
         // Only one mesh here
         rockTask = newMeshes[0];
@@ -1487,7 +1477,7 @@ var FOREST_Scene = function(){
             rex_skeleton.bones[i].linkTransformNode(null); 
         }
        
-        INSPECTOR
+        //INSPECTOR
         scene.debugLayer.show({
             embedMode:true
         });
@@ -1503,7 +1493,6 @@ var FOREST_Scene = function(){
         rex_skeleton.bones[51].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootIndex2
         rex_skeleton.bones[49].rotate(BABYLON.Axis.Z, 45.5, BABYLON.Space.LOCAL); //LeftFootMiddle2
         rex_skeleton.bones[47].rotate(BABYLON.Axis.Z, -150, BABYLON.Space.LOCAL); //LeftFootRight2
-
 
         
         scene.registerBeforeRender(function () {
@@ -1661,69 +1650,70 @@ var FOREST_Scene = function(){
         }
 
         if(RexBoundingBox.intersectsMesh(egg,true,false)){
-                URL_Eggs();
                 egg.isVisible = false;
                 egg.position.y = -1000;
                 roar.play();
                 //egg.dispose();
                 console.log("Intersection");
-
+                console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
+                URL_Eggs();
         }
         if(RexBoundingBox.intersectsMesh(egg3,true,false)){
 
             if(intersct_egg3 == 0){
-                URL_Eggs();
                 egg3.dispose();
                 roar.play();
                 console.log("Intersection3");
-
+                console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
                 intersct_egg3++;
+                URL_Eggs();
         }
         if(rex_bounding.intersectsMesh(egg2,true,false)){
 
             if(intersct_egg2 == 0){
-                URL_Eggs();
                 egg2.dispose();
                 roar.play();
                 console.log("Intersection2");
-
+                console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
                 intersct_egg2++;
+                URL_Eggs();
         }
         if(rex_bounding.intersectsMesh(egg5,true,false)){
 
             if(intersct_egg5 == 0){
-                URL_Eggs();
                 egg5.dispose();
                 roar.play();
                 console.log("Intersection5");
-
+                console.log(num_eggs);
                 roar_anim = 1;
                 num_eggs--;
                 }
                 intersct_egg5++;
+                URL_Eggs();
         }
 
         if(selected_difficulty != easy){            
             if(rex_bounding.intersectsMesh(egg4,true,false)){
 
                 if(intersct_egg4 == 0){
-                    URL_Eggs();
                     egg4.dispose();
                     roar.play();
                     console.log("Intersection4");
+                    console.log(num_eggs);
 
                     roar_anim = 1;
                     num_eggs--;
                     }
                     intersct_egg4++;
+                    URL_Eggs();
             }
         }
 
@@ -1735,7 +1725,7 @@ var FOREST_Scene = function(){
                     egg6.dispose();
                     roar.play();
                     console.log("Intersection6");
-
+                    console.log(num_eggs);
                     roar_anim = 1;
                     num_eggs--;
                     }

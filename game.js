@@ -1770,8 +1770,12 @@ var WINNING_Scene = function (){
 
     var WinningGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("WinningUI");
 
-    var Win = new BABYLON.GUI.TextBlock("Win","YOU WIN!"); 
-    Win.color = "Red";
+    var imageWin = new BABYLON.GUI.Image("imagewin", "textures/skybox/forest_py.jpg");
+    imageWin.height = "100%";
+	WinningGui.addControl(imageWin);
+
+    var Win = new BABYLON.GUI.TextBlock("Win","YOU WIN !!! "); 
+    Win.color = "Black";
     Win.fontFamily = "My Font";
     //Lose.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     Win.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -1796,7 +1800,7 @@ var WINNING_Scene = function (){
     restartBtn.height = 0.2;
     restartBtn.fontFamily = "My Font";
     //restartBtn.height = "40px";
-    restartBtn.color = "red";
+    restartBtn.color = "black";
     restartBtn.top = "-14px";
     restartBtn.fontSize = 50;
     restartBtn.thickness = 0;
@@ -1811,7 +1815,7 @@ var WINNING_Scene = function (){
     MenuBtn.height = 0.2;
     MenuBtn.fontFamily = "My Font";
     //MenuBtn.height = "40px";
-    MenuBtn.color = "red";
+    MenuBtn.color = "black";
     MenuBtn.top = "-14px";
     MenuBtn.fontSize = 50;
     MenuBtn.thickness = 0;
@@ -1908,6 +1912,10 @@ var LOSING_Scene = function(){
     });
 
     var loseGui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    var imagelose = new BABYLON.GUI.Image("imagelose", "textures/skybox/forest_ny.jpg");
+    imagelose.height = "100%";
+	loseGui.addControl(imagelose);
 
     var Lose = new BABYLON.GUI.TextBlock("Lose","YOU LOSE"); 
     Lose.color = "white";

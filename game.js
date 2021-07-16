@@ -4,6 +4,10 @@ var fps = document.getElementById("fps");
 
 var changescene = 0;
 
+//Egg count
+var eggs_level = 5;
+var num_eggs = 5;
+
 //SET LOADING SCENE
 function customLoadingScreen() {
 }
@@ -118,7 +122,16 @@ var MainMenu = function () {
         button.color = "white";
         button.background = "green";
 
-        if(text == "MEDIUM"){
+        if(eggs_level == 5){
+            if (text == "MEDIUM")
+            button.isChecked = true;
+        }
+        if(eggs_level == 4){
+            if (text == "EASY")
+            button.isChecked = true;
+        }
+        if(eggs_level == 6){
+            if (text == "IMPOSSIBLE")
             button.isChecked = true;
         }
 
@@ -1842,7 +1855,7 @@ var WINNING_Scene = function (){
             intersct_egg6 = 0;
         }
 
-        console.log("clickedRestartWin");
+        //console.log("clickedRestartWin");
 
         up_down_egg = 0;
         change_egg = false;
@@ -1890,6 +1903,7 @@ var WINNING_Scene = function (){
 }
 
 var LOSING_Scene = function(){
+
     var scene = new BABYLON.Scene(engine);
 
     var camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/4, Math.PI/4, 3, new BABYLON.Vector3(0, 0, 0), scene);
@@ -1977,6 +1991,7 @@ var LOSING_Scene = function(){
         change = false;
         change_back = false;
         num_eggs = eggs_level;
+        //console.log(num_eggs);
 
         intersct_egg = 0;
         intersct_egg2 = 0;
@@ -1988,7 +2003,7 @@ var LOSING_Scene = function(){
             intersct_egg6 = 0;
         }
 
-        console.log("clickedRestart");
+        //console.log("clickedRestart");
 
         up_down_egg = 0;
         change_egg = false;
@@ -2121,12 +2136,18 @@ engine.runRenderLoop(function (){
             engine.displayLoadingUI();
         }
     } else if (changescene == 2){
+      
         if (Forest.getWaitingItemsCount() == 0) {
             Load.dispose();
+            //console.log("1");
+            //console.log(eggs_level);
+            URL_Eggs();
             Forest.render();
         } else {
            Load = LOADING_Scene();
            Menu.dispose();
+           //console.log("2");
+           //console.log(eggs_level);
            Load.render();
 	    }
     } else if (changescene == 3){

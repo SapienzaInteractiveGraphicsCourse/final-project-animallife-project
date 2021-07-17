@@ -358,6 +358,10 @@ var FOREST_Scene = function(){
     var scene = new BABYLON.Scene(engine);
     engine.displayLoadingUI();
 
+    scene.useGeometryIdsMap = true;
+    scene.useMaterialMeshMap = true;
+    scene.useClonedMeshMap = true;
+
     // Load the sound and play it automatically once ready
     var music = new BABYLON.Sound("Forest", "sounds/forest_snd.wav", scene, null, {
         loop: true,
@@ -570,9 +574,14 @@ var FOREST_Scene = function(){
     //ADD ROCK
     var rockTask;
 
+    scene.blockfreeActiveMeshesAndRenderingGroups = true;
+
     BABYLON.SceneLoader.ImportMesh("", "models/", "rock.obj", scene, function (newMeshes) {
         // Only one mesh here
         rockTask = newMeshes[0];
+
+        rockTask.freezeWorldMatrix();
+
         rockTask.position.x = 90;
         rockTask.position.z = 90
 
@@ -604,6 +613,8 @@ var FOREST_Scene = function(){
         rock.position.z = -40;
         rock.position.y = 2;
 
+        rock.freezeWorldMatrix();
+
         var rockMaterial2 = new BABYLON.StandardMaterial("rockmaterial2", scene);
         rockMaterial2.diffuseTexture = new BABYLON.Texture("textures/Rock_6_d.jfif", scene);
         rockMaterial2.specularTexture = new BABYLON.Texture("textures/Rock_6_d.jfif", scene);
@@ -633,6 +644,9 @@ var FOREST_Scene = function(){
 
         //bush.showBoundingBox = true;
         //leaves.showBoundingBox = true;
+
+        bush.freezeWorldMatrix();
+        leaves.freezeWorldMatrix();
 
         var leafMaterial = new BABYLON.StandardMaterial("leaf", scene);
         leafMaterial.diffuseColor = new BABYLON.Vector3(0,0.3,0.1);
@@ -720,6 +734,21 @@ var FOREST_Scene = function(){
         leaves7.position.z = -270;
         shadowGenerator.addShadowCaster(leaves7);
 
+        bush1.freezeWorldMatrix();
+        leaves1.freezeWorldMatrix();
+        bush2.freezeWorldMatrix();
+        leaves2.freezeWorldMatrix();
+        bush3.freezeWorldMatrix();
+        leaves3.freezeWorldMatrix();
+        bush4.freezeWorldMatrix();
+        leaves4.freezeWorldMatrix();
+        bush5.freezeWorldMatrix();
+        leaves5.freezeWorldMatrix();
+        bush6.freezeWorldMatrix();
+        leaves6.freezeWorldMatrix();
+        bush7.freezeWorldMatrix();
+        leaves7.freezeWorldMatrix();
+
         bush.isVisible = false;
         leaves.isVisible = false;
 
@@ -794,6 +823,9 @@ var FOREST_Scene = function(){
         LogBoundingBox.physicsImpostor.physicsBody.invInertia.setZero();
         LogBoundingBox.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
+        log0.freezeWorldMatrix();
+        log1.freezeWorldMatrix();
+
         //TRUNK 2
         var trunk2 = log1.createInstance("");
         trunk2.position.y = 5;
@@ -814,6 +846,9 @@ var FOREST_Scene = function(){
         LogBoundingBox3.physicsImpostor.physicsBody.invInertia.setZero();
         LogBoundingBox3.physicsImpostor.physicsBody.invInertiaWorld.setZero();
 
+        trunk2.freezeWorldMatrix();
+        trunk3.freezeWorldMatrix();
+
         //FOR DEBUGGING
         //LogBoundingBox.showBoundingBox = true;
         //LogBoundingBox2.showBoundingBox = true;
@@ -831,6 +866,7 @@ var FOREST_Scene = function(){
             newMeshes[i].scaling.scaleInPlace(15);
             newMeshes[i].position.x = 360;
             newMeshes[i].position.z = 75;
+            newMeshes[i].freezeWorldMatrix();
         }
     });
 
@@ -842,6 +878,7 @@ var FOREST_Scene = function(){
             newMeshes[i].scaling.scaleInPlace(10);
             newMeshes[i].position.x = 365;
             newMeshes[i].position.z = 60;
+            newMeshes[i].freezeWorldMatrix();
         }
     });
 
@@ -853,6 +890,7 @@ var FOREST_Scene = function(){
             newMeshes[i].scaling.scaleInPlace(20);
             newMeshes[i].position.x = 365;
             newMeshes[i].position.z = 70;
+            newMeshes[i].freezeWorldMatrix();
         }
     });
 
@@ -1293,10 +1331,36 @@ var FOREST_Scene = function(){
         var tree20 = tree.createInstance("");
         tree20.position.x = 100;
         tree20.position.z = -280;
-        shadowGenerator.addShadowCaster(tree20); 
+        shadowGenerator.addShadowCaster(tree20);
+        
+        tree.freezeWorldMatrix();
+        tree1.freezeWorldMatrix();
+        tree2.freezeWorldMatrix();
+        tree3.freezeWorldMatrix();
+        tree4.freezeWorldMatrix();
+        tree5.freezeWorldMatrix();
+        tree6.freezeWorldMatrix();
+        tree7.freezeWorldMatrix();
+        tree8.freezeWorldMatrix();
+        tree9.freezeWorldMatrix();
+        tree10.freezeWorldMatrix();
+        tree11.freezeWorldMatrix();
+        tree12.freezeWorldMatrix();
+        tree13.freezeWorldMatrix();
+        tree14.freezeWorldMatrix();
+        tree15.freezeWorldMatrix();
+        tree16.freezeWorldMatrix();
+        tree17.freezeWorldMatrix();
+        tree18.freezeWorldMatrix();
+        tree19.freezeWorldMatrix();
+        tree20.freezeWorldMatrix();
+
+
 
         tree.isVisible = false;
     });
+
+    scene.blockfreeActiveMeshesAndRenderingGroups = false;
 
     // KEYBOARD INPUT
     var map = {};
@@ -2123,9 +2187,11 @@ var LOADING_Scene = function(){
         textblock_goal.color = "white";
         loadGui.addControl(textblock_goal);
 
+    /*
     scene.registerAfterRender( function () {
         earth.rotation = new BABYLON.Vector3(0, Math.PI/6, 0);
     });
+    */
 
     return scene;
 }

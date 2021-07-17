@@ -294,9 +294,9 @@ var change_egg = false;
 
 
 //Difficulty countodowns
-var easy = 98;
-var medium = 68;
-var impossible = 53;
+var easy = 100;
+var medium = 70;
+var impossible = 65;
 var selected_difficulty = medium;
 
 //By default
@@ -1560,14 +1560,14 @@ var FOREST_Scene = function(){
 
             //LEGS
             rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, +speed/70, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL);  //Left Leg
+            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, -speed/55, BABYLON.Space.LOCAL);  //Left Leg
 
             rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Right Up Leg
-            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, +speed/50, BABYLON.Space.LOCAL);
+            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, +speed/55, BABYLON.Space.LOCAL);
             
             //FOOT
             rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, +speed/50, BABYLON.Space.LOCAL);  //Left Foot
-            //rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, -speed/80, BABYLON.Space.LOCAL);  //Right Foot
 
             //TAILS
             rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, speed/60, BABYLON.Space.LOCAL);  // Tail
@@ -1584,13 +1584,13 @@ var FOREST_Scene = function(){
             
             //LEGS
             rex_skeleton.bones[42].rotate(BABYLON.Axis.Z, -speed/70, BABYLON.Space.LOCAL);  //Left Up Leg
-            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, speed/50, BABYLON.Space.LOCAL); 
+            rex_skeleton.bones[43].rotate(BABYLON.Axis.Z, speed/55, BABYLON.Space.LOCAL); 
             rex_skeleton.bones[53].rotate(BABYLON.Axis.Z, +speed/70, BABYLON.Space.LOCAL);  //Right Up Leg
-            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL);
+            rex_skeleton.bones[54].rotate(BABYLON.Axis.Z, -speed/55, BABYLON.Space.LOCAL);
 
             //FOOT
             rex_skeleton.bones[44].rotate(BABYLON.Axis.Z, -speed/50, BABYLON.Space.LOCAL);  //Left Foot
-            //rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Right Foot
+            rex_skeleton.bones[55].rotate(BABYLON.Axis.Z, speed/80, BABYLON.Space.LOCAL);  //Right Foot
 
             //TAILS
             rex_skeleton.bones[64].rotate(BABYLON.Axis.Y, -speed/60, BABYLON.Space.LOCAL);  // Tail

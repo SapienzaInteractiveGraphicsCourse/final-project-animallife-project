@@ -3,6 +3,9 @@ var engine = new BABYLON.Engine(canvas,true);
 var fps = document.getElementById("fps");
 
 var changescene = 0;
+var from_w_scene = 0;
+var from_l_scene = 0;
+var from_m_scene = 0;
 
 //Egg count
 var eggs_level = 5;
@@ -262,6 +265,7 @@ var MainMenu = function () {
     forest_button.onPointerUpObservable.add(function () {
         Forest = FOREST_Scene(); 
         changescene = 2;   
+        from_m_scene = 1;
     });
 
     engine.hideLoadingUI();
@@ -423,6 +427,7 @@ var FOREST_Scene = function(){
             clearInterval(counterId);
             Lose = LOSING_Scene();
             changescene = 3;
+    
         }   
     });
 
@@ -454,7 +459,7 @@ var FOREST_Scene = function(){
     scene.activeCamera = camera;
     scene.activeCamera.attachControl(canvas, true);
     camera.lowerRadiusLimit = 10;
-    //camera.upperRadiusLimit = 180;
+    camera.upperRadiusLimit = 260;
     camera.wheelDeltaPercentage = 0.003;
     //camera.ellipsoid = new BABYLON.Vector3(5, 5, 5);
     //camera.checkCollisions = true;
@@ -1866,6 +1871,7 @@ var WINNING_Scene = function (){
         call_forest = 0;
         Forest = FOREST_Scene(); 
         changescene = 2;   
+        from_w_scene = 1;
     });
 
     MenuBtn.onPointerUpObservable.addOnce(function () {
@@ -1896,7 +1902,8 @@ var WINNING_Scene = function (){
         // Check if the first time call the function FOREST_Scene
         call_forest = 0;
         Menu = MainMenu(); 
-        changescene = 0;   
+        changescene = 0;  
+        from_w_scene = 1; 
     });
 
     return scene;
@@ -2014,6 +2021,7 @@ var LOSING_Scene = function(){
         call_forest = 0;
         Forest = FOREST_Scene(); 
         changescene = 2;   
+        from_l_scene = 1;
     });
 
     MenuBtn.onPointerUpObservable.addOnce(function () {
@@ -2044,7 +2052,8 @@ var LOSING_Scene = function(){
         // Check if the first time call the function FOREST_Scene
         call_forest = 0;
         Menu = MainMenu(); 
-        changescene = 0;   
+        changescene = 0; 
+        from_l_scene = 1; 
     });
 
     return scene;
@@ -2144,11 +2153,23 @@ engine.runRenderLoop(function (){
             URL_Eggs();
             Forest.render();
         } else {
-           Load = LOADING_Scene();
-           Menu.dispose();
-           //console.log("2");
-           //console.log(eggs_level);
-           Load.render();
+            Load = LOADING_Scene();
+
+            if (from_m_scene == 1){
+                Menu.dispose();
+                from_m_scene = 0;
+            }
+            if(from_l_scene == 1){
+                Lose.dispose();
+                from_l_scene = 0;
+            }
+            if (from_w_scene == 1){
+                Winning.dispose();
+                from_w_scene = 0;
+            }
+            //console.log("2");
+            //console.log(eggs_level);
+            Load.render();
 	    }
     } else if (changescene == 3){
         Forest.dispose();
